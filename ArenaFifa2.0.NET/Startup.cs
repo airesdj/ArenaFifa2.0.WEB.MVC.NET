@@ -1,8 +1,8 @@
 ﻿using Microsoft.Owin;
 using Owin;
 
-[assembly: OwinStartupAttribute(typeof(ArenaFifa2._0.NET.Startup))]
-namespace ArenaFifa2._0.NET
+[assembly: OwinStartupAttribute(typeof(ArenaFifa20.NET.Startup))]
+namespace ArenaFifa20.NET
 {
     public partial class Startup
     {

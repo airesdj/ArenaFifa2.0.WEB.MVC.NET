@@ -8,9 +8,11 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using ArenaFifa2._0.NET.Models;
+using ArenaFifa20.NET.Models;
+using ArenaFifa20.NET.Controllers;
+using System.Collections.Generic;
 
-namespace ArenaFifa2._0.NET.Controllers
+namespace ArenaFifa20.NET.Controllers
 {
     [Authorize]
     public class AccountController : Controller
@@ -53,93 +55,104 @@ namespace ArenaFifa2._0.NET.Controllers
         }
 
         //
-        // GET: /Account/Login
+        // GET: /Account/Signin
         [AllowAnonymous]
-        public ActionResult Login(string returnUrl)
+        public ActionResult Signin(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
         //
-        // POST: /Account/Login
+        // POST: /Account/Signin
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        public async Task<ActionResult> Signin(LoginViewModel model, string returnUrl)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
+
+            return RedirectToLocal("Index");
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
-            switch (result)
-            {
-                case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
-                case SignInStatus.LockedOut:
-                    return View("Lockout");
-                case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
-                case SignInStatus.Failure:
-                default:
-                    ModelState.AddModelError("", "Invalid login attempt.");
-                    return View(model);
-            }
+            //var result = await SignInManager.PasswordSignInAsync(model.psnID, model.Password, true, shouldLockout: false);
+            //switch (result)
+            //{
+            //    case SignInStatus.Success:
+            //        return RedirectToLocal(returnUrl);
+            //    case SignInStatus.LockedOut:
+            //        return View("Lockout");
+            //    case SignInStatus.RequiresVerification:
+            //        return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = true });
+            //    case SignInStatus.Failure:
+            //    default:
+            //        ModelState.AddModelError("", "Invalid login attempt.");
+            //        return View(model);
+            //}
         }
 
-        //
-        // GET: /Account/VerifyCode
-        [AllowAnonymous]
-        public async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
+        private IEnumerable<string> GetAllTypeHowFindUs()
         {
-            // Require that the user has already logged in via username/password or external login
-            if (!await SignInManager.HasBeenVerifiedAsync())
+            return new List<string>
             {
-                return View("Error");
-            }
-            return View(new VerifyCodeViewModel { Provider = provider, ReturnUrl = returnUrl, RememberMe = rememberMe });
+                "INTERNET","AMIGOS","BANNER","SITE DE BUSCA","FACEBOOK","OUTROS"
+            };
         }
 
-        //
-        // POST: /Account/VerifyCode
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> VerifyCode(VerifyCodeViewModel model)
+        private IEnumerable<string> GetAllStates()
         {
-            if (!ModelState.IsValid)
+            return new List<string>
             {
-                return View(model);
-            }
-
-            // The following code protects for brute force attacks against the two factor codes. 
-            // If a user enters incorrect codes for a specified amount of time then the user account 
-            // will be locked out for a specified amount of time. 
-            // You can configure the account lockout settings in IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
-            switch (result)
-            {
-                case SignInStatus.Success:
-                    return RedirectToLocal(model.ReturnUrl);
-                case SignInStatus.LockedOut:
-                    return View("Lockout");
-                case SignInStatus.Failure:
-                default:
-                    ModelState.AddModelError("", "Invalid code.");
-                    return View(model);
-            }
+                "Acre","Alagoas","Amapá","Amazonas","Bahia","Ceará","Distrito Federal","Espírito Santo","Goiás","Maranhão","Mato Grosso do Sul","Minas Gerais","Pará","Paraíba","Paraná","Pernambuco","Piauí","Rio de Janeiro","Rio Grande do Norte","Rio Grande do Sul","Rondônia","Roraima","Santa Catarina","São Paulo","Sergipe","Tocantins"
+            };
         }
 
-        //
+        private IEnumerable<string> GetAllTeams()
+        {
+            return new List<string>
+            {
+                "ABC-RN","Adap-PR","Alagoinhas-AL","Alecrim-RN","América-MG","América-RJ","Americano-RJ","América De Natal-RN","ASA-AL","Atlético-GO","Atlético-MG","Atlético-PR","Avaí-SC","Bahia-BA","Bangu-RJ","Baraúnas-RN","Baré-RR","Boa Vista-RJ","Botafogo-PB","Botafogo-RJ","Bragantino-SP","Brasiliense-DF","Cabofriense-RJ","Cajazeiras-PB","Camaçari-BA","Campinense-PB","Cascavel-PR","Caxias-RS","Ceará-CE","Ceilândia-DF","Central-PE","Chapecoense-SC","Colo Colo-BA","Corinthians-AL","Corinthians-SP","Coritiba-PR","CRAC-GO","Criciúma-SC","Cruzeiro-MG","Duque De Caxias-RJ","Esportivo-RS","Figueirense-SC","Flamengo-PI","Flamengo-RJ","Fluminense-BA","Fluminense-RJ","Fortaleza-CE","Gama-DF","Goiás-GO","Grêmio-AC","Grêmio-MT","Grêmio-RS","Grêmio Prudente-SP","Guarani-SP","Internacional-RS","Ipatinga-MG","Iraty-PR","Itapipoca-CE","Ituiutaba-MG","J. Maluceli-PR","Ji Paraná-PR","Joinville-SC","Juazeiro-BA","Juventude-RS","Juventus-SP","Linhares-SE","Londrina-PR","Luverdense-MT","Macaé-RJ","Madureira-RJ","Marília-SP","Moto Clube-SE","Nacional-AM","Náutico-PE","Nova Iguaçu-RJ","Palmas-TO","Palmeiras-SP","Paraná-PR","Payssandú-PA","Ponte Preta-SP","Portuguesa-SP","Poções-BA","Porto-PE","Rio Branco-AC","Rio Claro-SP","Roraima-RO","Salgueiro-PE","Santo André-SP","Santos-SP","São_Caetano","São José-RS","São Paulo-SP","São Raimundo-PA","Serra-ES","Serrano-PE","Sertãozinho-SP","Sport-PE","Tigres do Brasil-RJ","Tocantinópolis-TO","Treze-PB","Tupi-MG","Ulbra-RS","União Rondonópolis-RO","União-MT","Vasco-RJ","Veranópolis-RS","Vila Nova-GO","Vila_Nova-MG","Vitória-BA","Volta Redonda-RJ"
+            };
+        }
+
+        private IEnumerable<SelectListItem> GetSelectListItems(IEnumerable<string> elements)
+        {
+            // Create an empty list to hold result of the operation
+            var selectList = new List<SelectListItem>();
+
+            // For each string in the 'elements' variable, create a new SelectListItem object
+            // that has both its Value and Text properties set to a particular value.
+            // This will result in MVC rendering each item as:
+            //     <option value="State Name">State Name</option>
+            foreach (var element in elements)
+            {
+                selectList.Add(new SelectListItem
+                {
+                    Value = element,
+                    Text = element
+                });
+            }
+
+            return selectList;
+        }
+
         // GET: /Account/Register
         [AllowAnonymous]
         public ActionResult Register()
         {
-            return View();
+            var typeHowFindUs = GetAllTypeHowFindUs();
+            var states = GetAllStates();
+            var teams = GetAllTeams();
+            var model = new RegisterViewModel();
+            model.listWhatHowFindUs = GetSelectListItems(typeHowFindUs);
+            model.listStates = GetSelectListItems(states);
+            model.listTeams = GetSelectListItems(teams);
+            return View(model);
+            //return View();
         }
 
         //
@@ -184,6 +197,7 @@ namespace ArenaFifa2._0.NET.Controllers
             var result = await UserManager.ConfirmEmailAsync(userId, code);
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
+
 
         //
         // GET: /Account/ForgotPassword
@@ -280,41 +294,6 @@ namespace ArenaFifa2._0.NET.Controllers
         {
             // Request a redirect to the external login provider
             return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
-        }
-
-        //
-        // GET: /Account/SendCode
-        [AllowAnonymous]
-        public async Task<ActionResult> SendCode(string returnUrl, bool rememberMe)
-        {
-            var userId = await SignInManager.GetVerifiedUserIdAsync();
-            if (userId == null)
-            {
-                return View("Error");
-            }
-            var userFactors = await UserManager.GetValidTwoFactorProvidersAsync(userId);
-            var factorOptions = userFactors.Select(purpose => new SelectListItem { Text = purpose, Value = purpose }).ToList();
-            return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
-        }
-
-        //
-        // POST: /Account/SendCode
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> SendCode(SendCodeViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View();
-            }
-
-            // Generate the token and send it
-            if (!await SignInManager.SendTwoFactorCodeAsync(model.SelectedProvider))
-            {
-                return View("Error");
-            }
-            return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
         }
 
         //
@@ -422,6 +401,8 @@ namespace ArenaFifa2._0.NET.Controllers
 
             base.Dispose(disposing);
         }
+
+
 
         #region Helpers
         // Used for XSRF protection when adding external logins

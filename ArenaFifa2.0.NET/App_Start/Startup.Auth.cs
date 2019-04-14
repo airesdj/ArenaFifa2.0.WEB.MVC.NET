@@ -5,9 +5,9 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
 using Owin;
-using ArenaFifa2._0.NET.Models;
+using ArenaFifa20.NET.Models;
 
-namespace ArenaFifa2._0.NET
+namespace ArenaFifa20.NET
 {
     public partial class Startup
     {

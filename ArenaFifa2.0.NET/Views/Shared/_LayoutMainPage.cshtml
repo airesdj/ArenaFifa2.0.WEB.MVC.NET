@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Arena Fifa 2.0">
+    <meta name="author" content="Arena Fifa">
+    <title>@ViewBag.Title - Arena Fifa 2.0</title>
+    @Styles.Render("~/Content/default-css")
+    @Styles.Render("~/Content/main-css")
+    @Scripts.Render("~/bundles/default-jquery")
+    @Scripts.Render("~/bundles/default-script")
+    @Scripts.Render("~/bundles/carousel-portfolio-script")
+</head>
+<body>
+    @Html.Partial("_MenuNavBar")
+    @RenderBody()
+    @RenderSection("scripts", required: false)
+    @Html.Partial("_Footer")
+
+    @ViewBag.ReturnUrl
+</body>
+</html>

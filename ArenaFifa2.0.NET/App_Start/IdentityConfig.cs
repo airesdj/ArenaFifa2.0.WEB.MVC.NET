@@ -10,9 +10,9 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
-using ArenaFifa2._0.NET.Models;
+using ArenaFifa20.NET.Models;
 
-namespace ArenaFifa2._0.NET
+namespace ArenaFifa20.NET
 {
     public class EmailService : IIdentityMessageService
     {

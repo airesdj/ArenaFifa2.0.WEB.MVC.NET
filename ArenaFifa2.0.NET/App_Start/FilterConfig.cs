@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace ArenaFifa2._0.NET
+namespace ArenaFifa20.NET
 {
     public class FilterConfig
     {
