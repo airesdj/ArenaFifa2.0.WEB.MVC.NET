@@ -34,8 +34,22 @@ namespace ArenaFifa20.NET.Models
         [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Senha")]
-        public string Password { get; set; }
+        public string password { get; set; }
+
+        public string actionUser { get; set; }
     }
+
+    public class returnJSON_UserLoginModel
+    {
+        public int id { get; set; }
+        public string psnID { get; set; }
+        public string password { get; set; }
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
+    }
+
+
+
 
     public class RegisterViewModel
     {

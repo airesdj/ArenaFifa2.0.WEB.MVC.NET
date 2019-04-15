@@ -36,8 +36,8 @@
                     <div class="form-group">
                         <div class="input-icon">
                             <span class="fables-iconpassword fables-input-icon font-19 mt-1"></span>
-                            @Html.PasswordFor(m => m.Password, new { @class = "form-control rounded-0 py-3 pl-5 font-13 sign-register-input", @placeholder = "Senha" })
-                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                            @Html.PasswordFor(m => m.password, new { @class = "form-control rounded-0 py-3 pl-5 font-13 sign-register-input", @placeholder = "Senha" })
+                            @Html.ValidationMessageFor(m => m.password, "", new { @class = "text-danger" })
                         </div>
 
                     </div>
@@ -46,7 +46,7 @@
                     <p class="fables-forth-text-color">Você não tem uma conta no Arena?  <a href="/Account/Register" class="font-16 semi-font fables-second-text-color underline fables-main-hover-color ml-2">Cadastrar</a></p>
                 }
             </section>
-</div>
+        </div>
     </div>
 </div>
 
@@ -55,4 +55,17 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+
+
+<script>
+
+        $(document).ready(function () {
+
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+
+        });
+
+</script>
 }
+

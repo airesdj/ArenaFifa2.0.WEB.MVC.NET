@@ -83,6 +83,12 @@ namespace ArenaFifa20.NET
             bundles.Add(new StyleBundle("~/Content/gentelella-datatable-css").Include(
                       "~/Content/dashboard-gentelella/dataTables.bootstrap.min.css",
                       "~/Content/dashboard-gentelella/buttons.bootstrap.min.css"));
+
+            bundles.Add(new StyleBundle("~/Content/alertifyjs-css").Include(
+                      "~/Content/alertifyjs/alertify.min.css",
+                      "~/Content/alertifyjs/themes/default.min.css",
+                      "~/Scripts/alertify.min.js"
+                      ));
         }
     }
 }

@@ -8,7 +8,7 @@ namespace ArenaFifa20.NET
     {
         public void Configuration(IAppBuilder app)
         {
-            ConfigureAuth(app);
+            //ConfigureAuth(app);
         }
     }
 }
