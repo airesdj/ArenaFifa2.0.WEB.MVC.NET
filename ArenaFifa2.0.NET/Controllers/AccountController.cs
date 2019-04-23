@@ -1,16 +1,16 @@
 ﻿using System;
-//using System.Configuration;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using ArenaFifa20.NET.Models;
-using ArenaFifa20.NET.Controllers;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net;
+using System.Configuration;
+using SYSEmail;
+using static ArenaFifa20.NET.App_Start.CheckSessionTimeOut;
 
 namespace ArenaFifa20.NET.Controllers
 {
@@ -35,47 +35,224 @@ namespace ArenaFifa20.NET.Controllers
         {
             if (!ModelState.IsValid)
             {
+                ViewBag.Message = "ModeState is invalid";
                 return View(model);
             }
 
-            model.actionUser = "Signin";
+            HttpResponseMessage response = null;
+            returnJSON_UserLoginModel modelReturnJSON = null;
 
-            HttpResponseMessage response = GlobalVariables.WebApiClient.PostAsJsonAsync("HomeUser", model).Result;
-
-            returnJSON_UserLoginModel modelReturnJSON = response.Content.ReadAsAsync<returnJSON_UserLoginModel>().Result;
-
-            switch (response.StatusCode)
+            try
             {
-                case HttpStatusCode.Created:
-                    if (modelReturnJSON.returnMessage == "loginSuccessfully")
-                    {
-                        return RedirectToLocal("Index");
-                    }
-                    else { 
-                        if (modelReturnJSON.returnMessage == "loginFailed") { 
-                            TempData["returnMessage"] = "Senha inválida! Favor tentar novamente.";
-                            ModelState.AddModelError("", "Invalid login attempt.");
+
+                model.actionUser = "Signin";
+
+                response = GlobalVariables.WebApiClient.PostAsJsonAsync("HomeUser", model).Result;
+
+                modelReturnJSON = response.Content.ReadAsAsync<returnJSON_UserLoginModel>().Result;
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "loginSuccessfully")
+                        {
+                            Session["session.active"] = true;
+                            Session["user.id"] = modelReturnJSON.id.ToString();
+                            Session["user.name"] = modelReturnJSON.name.ToString();
+                            Session["user.psnID"] = modelReturnJSON.psnID.ToString();
+                            Session["user.isModerator"] = modelReturnJSON.userModerator;
+                            Session["user.dtLastAccess"] = modelReturnJSON.lastAccess.ToString();
+                            Session["user.dsEmail"] = modelReturnJSON.email.ToString();
+                            Session["user.currentTeam"] = modelReturnJSON.currentTeam.ToString();
+                            Session["user.totalTitlesWon"] = modelReturnJSON.totalTitlesWon.ToString();
+                            Session["user.totalVices"] = modelReturnJSON.totalVices.ToString();
+
+                            Session["user.pathAvatar"] = ConfigurationManager.AppSettings["avatar.path.default"].ToString();
+
+                            string new_path_atavar = ConfigurationManager.AppSettings["avatar.path.coach"].ToString() + "/" +
+                                                     modelReturnJSON.id.ToString() + ".jpg";
+
+                            if (System.IO.File.Exists(HttpContext.Server.MapPath(new_path_atavar))) { Session["user.pathAvatar"] = new_path_atavar; }
+
+                            return RedirectToLocal("Index");
                         }
-                        else if (modelReturnJSON.returnMessage == "UserNotFound") { 
-                            TempData["returnMessage"] = "Usuário não cadastrado ou não está ativo. Favor tentar novamente.";
-                            ModelState.AddModelError("", "User not found.");
+                        else
+                        {
+                            if (modelReturnJSON.returnMessage == "loginFailed")
+                            {
+                                TempData["returnMessage"] = "Senha inválida! Favor tentar novamente.";
+                                ModelState.AddModelError("", "Invalid login attempt.");
+                            }
+                            else if (modelReturnJSON.returnMessage == "UserNotFound")
+                            {
+                                TempData["returnMessage"] = "Usuário não cadastrado ou não está ativo. Favor tentar novamente.";
+                                ModelState.AddModelError("", "User not found.");
+                            }
+                            else if (modelReturnJSON.returnMessage.Substring(0, 6) == "error_")
+                            {
+                                TempData["returnMessage"] = "Ocorreu algum erro na validação do login. Favor tentar novamente.";
+                                ModelState.AddModelError("", "application error.");
+                            }
+                            return View(model);
                         }
-                        else if (modelReturnJSON.returnMessage.Substring(0,6) == "error_") { 
-                            TempData["returnMessage"] = "Ocorreu algum erro na validação do login. Favor tentar novamente.";
-                            ModelState.AddModelError("", "application error.");
-                        }
+                    case HttpStatusCode.NotAcceptable:
+                        TempData["returnMessage"] = "Ocorreu algum erro não aceitável na validação do login. Favor tentar novamente.";
+                        ModelState.AddModelError("", "application error.");
                         return View(model);
-                    }
-                case HttpStatusCode.NotAcceptable:
-                    TempData["returnMessage"] = "Ocorreu algum erro na validação do login. Favor tentar novamente.";
-                    ModelState.AddModelError("", "application error.");
-                    return View(model);
-                default:
-                    TempData["returnMessage"] = "Ocorreu algum erro na validação do login. Favor tentar novamente.";
-                    ModelState.AddModelError("", "application error.");
-                    return View(model);
+                    default:
+                        TempData["returnMessage"] = "Ocorreu algum erro na validação do login. Favor tentar novamente.";
+                        ModelState.AddModelError("", "application error.");
+                        return View(model);
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["returnMessage"] = "Erro interno - validando login do usuário: ("+ex.InnerException.Message+")";
+                ModelState.AddModelError("", "application error.");
+                return View(model);
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
             }
 
+        }
+
+        //
+        // GET: /Account/Signout
+        [AllowAnonymous]
+        public ActionResult Signout(string returnUrl)
+        {
+            Session.Abandon();
+            ViewBag.ReturnUrl = returnUrl;
+            return RedirectToLocal("Index");
+        }
+
+        //
+        // GET: /Account/ChangePassword
+        [AllowAnonymous]
+        [SessionTimeout]
+        public ActionResult ChangePassword(string returnUrl)
+        {
+            //model.id = Session["user.id"].ToString();
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
+        }
+
+        //
+        // POST: /Account/ChangePassword
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        [SessionTimeout]
+        public async Task<ActionResult> ChangePassword(ChangePassWDViewModel model, string returnUrl)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Message = "ModeState is invalid";
+                return View(model);
+            }
+
+            HttpResponseMessage response = null;
+            returnJSON_UserLoginModel modelReturnJSON = null;
+
+            try
+            {
+
+                TempData["serverValidation"] = "0";
+                TempData["current_password"] = model.current_password;
+                TempData["password"] = model.password;
+                TempData["confirm_password"] = model.confirm_password;
+
+                if (!string.IsNullOrEmpty(model.current_password) && !string.IsNullOrEmpty(model.password) && model.current_password == model.password)
+                {
+                    ModelState.AddModelError("current_password", "Os campos Senha Atual e Nova Senha são iguais.");
+                    TempData["serverValidation"] = "1";
+                    return View(model);
+                }
+                else {
+
+                    TempData["serverValidation"] = "0";
+                    model.id = Session["user.id"].ToString();
+                    model.actionUser = "ChangePassword";
+                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("HomeUser", model).Result;
+
+                    modelReturnJSON = response.Content.ReadAsAsync<returnJSON_UserLoginModel>().Result;
+
+                    switch (response.StatusCode)
+                    {
+                        case HttpStatusCode.Created:
+                            if (modelReturnJSON.returnMessage == "changedSuccessfully")
+                            {
+                                return RedirectToAction("ChangePasswordConfirmation", "Account");
+                            }
+                            else if (modelReturnJSON.returnMessage == "loginFailed")
+                            {
+                                ModelState.AddModelError("current_password", "Senha Atual inválida! Favor tentar novamente.");
+                                TempData["serverValidation"] = "1";
+                                return View(model);
+                            }
+                            else
+                            {
+                                //ModelState.AddModelError("", "Senha Atual inválida! Favor tentar novamente.");
+                                TempData["returnMessage"] = "Ocorreu algum erro na alteração da senha. ("+modelReturnJSON.returnMessage+")";
+                                return View(model);
+                            }
+                        case HttpStatusCode.NotAcceptable:
+                            TempData["returnMessage"] = "Ocorreu algum erro não aceitável na alteração da senha. Favor tentar novamente.";
+                            ModelState.AddModelError("", "application error.");
+                            return View(model);
+                        default:
+                            TempData["returnMessage"] = "Ocorreu algum erro na alteração da senha. (" + response.StatusCode + ")";
+                            ModelState.AddModelError("", "application error.");
+                            return View(model);
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                TempData["returnMessage"] = "Erro interno - alterando a senha do usuário: (" + ex.InnerException.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(model);
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+            }
+
+        }
+
+
+        //
+        // GET: /Account/ChangePasswordConfirmation
+        [AllowAnonymous]
+        public ActionResult ChangePasswordConfirmation()
+        {
+            Session.Abandon();
+            Session.RemoveAll();
+            Session.Clear();
+            Session["session.active"] = false;
+            return View();
+        }
+
+        //
+        // GET: /Account/UpdateConfirmation
+        [AllowAnonymous]
+        public ActionResult UpdateConfirmation()
+        {
+            return View();
+        }
+
+        private IEnumerable<string> GetAllModes()
+        {
+            return new List<string>
+            {
+                "H2H E/OU FUT","APENAS PRO CLUB"
+            };
         }
 
         private IEnumerable<string> GetAllTypeHowFindUs()
@@ -125,17 +302,12 @@ namespace ArenaFifa20.NET.Controllers
 
         // GET: /Account/Register
         [AllowAnonymous]
-        public ActionResult Register()
+        public ActionResult Register(string returnUrl)
         {
-            var typeHowFindUs = GetAllTypeHowFindUs();
-            var states = GetAllStates();
-            var teams = GetAllTeams();
-            var model = new RegisterViewModel();
-            model.listWhatHowFindUs = GetSelectListItems(typeHowFindUs);
-            model.listStates = GetSelectListItems(states);
-            model.listTeams = GetSelectListItems(teams);
+            RegisterViewModel model = new RegisterViewModel();
+            ViewBag.ReturnUrl = returnUrl;
+            CreateListsToFormRegister(model);
             return View(model);
-            //return View();
         }
 
         //
@@ -145,27 +317,322 @@ namespace ArenaFifa20.NET.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                //var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                //var result = await UserManager.CreateAsync(user, model.Password);
-                //if (result.Succeeded)
-                //{
-                    //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
-                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                    // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
-                  //  return RedirectToAction("Index", "Home");
-                //}
-                //AddErrors(result);
+                ViewBag.Message = "ModeState is invalid";
+                return View(model);
             }
 
-            // If we got this far, something failed, redisplay form
-            return View(model);
+            CreateListsToFormRegister(model);
+
+            HttpResponseMessage response = null;
+            returnJSON_UserLoginModel modelReturnJSON = null;
+            systemEmail objEmail = new systemEmail();
+
+            try
+            {
+                model.actionUser = "Register";
+                model.userActive = true;
+                model.userModerator = false;
+
+                response = GlobalVariables.WebApiClient.PostAsJsonAsync("HomeUser", model).Result;
+
+                modelReturnJSON = response.Content.ReadAsAsync<returnJSON_UserLoginModel>().Result;
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "registerSuccessfully")
+                        {
+                            objEmail.SendEmail(getBodyHtmlRegister(model), model.Email, "CONTACT-US", "Cadastro Efetuado");
+
+                            return RedirectToAction("RegisterConfirmation", "Account");
+                        }
+                        else if (modelReturnJSON.returnMessage == "PsnFound")
+                        {
+                            ModelState.AddModelError("psnID", "Já existe um outro usuário com a mesma PSN informada.");
+                            return View(model);
+                        }
+                        else if (modelReturnJSON.returnMessage == "NameFound")
+                        {
+                            ModelState.AddModelError("name", "Já existe um outro usuário com o mesmo NOME informado.");
+                            return View(model);
+                        }
+                        else if (modelReturnJSON.returnMessage == "EmailFound")
+                        {
+                            ModelState.AddModelError("Email", "Já existe um outro usuário com o mesmo E-MAIL informado.");
+                            return View(model);
+                        }
+                        else
+                        {
+                            //ModelState.AddModelError("", "Senha Atual inválida! Favor tentar novamente.");
+                            TempData["returnMessage"] = "Ocorreu algum erro na geração de un novo cacdastro. (" + modelReturnJSON.returnMessage + ")";
+                            return View(model);
+                        }
+                    case HttpStatusCode.NotAcceptable:
+                        TempData["returnMessage"] = "Ocorreu algum erro não aceitável na geração de un novo cacdastro. Favor tentar novamente.";
+                        ModelState.AddModelError("", "application error.");
+                        return View(model);
+                    default:
+                        TempData["returnMessage"] = "Ocorreu algum erro na geração de un novo cacdastro. (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View(model);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                TempData["returnMessage"] = "Erro interno - geração de un novo cacdastro: (" + ex.InnerException.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(model);
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+                objEmail = null;
+
+            }
+
+        }
+
+        // GET: /Account/Update
+        [AllowAnonymous]
+        [SessionTimeout]
+        public ActionResult Update(string returnUrl)
+        {
+            RegisterViewModel model = new RegisterViewModel();
+            HttpResponseMessage response = null;
+            returnJSON_UserLoginModel modelReturnJSON = null;
+            ViewBag.ReturnUrl = returnUrl;
+
+
+            try
+            {
+                CreateListsToFormRegister(model);
+
+                response = GlobalVariables.WebApiClient.GetAsync("HomeUser/"+Session["user.id"].ToString()).Result;
+                modelReturnJSON = response.Content.ReadAsAsync<returnJSON_UserLoginModel>().Result;
+
+                model.id = modelReturnJSON.id;
+                model.name = modelReturnJSON.name;
+                model.psnID = modelReturnJSON.psnID;
+                model.birthday = modelReturnJSON.birthday;
+                model.Email = modelReturnJSON.email;
+                model.howfindus = modelReturnJSON.howfindus;
+                model.whathowfindus = modelReturnJSON.whatkindofmedia;
+                model.team = modelReturnJSON.team;
+                model.state = modelReturnJSON.state;
+                model.inEmailWarning = Convert.ToBoolean(modelReturnJSON.receiveWarningEachRound);
+                model.inEmailTeamTable = Convert.ToBoolean(modelReturnJSON.receiveTeamTable);
+                model.inParticipate = Convert.ToBoolean(modelReturnJSON.wishParticipate);
+                model.userModerator = modelReturnJSON.userModerator;
+                return View(model);
+
+            }
+            catch (Exception ex)
+            {
+                TempData["returnMessage"] = "Erro interno - exibição da tela de alteração de dados de cacdastro: (" + ex.InnerException.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(model);
+
+            }
+            finally
+            {
+                model = null;
+                response = null;
+                modelReturnJSON = null;
+
+            }
+
+        }
+
+        //
+        // POST: /Account/Register
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        [SessionTimeout]
+        public async Task<ActionResult> Update(RegisterViewModel model)
+        {
+            //if (!ModelState.IsValid)
+            //{
+            //    ViewBag.Message = "ModeState is invalid";
+            //    return View(model);
+            //}
+
+            CreateListsToFormRegister(model);
+
+            HttpResponseMessage response = null;
+            RegisterViewModel modelReturnJSON = null;
+            systemEmail objEmail = new systemEmail();
+
+            try
+            {
+                model.actionUser = "Update";
+                model.userActive = true;
+                model.idUserOperation = Convert.ToUInt16(Session["user.id"]);
+                model.psnOperation = Session["user.psnID"].ToString();
+                model.psnRegister = Session["user.psnID"].ToString();
+
+                response = GlobalVariables.WebApiClient.PostAsJsonAsync("HomeUser", model).Result;
+
+                modelReturnJSON = response.Content.ReadAsAsync<RegisterViewModel>().Result;
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "updateSuccessfully")
+                        {
+                            return RedirectToAction("UpdateConfirmation", "Account");
+                        }
+                        else if (modelReturnJSON.returnMessage == "PsnFound")
+                        {
+                            ModelState.AddModelError("psnID", "Já existe um outro usuário com a mesma PSN informada.");
+                            return View(model);
+                        }
+                        else if (modelReturnJSON.returnMessage == "NameFound")
+                        {
+                            ModelState.AddModelError("name", "Já existe um outro usuário com o mesmo NOME informado.");
+                            return View(model);
+                        }
+                        else if (modelReturnJSON.returnMessage == "EmailFound")
+                        {
+                            ModelState.AddModelError("Email", "Já existe um outro usuário com o mesmo E-MAIL informado.");
+                            return View(model);
+                        }
+                        else
+                        {
+                            //ModelState.AddModelError("", "Senha Atual inválida! Favor tentar novamente.");
+                            TempData["returnMessage"] = "Ocorreu algum erro na alteração de dados de cacdastro. (" + modelReturnJSON.returnMessage + ")";
+                            return View(model);
+                        }
+                    case HttpStatusCode.NotAcceptable:
+                        TempData["returnMessage"] = "Ocorreu algum erro não aceitável na alteração de dados de cacdastro. Favor tentar novamente.";
+                        ModelState.AddModelError("", "application error.");
+                        return View(model);
+                    default:
+                        TempData["returnMessage"] = "Ocorreu algum erro naalteração de dados de cacdastro. (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View(model);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                TempData["returnMessage"] = "Erro interno - alteração de dados de cacdastro: (" + ex.InnerException.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(model);
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+                objEmail = null;
+
+            }
+
+        }
+
+        private void CreateListsToFormRegister(RegisterViewModel model)
+        {
+            model.listWhatHowFindUs = GetSelectListItems(GetAllTypeHowFindUs());
+            model.listStates = GetSelectListItems(GetAllStates());
+            model.listTeams = GetSelectListItems(GetAllTeams());
+            model.listModes = GetSelectListItems(GetAllModes());
+        }
+
+        private string getBodyHtmlRegister(RegisterViewModel model)
+        {
+
+            string strBodyHtml = string.Empty;
+
+
+            strBodyHtml = strBodyHtml + "<span style='PADDING-RIGHT: 0px;PADDING-LEFT: 0px;FONT-SIZE: 11px;PADDING-BOTTOM: 0px;MARGIN: 0px;COLOR: #333333;PADDING-TOP: 0px;BACKGROUND-REPEAT: repeat-x;FONT-FAMILY: Arial, Helvetica, sans-serif;TEXT-ALIGN: left'>";
+            strBodyHtml = strBodyHtml + "<p>Olá " + model.name + ",<br><br></p>";
+            strBodyHtml = strBodyHtml + "<span style='font-size:16px;font-family:Verdana;color:red'><b>O Sistema acaba de efetuar seu cadastro no site Arena Fifa.</b></span>";
+            strBodyHtml = strBodyHtml + "<br><br><br>";
+            strBodyHtml = strBodyHtml + "<span style='font-size:12px;font-family:Verdana;color:blue'><b>Dados Cadastrais:</b></span>";
+            strBodyHtml = strBodyHtml + "<br><br>";
+            strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>PSN ID:</b>&nbsp;&nbsp;" + model.psnID + "</span>";
+            strBodyHtml = strBodyHtml + "<br>";
+            strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>E-mail:</b>&nbsp;&nbsp;" + model.Email + "</span>";
+            strBodyHtml = strBodyHtml + "<br>";
+            strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>Data de Nascimento:</b>&nbsp;&nbsp;" + model.birthday.ToString("dd/MM/yyyy") + "</span>";
+            strBodyHtml = strBodyHtml + "<br>";
+            strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>E-mail:</b>&nbsp;&nbsp;" + model.state + "</span>";
+            strBodyHtml = strBodyHtml + "<br>";
+            if (model.inEmailWarning)
+            {
+                strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>Deseja receber e-mails de alerta de fechamento da rodada.</b></span>";
+            }
+            else
+            {
+                strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>NÃO Deseja receber e-mails de alerta de fechamento da rodada.</b></span>";
+            }
+            strBodyHtml = strBodyHtml + "<br>";
+            if (model.inEmailTeamTable)
+            {
+                strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>Deseja receber e-mails de informe sobre a classificação dos participantes após a última rodada.</b></span>";
+
+            }
+            else
+            {
+                strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>NÃO Deseja receber e-mails de informe sobre a classificação dos participantes após a última rodada.</b></span>";
+            }
+            strBodyHtml = strBodyHtml + "<br>";
+            if (model.inParticipate)
+            {
+                strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>Deseja participar dos campeonatos disponíveis.</b></span>";
+            }
+            else
+            {
+                strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>NÃO Deseja receber e-mails de informe sobre a classificação dos participantes após a última rodada.</b></span>";
+            }
+            strBodyHtml = strBodyHtml + "<br>";
+            strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>Como ficou sabendo do Arena Fifa?</b>&nbsp;&nbsp;" + model.howfindus + "</span>";
+            if (model.whathowfindus != string.Empty)
+            {
+                strBodyHtml = strBodyHtml + "<br>";
+                strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>Qual?</b>&nbsp;&nbsp;" + model.whathowfindus + "</span>";
+            }
+            strBodyHtml = strBodyHtml + "<br>";
+            strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>Time Escolhido:</b>&nbsp;&nbsp;" + model.team + "</span>";
+            strBodyHtml = strBodyHtml + "<br><br><br>";
+            strBodyHtml = strBodyHtml + "<span style='font-size:12px;font-family:Verdana;color:blue'><b>Como participar dos campeonatos ?</b></span>";
+            strBodyHtml = strBodyHtml + "<br>";
+            strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>Nosso site tem como objetivo despertar o interesse competir com diversas pessoas e que todos possam se divertir de forma sadia.</b></span>";
+            strBodyHtml = strBodyHtml + "<br>";
+            strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>A participação é totalmente gratuita</b></span>";
+            strBodyHtml = strBodyHtml + "<br><br>";
+            strBodyHtml = strBodyHtml + "<center>";
+            strBodyHtml = strBodyHtml + "<br><br><br><br>";
+            strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>Para acessar, entre em </b>&nbsp;&nbsp;<a href='http://www.arenafifa.com.br/'>http://www.arenafifa.com.br/</a></span>";
+            strBodyHtml = strBodyHtml + "<br><br><br>";
+            strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:blue'><b>O Regulamento do Site e dos Campeonatos se encontram em nosso portal, visite e conheça um pouco mais dos campeonatos que estamos disponibilizando.</b></span>";
+            strBodyHtml = strBodyHtml + "<br><br><br>";
+            strBodyHtml = strBodyHtml + "<span style='font-size:16px;font-family:Verdana;color:red'><b>Obrigado e Boa Sorte!!!</b></span>";
+            strBodyHtml = strBodyHtml + "<br><br><br>";
+            strBodyHtml = strBodyHtml + "<span style='font-size:12px;font-family:Verdana;color:black'>Atenciosamente,</span>";
+            strBodyHtml = strBodyHtml + "<br><br>";
+            strBodyHtml = strBodyHtml + "<span style='font-size:12px;font-family:Verdana;color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SAC ARENA FIFA</span>";
+            strBodyHtml = strBodyHtml + "<br><br>";
+            strBodyHtml = strBodyHtml + "</center>";
+            strBodyHtml = strBodyHtml + "</span>";
+
+            return strBodyHtml;
+
+        }
+        //
+        // GET: /Account/RegisterConfirmation
+        [AllowAnonymous]
+        public ActionResult RegisterConfirmation()
+        {
+            Session.Abandon();
+            Session.RemoveAll();
+            Session.Clear();
+            Session["session.active"] = false;
+            return View();
         }
 
         //
@@ -182,92 +649,6 @@ namespace ArenaFifa20.NET.Controllers
             return View();
         }
 
-
-        //
-        // GET: /Account/ForgotPassword
-        [AllowAnonymous]
-        public ActionResult ForgotPassword()
-        {
-            return View();
-        }
-
-        //
-        // POST: /Account/ForgotPassword
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                //var user = await UserManager.FindByNameAsync(model.Email);
-                //if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
-                //{
-                    // Don't reveal that the user does not exist or is not confirmed
-                 //   return View("ForgotPasswordConfirmation");
-               // }
-
-                // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                // Send an email with this link
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                // return RedirectToAction("ForgotPasswordConfirmation", "Account");
-            }
-
-            // If we got this far, something failed, redisplay form
-            return View(model);
-        }
-
-        //
-        // GET: /Account/ForgotPasswordConfirmation
-        [AllowAnonymous]
-        public ActionResult ForgotPasswordConfirmation()
-        {
-            return View();
-        }
-
-        //
-        // GET: /Account/ResetPassword
-        [AllowAnonymous]
-        public ActionResult ResetPassword(string code)
-        {
-            return code == null ? View("Error") : View();
-        }
-
-        //
-        // POST: /Account/ResetPassword
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-            //var user = await UserManager.FindByNameAsync(model.Email);
-            //if (user == null)
-            //{
-                // Don't reveal that the user does not exist
-            //    return RedirectToAction("ResetPasswordConfirmation", "Account");
-            //}
-            //var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
-            //if (result.Succeeded)
-            //{
-            //    return RedirectToAction("ResetPasswordConfirmation", "Account");
-            //}
-            //AddErrors(result);
-            return View();
-        }
-
-        //
-        // GET: /Account/ResetPasswordConfirmation
-        [AllowAnonymous]
-        public ActionResult ResetPasswordConfirmation()
-        {
-            return View();
-        }
 
         protected override void Dispose(bool disposing)
         {

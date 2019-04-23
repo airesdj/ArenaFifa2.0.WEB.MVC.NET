@@ -2,6 +2,10 @@
 using System;
 using System.Web.Mvc;
 using SYSEmail;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Net;
+using static ArenaFifa20.NET.App_Start.CheckSessionTimeOut;
 
 namespace ArenaFifa20.NET.Controllers
 {
@@ -9,7 +13,53 @@ namespace ArenaFifa20.NET.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            HttpResponseMessage response = null;
+            SeasonDetails modelReturnJSON = null;
+            HomePageViewModel homeMode = new HomePageViewModel();
+
+            try
+            {
+                homeMode.actionUser = "current";
+                response = GlobalVariables.WebApiClient.PostAsJsonAsync("Season", homeMode).Result;
+
+                modelReturnJSON = response.Content.ReadAsAsync<SeasonDetails>().Result;
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "subscribeBenchSuccessfully")
+                        {
+
+                            homeMode.seasonID = modelReturnJSON.id;
+                            homeMode.seasonName = modelReturnJSON.name;
+                            return View(homeMode);
+                        }
+                        else
+                        {
+                            //ModelState.AddModelError("", "Senha Atual inválida! Favor tentar novamente.");
+                            TempData["returnMessage"] = "Ocorreu algum erro na exibição da Home Page do Arena. (" + modelReturnJSON.returnMessage + ")";
+                            return View(homeMode);
+                        }
+                    default:
+                        TempData["returnMessage"] = "Ocorreu algum erro na exibição da Home Page do Arena. (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View(homeMode);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                TempData["returnMessage"] = "Erro interno - Exibindo Home Page Arena: (" + ex.InnerException.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(homeMode);
+
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+                homeMode = null;
+            }
         }
 
         public ActionResult OurTeam()
@@ -23,6 +73,212 @@ namespace ArenaFifa20.NET.Controllers
         public ActionResult ContactUs()
         {
             return View();
+        }
+
+        // GET: /Home/SubscribeBenchH2HFUT
+        [AllowAnonymous]
+        [SessionTimeout]
+        public ActionResult SubscribeBenchH2HFUT()
+        {
+            return View();
+        }
+
+        // GET: /Home/SubscribeBenchPROCLUB
+        [AllowAnonymous]
+        [SessionTimeout]
+        public ActionResult SubscribeBenchPROCLUB()
+        {
+            return View();
+        }
+
+        // GET: /Home/Bench
+        [AllowAnonymous]
+        public ActionResult Bench()
+        {
+
+            HttpResponseMessage response = null;
+            BenchModesViewModel modelReturnJSON = null;
+            BenchModesViewModel model = new BenchModesViewModel();
+
+            try
+            {
+                response = GlobalVariables.WebApiClient.PostAsJsonAsync("Bench", model).Result;
+
+                modelReturnJSON = response.Content.ReadAsAsync<BenchModesViewModel>().Result;
+
+                if (modelReturnJSON.returnMessage!= "getBenchSuccessfully")
+                    TempData["returnMessage"] = modelReturnJSON.returnMessage;
+
+                return View(modelReturnJSON);
+
+            }
+            catch (Exception ex)
+            {
+                TempData["returnMessage"] = "Erro interno - validando login do usuário: (" + ex.InnerException.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(model);
+
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+                model = null;
+            }
+
+        }
+
+        // POST: /Home/SubscribeBenchH2HFUT
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        [SessionTimeout]
+        public ActionResult SubscribeBenchH2HFUT(SubscribeBench model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Message = "ModeState is invalid";
+                return View(model);
+            }
+
+            if (model.checkH2H==false && model.checkFUT==false)
+            {
+                ModelState.AddModelError("checkH2H", "Nenhuma modalidade selecionada. Você de ve selecionar a Modalidade H2H e/ou FUT.");
+                ModelState.AddModelError("checkFUT", "Nenhuma modalidade selecionada. Você de ve selecionar a Modalidade H2H e/ou FUT.");
+                return View(model);
+
+            }
+            else
+            {
+
+                HttpResponseMessage response = null;
+                SubscribeBench modelReturnJSON = null;
+
+                try
+                {
+                    model.id = Convert.ToInt16(Session["user.id"]);
+
+                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("SubscribeBench", model).Result;
+
+                    modelReturnJSON = response.Content.ReadAsAsync<SubscribeBench>().Result;
+
+                    switch (response.StatusCode)
+                    {
+                        case HttpStatusCode.Created:
+                            if (modelReturnJSON.returnMessage == "subscribeBenchSuccessfully")
+                            {
+                                return RedirectToAction("SubscribeBenchConfirmation", "Home", model);
+                            }
+                            else
+                            {
+                                //ModelState.AddModelError("", "Senha Atual inválida! Favor tentar novamente.");
+                                TempData["returnMessage"] = "Ocorreu algum erro na inscrição do banco de Reservas H2H e/ou FUT. (" + modelReturnJSON.returnMessage + ")";
+                                return View(model);
+                            }
+                        default:
+                            TempData["returnMessage"] = "Ocorreu algum erro na inscrição do banco de Reservas H2H e/ou FUT. (" + response.StatusCode + ")";
+                            ModelState.AddModelError("", "application error.");
+                            return View(model);
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    TempData["returnMessage"] = "Erro interno - inscrevendo-se no banco - H2H e/ou FUT: (" + ex.InnerException.Message + ")";
+                    ModelState.AddModelError("", "application error.");
+                    return View(model);
+
+                }
+                finally
+                {
+                    response = null;
+                    modelReturnJSON = null;
+                }
+
+
+            }
+
+        }
+
+        // POST: /Home/SubscribeBenchPROCLUB
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        [SessionTimeout]
+        public ActionResult SubscribeBenchPROCLUB(SubscribeBench model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Message = "ModeState is invalid";
+                return View(model);
+            }
+
+            if (model.checkPRO == false)
+            {
+                ModelState.AddModelError("checkPRO", "Nenhuma modalidade selecionada. Você de ve selecionar a Modalidade PRO CLUB.");
+                return View(model);
+
+            }
+            else
+            {
+
+                HttpResponseMessage response = null;
+                SubscribeBench modelReturnJSON = null;
+
+                try
+                {
+                    model.id = Convert.ToInt16(Session["user.id"]);
+
+                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("SubscribeBench", model).Result;
+
+                    modelReturnJSON = response.Content.ReadAsAsync<SubscribeBench>().Result;
+
+                    switch (response.StatusCode)
+                    {
+                        case HttpStatusCode.Created:
+                            if (modelReturnJSON.returnMessage == "subscribeBenchSuccessfully")
+                            {
+                                return RedirectToAction("SubscribeBenchConfirmation", "Home", model);
+                            }
+                            else
+                            {
+                                //ModelState.AddModelError("", "Senha Atual inválida! Favor tentar novamente.");
+                                TempData["returnMessage"] = "Ocorreu algum erro na inscrição do banco de Reservas PRO CLUB. (" + modelReturnJSON.returnMessage + ")";
+                                return View(model);
+                            }
+                        default:
+                            TempData["returnMessage"] = "Ocorreu algum erro na inscrição do banco de Reservas PRO CLUB. (" + response.StatusCode + ")";
+                            ModelState.AddModelError("", "application error.");
+                            return View(model);
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    TempData["returnMessage"] = "Erro interno - inscrevendo-se no banco - PRO CLUB: (" + ex.InnerException.Message + ")";
+                    ModelState.AddModelError("", "application error.");
+                    return View(model);
+
+                }
+                finally
+                {
+                    response = null;
+                    modelReturnJSON = null;
+                }
+
+
+            }
+
+        }
+
+        //
+        // GET: /Home/SubscribeBenchConfirmation
+        [AllowAnonymous]
+        public ActionResult SubscribeBenchConfirmation(SubscribeBench model)
+        {
+            return View(model);
         }
 
         // POST: /Home/Login
@@ -43,8 +299,6 @@ namespace ArenaFifa20.NET.Controllers
             {
                 objEmail.SendEmail(getBodyHtml(model), model.Email, "CONTACT-US", model.subject);
 
-                objEmail = null;
-
                 ViewBag.Message = "success";
 
                 return View();
@@ -60,6 +314,123 @@ namespace ArenaFifa20.NET.Controllers
             }
 
         }
+
+        // GET: /Home/BlackList
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult BlackList(FormCollection formHTML)
+        {
+
+
+            HttpResponseMessage response = null;
+            BlackListViewModel modelReturnJSON = null;
+            BlackListViewModel model = new BlackListViewModel();
+
+            try
+            {
+
+                model.actionUser = "summaryList";
+                model.seasonID = Convert.ToInt16(formHTML["seasonID"]);
+
+                response = GlobalVariables.WebApiClient.PostAsJsonAsync("BlackList", model).Result;
+
+                modelReturnJSON = response.Content.ReadAsAsync<BlackListViewModel>().Result;
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "BlackListSuccessfully")
+                        {
+                            return View(modelReturnJSON);
+                        }
+                        else
+                        {
+                            //ModelState.AddModelError("", "Senha Atual inválida! Favor tentar novamente.");
+                            TempData["returnMessage"] = "Ocorreu algum erro na exibição do sumário da Lista Negra. (" + modelReturnJSON.returnMessage + ")";
+                            return View(modelReturnJSON);
+                        }
+                    default:
+                        TempData["returnMessage"] = "Ocorreu algum erro na exibição do sumário da Lista Negra. (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View(modelReturnJSON);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                TempData["returnMessage"] = "Erro interno - Exibição do sumário da Lista Negra: (" + ex.InnerException.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(model);
+
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+                model = null;
+            }
+
+        }
+
+
+        // POST: /Home/BlackList
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult BlackListDetails(FormCollection formHTML)
+        {
+            HttpResponseMessage response = null;
+            BlackListViewModel modelReturnJSON = null;
+            BlackListViewModel model = new BlackListViewModel();
+
+            try
+            {
+
+                model.actionUser = "detailsList";
+                model.seasonID = Convert.ToInt16(formHTML["seasonID"]);
+                model.userID = Convert.ToInt16(formHTML["userID"]);
+
+                response = GlobalVariables.WebApiClient.PostAsJsonAsync("BlackList", model).Result;
+
+                modelReturnJSON = response.Content.ReadAsAsync<BlackListViewModel>().Result;
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "BlackListSuccessfully")
+                        {
+                            return View(modelReturnJSON);
+                        }
+                        else
+                        {
+                            //ModelState.AddModelError("", "Senha Atual inválida! Favor tentar novamente.");
+                            TempData["returnMessage"] = "Ocorreu algum erro na exibição do detalhe da Lista Negra. (" + modelReturnJSON.returnMessage + ")";
+                            return View(modelReturnJSON);
+                        }
+                    default:
+                        TempData["returnMessage"] = "Ocorreu algum erro na exibição do detalhe da Lista Negra. (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View(modelReturnJSON);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                TempData["returnMessage"] = "Erro interno - Exibição do detalhe da Lista Negra: (" + ex.InnerException.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(model);
+
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+                model = null;
+            }
+
+        }
+
 
         private string getBodyHtml(ContactUsViewModel model)
         {

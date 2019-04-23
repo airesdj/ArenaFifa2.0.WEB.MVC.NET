@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web;
 
+
 namespace ArenaFifa20.NET
 {
     public static class GlobalVariables
@@ -15,9 +16,11 @@ namespace ArenaFifa20.NET
 
         static GlobalVariables()
         {
-            WebApiClient.BaseAddress = new Uri(ConfigurationManager.AppSettings["API.URL"]);
+            WebApiClient.BaseAddress = new Uri(ConfigurationManager.AppSettings["api.url"]);
             WebApiClient.DefaultRequestHeaders.Clear();
             WebApiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
+
     }
+
 }

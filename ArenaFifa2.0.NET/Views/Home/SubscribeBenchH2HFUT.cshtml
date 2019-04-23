@@ -1,0 +1,141 @@
+﻿@using ArenaFifa20.NET.Models
+@model SubscribeBench
+@{
+    ViewBag.Title = "Subscribe of the Bench";
+    string nameImgCurrentFifa = HttpContext.Current.Application["fifa.codImgCurrent"].ToString() + ".jpg";
+}
+
+
+<!-- Start Breadcrumbs -->
+<div class="fables-light-background-color">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="fables-breadcrumb breadcrumb px-0 py-3">
+                <li class="breadcrumb-item"><a href="/" class="fables-second-text-color">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Inscrição no Banco de Reservas (H2H & FUT)</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- /End Breadcrumbs -->
+
+@using (Html.BeginForm("SubscribeBenchH2HFUT", "Home", FormMethod.Post, new { @class = "form-horizontal", id = "SendSubscribeBench", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <!-- Start page content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2">
+                <h3 class="font-25 font-weight-bold fables-second-text-color text-center mb-3">ESCOLHA OS MODOS DISPONÍVEIS QUE DESEJA PARTICIPAR</h3>
+                <p class="fables-forth-text-color text-center text-nowrap">
+                    <font size="2" color="black">
+                        Por favor escolha abaixo os modos que deseja participar na nova temporada, você pode escolher um (ou mais) modos disponibilizados pelo Arena Fifa.
+                        <br>
+                        <!--Se você é manager de algum time de PRO CLUB também deverá realizar este procedimento para que confirme o desejo de participar dos campeonatos de PRO CLUB.-->
+                    </font>
+                </p>
+
+                <br /><br />
+
+                <div class="container">
+
+                    <div class="row">
+
+                        <div class="col-md-5 col-sm-6 col-xs-12">
+
+                            <div class="x_panel text-center">
+
+                                @Html.CheckBoxFor(m => m.checkH2H)<br />
+                                @Html.ValidationMessageFor(m => m.checkH2H, "", new { @class = "text-danger" })
+                                <br />
+
+                                <h3 class="font-25 font-weight-bold text-center mb-3 fables-main-text-color">MODO H2H</h3>
+
+                            </div>
+                            <br />
+                            <p align="justify" class="font-12 font-weight-bold fables-main-text-color">Obs.:  Modo este que você receberá um time no sorteio ao vivo se começar no início da temporada ou receberá um e-mail com o time disponível e poderá optar em aceitar ou não.  Após isso disputará nossos campeonatos disponíveis com este time neste modo.</p>
+
+                            <br />
+
+                            <center>
+                                <img src="/images/logo-H2H-white.jpg" style="width:80px">
+                                &nbsp;&nbsp;&nbsp;
+                                <img src="/images/@nameImgCurrentFifa" style="width:80px">
+                            </center>
+
+                        </div>
+
+                        <div class="col-md-2 col-sm-6 col-xs-12">&nbsp;</div>
+
+                        <div class="col-md-5 col-sm-6 col-xs-12">
+
+                            <div class="x_panel text-center">
+
+                                @Html.CheckBoxFor(m => m.checkFUT)<br />
+                                @Html.ValidationMessageFor(m => m.checkFUT, "", new { @class = "text-danger" })
+                                <br />
+
+                                <h3 class="font-25 font-weight-bold mb-3 fables-main-text-color">MODO FUT</h3>
+
+                            </div>
+                            <br />
+                            <p align="justify" class="font-12 font-weight-bold fables-main-text-color">Obs.:  O modo FUT (ou mais conhecido como: Ultimate Team) você monta seu próprio time, nos passa o nome e o escudo e conhecerá seus adversários no mesmo sorteio ao vivo se começar no início da temporada ou receberá um e-mail com a vaga disponível e poderá optar em aceitar ou não.  Após isso disputará nossos campeonatos disponíveis neste modo.</p>
+                            <br />
+                            <div class="form-group">
+                                <div class="input-icon">
+                                    <span class="fables-iconnews fables-input-icon mt-1 font-13"></span>
+                                    @Html.TextBoxFor(m => m.teamNameFUT, new { @class = "form-control rounded-0 py-2 pl-5 font-13 sign-register-input", @placeholder = "Nome do Time" })
+                                    @Html.ValidationMessageFor(m => m.teamNameFUT, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+
+                            <br />
+
+                            <center>
+                                <img src="/images/logo-FUT-white.jpg" style="width:80px">
+                                &nbsp;&nbsp;&nbsp;
+                                <img src="/images/@nameImgCurrentFifa" style="width:80px">
+                            </center>
+
+                        </div>
+
+                    </div>
+
+                    <br /><br />
+
+                    <div class="row">
+
+                        <div class="col-md-4 col-sm-6 col-xs-12">&nbsp;</div>
+
+                        <div class="col-md-4 col-sm-6 col-xs-12">
+
+                            <button type="submit" class="btn btn-block rounded-0 white-color fables-main-hover-background-color fables-second-background-color font-16 semi-font py-3">Inscrever-se</button>
+
+                        </div>
+
+                        <div class="col-md-4 col-sm-6 col-xs-12">&nbsp;</div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+<br /><br />
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+        });
+    </script>
+}
+}
+

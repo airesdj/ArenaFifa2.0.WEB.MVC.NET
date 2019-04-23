@@ -39,13 +39,82 @@ namespace ArenaFifa20.NET.Models
         public string actionUser { get; set; }
     }
 
+    public class ChangePassWDViewModel
+    {
+        public string id { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        [Display(Name = "Senha Atual")]
+        [StringLength(10, ErrorMessage = "{0} não pode ser maior que {1}.")]
+        public string current_password { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        [Display(Name = "Nova Senha")]
+        [StringLength(10, ErrorMessage = "{0} não pode ser maior que {1}.")]
+        public string password { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirma Senha")]
+        [StringLength(10, ErrorMessage = "{0} não pode ser maior que {1}.")]
+        [System.ComponentModel.DataAnnotations.Compare(nameof(password), ErrorMessage= "A Nova Senha e a Confirmação são diferentes.")]
+        public string confirm_password { get; set; }
+
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
+    }
+
+
     public class returnJSON_UserLoginModel
     {
         public int id { get; set; }
         public string psnID { get; set; }
+        public string name { get; set; }
         public string password { get; set; }
-        public string actionUser { get; set; }
+        public string password20 { get; set; }
+        public bool userActive { get; set; }
+        public bool userModerator { get; set; }
+        public string email { get; set; }
+
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{dd/MM/yyyy hh:mm:ss}")]
+        public DateTime lastAccess { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{dd/MM/yyyy}")]
+        public DateTime birthday { get; set; }
+
+        public string state { get; set; }
+        public string howfindus { get; set; }
+        public string whatkindofmedia { get; set; }
+        public string team { get; set; }
+        public byte receiveWarningEachRound { get; set; }
+        public byte receiveTeamTable { get; set; }
+        public byte wishParticipate { get; set; }
+
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{dd/MM/yyyy hh:mm:ss}")]
+        public DateTime register { get; set; }
+
+        public string linkLiveMatch { get; set; }
+
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{dd/MM/yyyy hh:mm:ss}")]
+        public DateTime lastUpdate { get; set; }
+
+        public string psnIDLastUpdate { get; set; }
+        public string passwordManager { get; set; }
+        public string passwordManager20 { get; set; }
+        public string workEmail { get; set; }
+        public string codeArea { get; set; }
+        public string mobileNumber { get; set; }
         public string returnMessage { get; set; }
+        public string currentTeam { get; set; }
+        public int totalTitlesWon { get; set; }
+        public int totalVices { get; set; }
+        public string pathAvatar { get; set; }
     }
 
 
@@ -53,6 +122,8 @@ namespace ArenaFifa20.NET.Models
 
     public class RegisterViewModel
     {
+        public int id { get; set; }
+
         [Required]
         [Display(Name = "PSN ID")]
         [StringLength(10, ErrorMessage = "O {0} deve ter no máximo {1} caracteres.")]
@@ -69,13 +140,15 @@ namespace ArenaFifa20.NET.Models
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "O {0} deve ter pelo menos {2} caracteres.", MinimumLength = 4)]
+        [StringLength(10, ErrorMessage = "A {0} deve ter de {2} a no máximo {1} caracteres.", MinimumLength = 4)]
         [DataType(DataType.Password)]
         [Display(Name = "Senha")]
         public string Password { get; set; }
 
+        [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Confirma Senha")]
+        [StringLength(10, ErrorMessage = "A {0} deve ter de {2} a no máximo {1} caracteres.", MinimumLength = 4)]
         [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "A Senha e a Confirmação da Senha não correspondem.")]
         public string ConfirmPassword { get; set; }
 
@@ -92,7 +165,6 @@ namespace ArenaFifa20.NET.Models
         [Display(Name = "Como Soube?")]
         public string howfindus { get; set; }
 
-        [Required]
         [Display(Name = "Qual?")]
         [StringLength(80, ErrorMessage = "O {0} deve ter no máximo {2} caracteres.")]
         public string whathowfindus { get; set; }
@@ -114,30 +186,18 @@ namespace ArenaFifa20.NET.Models
         [Display(Name = "Deseja Participar?")]
         public bool inParticipate { get; set; }
 
+        public bool userActive { get; set; }
+        public bool userModerator { get; set; }
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
+        public string psnRegister { get; set; }
+        public string psnOperation { get; set; }
+        public int idUserOperation { get; set; }
+
         public IEnumerable<SelectListItem> listWhatHowFindUs { get; set; }
         public IEnumerable<SelectListItem> listStates { get; set; }
         public IEnumerable<SelectListItem> listTeams { get; set; }
-    }
-
-    public class ResetPasswordViewModel
-    {
-        [Required]
-        [EmailAddress]
-        [Display(Name = "Email")]
-        public string Email { get; set; }
-
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
-        [DataType(DataType.Password)]
-        [Display(Name = "Password")]
-        public string Password { get; set; }
-
-        [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        public string ConfirmPassword { get; set; }
-
-        public string Code { get; set; }
+        public IEnumerable<SelectListItem> listModes { get; set; }
     }
 
     public class ForgotPasswordViewModel

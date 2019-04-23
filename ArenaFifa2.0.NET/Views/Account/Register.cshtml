@@ -61,7 +61,7 @@
                 <div class="form-row form-group">
                     <div class="col-12 col-md-6 mb-4 mb-md-0">
                         <span class="fables-iconpassword fables-input-icon font-13 mt-1"></span>
-                        @Html.TextBoxFor(m => m.birthday, Model.birthday.ToString("dd-MM-yyyy"), new { @class = "form-control rounded-0 py-2 pl-5 font-13 date", @type = "date", @placeholder = "Data de Nascimento", @Value = Model.birthday.ToString("dd-MM-yyyy") })
+                        @Html.TextBoxFor(m => m.birthday, new { @class = "form-control rounded-0 py-2 pl-5 font-13 date", @type = "date", @placeholder = "Data de Nascimento" })
                         @Html.ValidationMessageFor(m => m.birthday, "", new { @class = "text-danger" })
 
                     </div>
@@ -94,11 +94,7 @@
                     </div>
                     <div class="col-12 col-md-6 mb-4 mb-md-0">
                         <div class="form-group mb-0">
-                            <select class="form-control rounded-0" data-val="true" data-val-required="O campo Modalidade que deseja? é obrigatório." id="yourmode" name="yourmode">
-                                <option value="" selected>Modalidade que deseja?</option>
-                                <option value="H2H E/OU FUT">H2H E/OU FUT</option>
-                                <option value="APENAS PRO CLUB">APENAS PRO CLUB</option>
-                            </select>
+                            @Html.DropDownListFor(m => m.yourmode, Model.listModes, "Selecione uma Modalidade", new { @class = "form-control rounded-0" })
                             @Html.ValidationMessageFor(m => m.yourmode, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -144,9 +140,10 @@
                     $("#whathowfindus").removeAttr("data-val-required");
                     $("[data-valmsg-for='whathowfindus']").html("");
                 }
-                alert($("#whathowfindus").attr("data-val-required"));
             });
 
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
         });
     </script>
 }

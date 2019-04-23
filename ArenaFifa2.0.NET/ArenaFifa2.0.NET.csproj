@@ -181,10 +181,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\CheckSessionTimeOut.cs" />
+    <Compile Include="App_Start\CustomValidators.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\ArrayList.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\RegulationController.cs" />
     <Compile Include="Global.asax.cs">
@@ -192,6 +195,7 @@
     </Compile>
     <Compile Include="GlobalVariables.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\HallOfFameViewModels.cs" />
     <Compile Include="Models\HomeViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -388,6 +392,7 @@
     <Content Include="images\interrogacao3.jpg" />
     <Content Include="images\interrogacao8.jpg" />
     <Content Include="images\Lista Negra - Alerta.JPG" />
+    <Content Include="images\Lista Negra - Iniciante.JPG" />
     <Content Include="images\Lista Negra.JPG" />
     <Content Include="images\loader.gif" />
     <Content Include="images\logo-FUT-beige.jpg" />
@@ -549,8 +554,8 @@
     <Content Include="Views\Account\ForgotPassword.cshtml" />
     <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
-    <Content Include="Views\Account\ResetPassword.cshtml" />
-    <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
+    <Content Include="Views\Account\ChangePassword.cshtml" />
+    <Content Include="Views\Account\ChangePasswordConfirmation.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_Footer.cshtml" />
     <Content Include="Views\Shared\_MenuNavBar.cshtml" />
@@ -559,6 +564,15 @@
     <Content Include="Views\Regulation\FUT.cshtml" />
     <Content Include="Views\Regulation\H2H.cshtml" />
     <Content Include="Views\Regulation\PRO.cshtml" />
+    <Content Include="Views\Account\RegisterConfirmation.cshtml" />
+    <Content Include="Views\Home\Bench.cshtml" />
+    <Content Include="Views\Home\SubscribeBenchH2HFUT.cshtml" />
+    <Content Include="Views\Home\SubscribeBenchConfirmation.cshtml" />
+    <Content Include="Views\Home\SubscribeBenchPROCLUB.cshtml" />
+    <Content Include="Views\Account\UpdateConfirmation.cshtml" />
+    <Content Include="Views\Account\Update.cshtml" />
+    <Content Include="Views\Home\BlackList.cshtml" />
+    <Content Include="Views\Home\BlackListDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
