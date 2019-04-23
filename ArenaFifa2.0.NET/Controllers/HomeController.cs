@@ -404,7 +404,6 @@ namespace ArenaFifa20.NET.Controllers
                         }
                         else
                         {
-                            //ModelState.AddModelError("", "Senha Atual inválida! Favor tentar novamente.");
                             TempData["returnMessage"] = "Ocorreu algum erro na exibição do detalhe da Lista Negra. (" + modelReturnJSON.returnMessage + ")";
                             return View(modelReturnJSON);
                         }
@@ -418,6 +417,59 @@ namespace ArenaFifa20.NET.Controllers
             catch (Exception ex)
             {
                 TempData["returnMessage"] = "Erro interno - Exibição do detalhe da Lista Negra: (" + ex.InnerException.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(model);
+
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+                model = null;
+            }
+
+        }
+
+        // GET: /Home/RankingSupporters
+        [AllowAnonymous]
+        public ActionResult RankingSupporters()
+        {
+
+            HttpResponseMessage response = null;
+            RankingSupportersModel modelReturnJSON = null;
+            BlackListViewModel model = new BlackListViewModel();
+
+            try
+            {
+
+                model.actionUser = "RankingSupporters";
+
+                response = GlobalVariables.WebApiClient.PostAsJsonAsync("HomeUser", model).Result;
+
+                modelReturnJSON = response.Content.ReadAsAsync<RankingSupportersModel>().Result;
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "rankingSuccessfully")
+                        {
+                            return View(modelReturnJSON);
+                        }
+                        else
+                        {
+                            TempData["returnMessage"] = "Ocorreu algum erro na exibição do Ranking das Torcidas do Arena. (" + modelReturnJSON.returnMessage + ")";
+                            return View(modelReturnJSON);
+                        }
+                    default:
+                        TempData["returnMessage"] = "Ocorreu algum erro na exibição do Ranking das Torcidas do Arena. (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View(modelReturnJSON);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                TempData["returnMessage"] = "Erro interno - Exibição do Ranking das Torcidas do Arena: (" + ex.InnerException.Message + ")";
                 ModelState.AddModelError("", "application error.");
                 return View(model);
 
