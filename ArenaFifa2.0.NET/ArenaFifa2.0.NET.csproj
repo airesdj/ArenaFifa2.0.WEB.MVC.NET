@@ -189,6 +189,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\HallOfFameController.cs" />
     <Compile Include="Controllers\RegulationController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -1134,6 +1135,14 @@
     <Content Include="Views\Home\BlackList.cshtml" />
     <Content Include="Views\Home\BlackListDetails.cshtml" />
     <Content Include="Views\Home\RankingSupporters.cshtml" />
+    <Content Include="Views\Shared\_MenuSideBarHallOfFame.cshtml" />
+    <Content Include="Views\HallOfFame\Summary.cshtml" />
+    <Content Include="Views\HallOfFame\GeneralRegulation.cshtml" />
+    <Content Include="Views\HallOfFame\ChampionshipScoringRegulation.cshtml" />
+    <Content Include="Views\HallOfFame\GeneralBlackList.cshtml" />
+    <Content Include="Views\HallOfFame\AchievementsH2H.cshtml" />
+    <Content Include="Views\HallOfFame\AchievementsFUT.cshtml" />
+    <Content Include="Views\HallOfFame\AchievementsPRO.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

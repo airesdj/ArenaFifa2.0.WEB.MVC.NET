@@ -15,6 +15,14 @@ namespace ArenaFifa20.NET
                         "~/Scripts/jquery/jquery.validate.js",
                         "~/Scripts/jquery/jquery.validate.unobtrusive.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/jqueryaux").Include(
+                        "~/Scripts/jquery/circle-progress.min.js",
+                        "~/Scripts/jquery/circle-progress.min.js",
+                        "~/Scripts/jquery/jquery.countdown.min.js",
+                        "~/Scripts/jquery/jquery.timelify.js",
+                        "~/Scripts/jquery/jquery-data-to.js",
+                        "~/Scripts/jquery/circle.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/jqueryui").Include(
                         "~/Scripts/jquery/jquery-ui.js"));
 
@@ -30,8 +38,9 @@ namespace ArenaFifa20.NET
 
             bundles.Add(new ScriptBundle("~/bundles/gentelella-script").Include(
                       "~/Scripts/dashboard-gentelella/jquery.min.js",
-                      "~/Scripts/dashboard-gentelella/moment.min.js",
                       "~/Scripts/dashboard-gentelella/bootstrap.min.js",
+                      "~/Scripts/dashboard-gentelella/fastclick.js",
+                      "~/Scripts/dashboard-gentelella/nprogress.js",
                       "~/Scripts/dashboard-gentelella/custom.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/gentelella-form-script").Include(
@@ -52,7 +61,7 @@ namespace ArenaFifa20.NET
                       "~/Content/owlcarousel/owl.carousel.min.js",
                       "~/Content/portfolio-filter-gallery/jquery.isotope.min.js",
                       "~/Content/portfolio-filter-gallery/portfolio-filter-gallery.js",
-                      "~/Contentfancybox-master/jquery.fancybox.min.js"));
+                      "~/Content/fancybox-master/jquery.fancybox.min.js"));
 
             bundles.Add(new StyleBundle("~/Content/default-css").Include(
                       "~/Content/fontawesome/css/fontawesome-all.min.css",
@@ -75,10 +84,17 @@ namespace ArenaFifa20.NET
             bundles.Add(new StyleBundle("~/Content/gentelella-css").Include(
                       "~/Content/dashboard-gentelella/bootstrap.min-website.css",
                       "~/Content/bootstrap/css/bootstrap-4-navbar.css",
-                      "~/Contentdashboard-gentelella/bootstrap.min.css",
+                      "~/Content/dashboard-gentelella/bootstrap.min.css",
                       "~/Content/dashboard-gentelella/font-awesome.min.css",
                       "~/Content/dashboard-gentelella/custom.min.css",
-                      "~/Content/dashboard-gentelella/docs.min-2.css"));
+                      "~/Content/dashboard-gentelella/remove_this_css_docs.min-2.css",
+                      "~/Content/fontawesome/css/fontawesome-all.min.css",
+                      "~/Content/typeahead.css",
+                      "~/Content/toastr.css",
+                      "~/Content/arena20-icons.css",
+                      "~/Content/custom.css",
+                      "~/Content/custom-responsive.css",
+                      "~/Content/portfolio-filter-gallery/portfolio-filter-gallery.css"));
 
             bundles.Add(new StyleBundle("~/Content/gentelella-datatable-css").Include(
                       "~/Content/dashboard-gentelella/dataTables.bootstrap.min.css",

@@ -6,18 +6,65 @@
     <meta name="description" content="Arena Fifa 2.0">
     <meta name="author" content="Arena Fifa">
     <title>@ViewBag.Title - Arena Fifa 2.0</title>
-    @Styles.Render("~/Content/default-css")
-    @Styles.Render("~/Content/main-css")
-    @Scripts.Render("~/bundles/default-jquery")
-    @Scripts.Render("~/bundles/default-script")
-    @Scripts.Render("~/bundles/carousel-portfolio-script")
-</head>
-<body>
-    @Html.Partial("_MenuNavBar")
-    @RenderBody()
-    @RenderSection("scripts", required: false)
-    @Html.Partial("_Footer")
 
-    @ViewBag.ReturnUrl
-</body>
+    @if (ViewBag.inGentelella == "0" || String.IsNullOrEmpty(ViewBag.inGentelella))
+    {
+        @Styles.Render("~/Content/default-css")
+        @Styles.Render("~/Content/main-css")
+        @Scripts.Render("~/bundles/default-jquery")
+        @Scripts.Render("~/bundles/default-script")
+        @Scripts.Render("~/bundles/carousel-portfolio-script")
+    }
+    else
+    {
+        @Styles.Render("~/Content/gentelella-css")
+    }
+</head>
+
+@if (ViewBag.inGentelella == "0" || String.IsNullOrEmpty(ViewBag.inGentelella))
+{
+    <body>
+        @Html.Partial("_MenuNavBar")
+        @RenderBody()
+        @Html.Partial("_Footer")
+        @RenderSection("scripts", required: false)
+
+        @ViewBag.ReturnUrl
+    </body>
+}
+else
+{
+    <body class="gentelella-nav-md">
+
+        @Html.Partial("_MenuNavBar")
+        <div class="gentelella-container gentelella-body">
+            <div class="gentelella-main_container" style="background-color:#2C3E4F">
+                <!-- /sidebar menu -->
+                @if (ViewBag.inHallOfFame == "1") { @Html.Partial("_MenuSideBarHallOfFame"); }
+                <!-- /sidebar menu -->
+
+                <div id="includedContentMenuMobile"></div>
+                <div id="includedContentMenuRankingMobile"></div>
+
+
+                @RenderBody()
+
+                <!-- footer content -->
+                <footer id="footerMobile" style="display:none"><div style="line-height:1%">&nbsp;</div></footer>
+                <!-- /footer content -->
+            </div>
+            <!-- /page content -->
+        </div>
+        @Scripts.Render("~/bundles/gentelella-script")
+        @Scripts.Render("~/bundles/default-jquery")
+        @Scripts.Render("~/bundles/default-script")
+        @Scripts.Render("~/bundles/jqueryaux")
+        @Scripts.Render("~/bundles/carousel-portfolio-script")
+
+        @Html.Partial("_Footer")
+        @RenderSection("scripts", required: false)
+
+        @ViewBag.ReturnUrl
+    </body>
+}
 </html>

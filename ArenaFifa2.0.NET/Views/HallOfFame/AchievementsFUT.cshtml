@@ -1,0 +1,257 @@
+﻿@using ArenaFifa20.NET.Models
+@model AchievementViewModel
+@{
+    ViewBag.Title = "Hall Of Fame - Achievements FUT";
+    string nameImgCurrentFifa = HttpContext.Current.Application["fifa.codImgCurrent"].ToString() + ".jpg";
+}
+
+<!-- page content -->
+<div class="gentelella-right_col" role="main" style="padding-left:50px">
+    <div class="gentelella-page-title">
+        <div class="gentelella-col-md-12 gentelella-col-sm-6 gentelella-col-xs-12">
+            <h3>CONQUISTAS POR CAMPEONATO - FUT (Ultimate Team)</h3>
+        </div>
+    </div>
+
+    <div class="gentelella-x_content">
+
+        <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+            <div class="gentelella-x_panel">
+                <div class="gentelella-x_title">
+                    <center>
+                        <img src="/images/logo-FUT-white.jpg" width="150" />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <img src="/images/@nameImgCurrentFifa" width="180" />
+                    </center>
+                    <br><br>
+                    <div class="gentelella-clearfix"></div>
+                </div>
+
+                <div class="gentelella-x_content">
+                    <div class="gallery-filter">
+                        <div class="portfolioFilter my-3 clearfix">
+                            <a href="#" data-filter=".firstItemSelected" class="current fables-forth-text-color fables-second-hover-color">SÉRIE A</a>
+                            <a href="#" data-filter=".serieb" class="fables-forth-text-color fables-second-hover-color">SÉRIE B</a>
+                            <a href="#" data-filter=".copa" class="fables-forth-text-color fables-second-hover-color">COPA FUT</a>
+                            <a href="#" data-filter=".liga" class="fables-forth-text-color fables-second-hover-color">LIGA FUT</a>
+                        </div>
+                        <div class="portfolioContainer gentelella-row filter-masonry" style="padding-left:15px">
+
+                            <div class="firstItemSelected circle-effect">
+                                <div class="gentelella-row">
+
+                                    <center>
+                                        <br>
+                                        <img src="/images/trophy/FUT   -   Série A.bmp" width="120" />
+                                        <br>
+                                        <span style="color:rgb(243,161,0);font-weight:bold;font-size:18px">SÉRIE A</span>
+                                    </center>
+
+                                    <br>
+                                    <div class="gentelella-table-responsive">
+                                        <table class="gentelella-table gentelella-table-striped gentelella-jambo_table bulk_action">
+                                            <thead style="background-color:#2C3E4F">
+                                                <tr class="gentelella-headings">
+                                                    <th class="gentelella-column-title" width="25%">Temporada </th>
+                                                    <th class="gentelella-column-title" width="45%">Técnico </th>
+                                                    <th class="gentelella-column-title" width="30%">Time </th>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.listOfAchievement)
+                                                {
+                                                    if (item.championshipType == "FUT1")
+                                                    {
+                                                        <tr class="gentelella-even gentelella-pointer">
+                                                            <td class=" ">@Html.DisplayFor(modelItem => item.seasonName)</td>
+                                                            <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.userName)</td>
+                                                            <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.teamName)</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                            <div class="serieb circle-effect">
+                                <div class="gentelella-row">
+
+
+                                    <center>
+                                        <br>
+                                        <img src="/images/trophy/FUT   -   Série B.bmp" width="60" />
+                                        <br>
+                                        <span style="color:rgb(243,161,0);font-weight:bold;font-size:18px">SÉRIE B</span>
+                                    </center>
+
+                                    <br>
+                                    <div class="gentelella-table-responsive">
+                                        <table class="gentelella-table gentelella-table-striped gentelella-jambo_table bulk_action">
+                                            <thead style="background-color:#2C3E4F">
+                                                <tr class="gentelella-headings">
+                                                    <th class="gentelella-column-title" width="25%">Temporada </th>
+                                                    <th class="gentelella-column-title" width="45%">Técnico </th>
+                                                    <th class="gentelella-column-title" width="30%">Time </th>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.listOfAchievement)
+                                                {
+                                                    if (item.championshipType == "FUT2")
+                                                    {
+                                                        <tr class="gentelella-even gentelella-pointer">
+                                                            <td class=" ">@Html.DisplayFor(modelItem => item.seasonName)</td>
+                                                            <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.userName)</td>
+                                                            <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.teamName)</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+
+                            <div class="copa circle-effect">
+                                <div class="gentelella-row">
+
+
+                                    <center>
+                                        <br>
+                                        <img src="/images/trophy/Copa  FUT  Arena.bmp" width="180" />
+                                        <br>
+                                        <span style="color:rgb(243,161,0);font-weight:bold;font-size:18px">COPA FUT ARENA</span>
+                                    </center>
+
+                                    <br>
+                                    <div class="gentelella-table-responsive">
+                                        <table class="gentelella-table gentelella-table-striped gentelella-jambo_table bulk_action">
+                                            <thead style="background-color:#2C3E4F">
+                                                <tr class="gentelella-headings">
+                                                    <th class="gentelella-column-title" width="25%">Temporada </th>
+                                                    <th class="gentelella-column-title" width="45%">Técnico </th>
+                                                    <th class="gentelella-column-title" width="30%">Time </th>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.listOfAchievement)
+                                                {
+                                                    if (item.championshipType == "CFUT")
+                                                    {
+                                                        <tr class="gentelella-even gentelella-pointer">
+                                                            <td class=" ">@Html.DisplayFor(modelItem => item.seasonName)</td>
+                                                            <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.userName)</td>
+                                                            <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.teamName)</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+
+                            <div class="liga circle-effect">
+                                <div class="gentelella-row">
+
+
+                                    <center>
+                                        <br>
+                                        <img src="/images/trophy/Liga FUT.bmp" width="120" />
+                                        <br>
+                                        <span style="color:rgb(243,161,0);font-weight:bold;font-size:18px">LIGA FUT ARENA</span>
+                                    </center>
+
+                                    <br>
+                                    <div class="gentelella-table-responsive">
+                                        <table class="gentelella-table gentelella-table-striped gentelella-jambo_table bulk_action">
+                                            <thead style="background-color:#2C3E4F">
+                                                <tr class="gentelella-headings">
+                                                    <th class="gentelella-column-title" width="25%">Temporada </th>
+                                                    <th class="gentelella-column-title" width="45%">Técnico </th>
+                                                    <th class="gentelella-column-title" width="30%">Time </th>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.listOfAchievement)
+                                                {
+                                                    if (item.championshipType == "LFUT")
+                                                    {
+                                                        <tr class="gentelella-even gentelella-pointer">
+                                                            <td class=" ">@Html.DisplayFor(modelItem => item.seasonName)</td>
+                                                            <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.userName)</td>
+                                                            <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.teamName)</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- /page content -->
+@section Scripts {
+    <script>
+        $(function () {
+            if (detectMobileDevice() == 1) {
+                //$("#includedContentMenuMobile").load("/arena20/includes/menu-logged-mobile.html");
+                //$("#includedContentMenuRankingMobile").load("menu-my-matches-mobile.html");
+                hidden_show_ObjectMobile("footerMobile", "block");
+            }
+            if ('@ViewBag.inRenewNextSeason' == '1')
+                $("#liRenewNextSeason").show();
+            else
+                $("#liRenewNextSeason").hide();
+        });
+
+        $(document).ready(function () {
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+
+            if (detectMobileDevice() == 0)
+                activeSidebarMenu(window.location.pathname);
+        });
+
+    </script>
+}
+

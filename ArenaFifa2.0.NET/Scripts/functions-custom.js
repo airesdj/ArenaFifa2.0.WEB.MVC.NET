@@ -29,7 +29,7 @@ function setContentHeightRegistration() {
 
 
 function activeSidebarMenu(pUrl) {
-	var activePage = pUrl.substring(pUrl.lastIndexOf('/')+1);
+    var activePage = pUrl //pUrl.substring(pUrl.lastIndexOf('/') + 1);
 	$("#sidebar-menu").find('a[href="' + activePage + '"]').parent('li').addClass('current-page');
 	$("#sidebar-menu").find('a[href="' + activePage + '"]').attr("style", "color: #f0ad4e;font-weight:bold"); 
 	$("#sidebar-menu").find('a[href="' + activePage + '"]').parent('li').parents('ul').slideDown(function() {

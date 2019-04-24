@@ -32,6 +32,7 @@ namespace ArenaFifa20.NET.Controllers
 
                             homeMode.seasonID = modelReturnJSON.id;
                             homeMode.seasonName = modelReturnJSON.name;
+                            ViewBag.inGentelella = "0";
                             return View(homeMode);
                         }
                         else
