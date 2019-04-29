@@ -1,0 +1,45 @@
+*ARENA 2.0 - A INTEGRAÇÃO*
+
+Hi Guys, voltando o assunto do Arena 2.0, a integraçãojá foi iniciada e está sendo colocado inteligência nas páginas feitas na nossa demo.
+
+*_Seguem os pontos que JÁ estão integrados:_*
+- Tela principal
+- Menu Independente
+- Menu Logado Independente
+- Login (com senha antiga e nova)
+- Altera Senha
+- Cadastro de novo Técnico
+- Regulamentos da página principal
+- Quem Somos
+- Fale Conosco
+- Banco de Reservas
+- Inscrição no Banco de Reservas H2H/FUT
+- Inscrição no Banco de Reservas PRO CLUB
+- Todo Dashboard do Hall da Fama
+
+
+*_Seguem os pontos que AINDA NÃO estão integrados:_*
+- Todo Dashboard do Ranking do Arena
+- Todo Dashboard do Menu Moderador
+- Todo Dashboard do Tela de Campeonatos
+- Todos Processos Liberação da Renovação
+- Todos Processos Geração da Nova Temporada
+- Todos Processos Batch:
+	. Aviso de liberação Novas Rodadas
+	. Aviso de fim de Rodadas
+	. Alterar Dados Campeonato
+	. Alterar Dados Usuário
+	. Calculo do Ranking Temporada Atual
+	. Verificar Imagens de Times: PRO e FUT
+	. Partidas Pendentes de Decreto
+	. Técnivos atingindo limite da lista negra
+
+
+
+*Obs.: Para quem conhece está sendo feito 2 projetos, um é o controller do site, quem controla as chamadas das views e regras (WEB MVC C#) e o outro é a persistencia no banco de dados (MySQL) onde tem regras de negócio e chamada das procedures do banco (WEB API C#).*
+
+Vou atualizando vocês conforme mais páginas vão sendo integradas.
+
+Obrigado.
+
+Airinho.

@@ -41,6 +41,7 @@ else
             <div class="gentelella-main_container" style="background-color:#2C3E4F">
                 <!-- /sidebar menu -->
                 @if (ViewBag.inHallOfFame == "1") { @Html.Partial("_MenuSideBarHallOfFame"); }
+                else if (ViewBag.inRanking == "1") { @Html.Partial("_MenuSideBarRanking"); }
                 <!-- /sidebar menu -->
 
                 <div id="includedContentMenuMobile"></div>

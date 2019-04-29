@@ -18,7 +18,6 @@ namespace ArenaFifa20.NET.Controllers
             ViewBag.inGentelella = "1";
             ViewBag.inHallOfFame = "1";
             ViewBag.inRenewNextSeason = ConfigurationManager.AppSettings["renewal.next.season"].ToString();
-
         }
 
         // GET: HallOfFame/Summary
@@ -26,8 +25,8 @@ namespace ArenaFifa20.NET.Controllers
         {
 
             HttpResponseMessage response = null;
-            SummaryViewModel modelReturnJSON = null;
-            SummaryViewModel hallOfFameMode = new SummaryViewModel();
+            HallOfFameSummaryViewModel modelReturnJSON = null;
+            HallOfFameSummaryViewModel hallOfFameMode = new HallOfFameSummaryViewModel();
 
             setViewBagVariables();
 
@@ -36,7 +35,7 @@ namespace ArenaFifa20.NET.Controllers
                 hallOfFameMode.actionUser = "summary";
                 response = GlobalVariables.WebApiClient.PostAsJsonAsync("HallOfFame", hallOfFameMode).Result;
 
-                modelReturnJSON = response.Content.ReadAsAsync<SummaryViewModel>().Result;
+                modelReturnJSON = response.Content.ReadAsAsync<HallOfFameSummaryViewModel>().Result;
 
                 switch (response.StatusCode)
                 {

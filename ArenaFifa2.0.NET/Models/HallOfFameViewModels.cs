@@ -49,7 +49,7 @@ namespace ArenaFifa20.NET.Models
         public DateTime dtUpdate { get; set; }
     }
 
-    public class SummaryViewModel
+    public class HallOfFameSummaryViewModel
     {
         public string psnIDSerieAH2H { get; set; }
         public string teamIDSerieAH2H { get; set; }
