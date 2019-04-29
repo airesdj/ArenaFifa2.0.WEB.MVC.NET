@@ -17,7 +17,7 @@ namespace ArenaFifa20.NET.Controllers
         {
             ViewBag.inGentelella = "1";
             ViewBag.inHallOfFame = "1";
-            ViewBag.inRenewNextSeason = ConfigurationManager.AppSettings["renew.next.season"].ToString();
+            ViewBag.inRenewNextSeason = ConfigurationManager.AppSettings["renewal.next.season"].ToString();
 
         }
 
@@ -333,6 +333,254 @@ namespace ArenaFifa20.NET.Controllers
             catch (Exception ex)
             {
                 TempData["returnMessage"] = "Erro interno - Exibindo Hall da Fama - Conquistas H2H: (" + ex.InnerException.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(hallOfFameMode);
+
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+                hallOfFameMode = null;
+            }
+        }
+
+        // GET: HallOfFame/RenewalH2H
+        public ActionResult RenewalH2H()
+        {
+
+            HttpResponseMessage response = null;
+            RenewalViewModel modelReturnJSON = null;
+            RenewalViewModel hallOfFameMode = new RenewalViewModel();
+
+            setViewBagVariables();
+            ViewBag.inRenewalWorldCup = ConfigurationManager.AppSettings["renewal.h2h.worldcup"].ToString();
+            ViewBag.inRenewalUefaEuro = ConfigurationManager.AppSettings["renewal.h2h.uefaeuro"].ToString();
+            ViewBag.limitBanWorldCupUefaEuro = ConfigurationManager.AppSettings["renewal.total.limit.ban.worldcup"].ToString();
+
+
+            try
+            {
+                hallOfFameMode.actionUser = "renewal";
+                hallOfFameMode.seasonID = 0;
+                hallOfFameMode.renewalMode = "H2H";
+                hallOfFameMode.championshipIDRenewal = ConfigurationManager.AppSettings["renewal.h2h.id"].ToString();
+                hallOfFameMode.championshipIDBenchRenewal = ConfigurationManager.AppSettings["renewal.h2h.id.bench"].ToString();
+                if (ViewBag.inRenewalWorldCup=="1" || ViewBag.inRenewalUefaEuro == "1")
+                    hallOfFameMode.championshipIDRenewalWorldCupUefaEuro = ConfigurationManager.AppSettings["renewal.h2h.id.worldcup.uefaeuro"].ToString();
+                else
+                    hallOfFameMode.championshipIDRenewalWorldCupUefaEuro = String.Empty;
+                hallOfFameMode.totalLimitBlackList = Convert.ToInt16(ConfigurationManager.AppSettings["renewal.total.limit.blackList"].ToString());
+                hallOfFameMode.totalLimitBanWorldCupUefaEuro = Convert.ToInt16(ViewBag.limitBanWorldCupUefaEuro);
+                response = GlobalVariables.WebApiClient.PostAsJsonAsync("HallOfFame", hallOfFameMode).Result;
+
+                modelReturnJSON = response.Content.ReadAsAsync<RenewalViewModel>().Result;
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "HallOfFameSuccessfully")
+                        {
+                            return View(modelReturnJSON);
+                        }
+                        else
+                        {
+                            //ModelState.AddModelError("", "Senha Atual inválida! Favor tentar novamente.");
+                            TempData["returnMessage"] = "Ocorreu algum erro na exibição do Hall da Fama - Renovações H2H. (" + modelReturnJSON.returnMessage + ")";
+                            return View(hallOfFameMode);
+                        }
+                    default:
+                        TempData["returnMessage"] = "Ocorreu algum erro na exibição do Hall da Fama - Renovações H2H. (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View(hallOfFameMode);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                TempData["returnMessage"] = "Erro interno - Exibindo Hall da Fama - Renovações H2H: (" + ex.InnerException.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(hallOfFameMode);
+
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+                hallOfFameMode = null;
+            }
+        }
+
+
+        // GET: HallOfFame/RenewalFUT
+        public ActionResult RenewalFUT()
+        {
+
+            HttpResponseMessage response = null;
+            RenewalViewModel modelReturnJSON = null;
+            RenewalViewModel hallOfFameMode = new RenewalViewModel();
+
+            setViewBagVariables();
+
+            try
+            {
+                hallOfFameMode.actionUser = "renewal";
+                hallOfFameMode.seasonID = 0;
+                hallOfFameMode.renewalMode = "FUT";
+                hallOfFameMode.championshipIDRenewal = ConfigurationManager.AppSettings["renewal.fut.id"].ToString();
+                hallOfFameMode.championshipIDBenchRenewal = ConfigurationManager.AppSettings["renewal.fut.id.bench"].ToString();
+                hallOfFameMode.championshipIDRenewalWorldCupUefaEuro = String.Empty;
+                hallOfFameMode.totalLimitBlackList = Convert.ToInt16(ConfigurationManager.AppSettings["renewal.total.limit.blackList"].ToString());
+                hallOfFameMode.totalLimitBanWorldCupUefaEuro = 0;
+                response = GlobalVariables.WebApiClient.PostAsJsonAsync("HallOfFame", hallOfFameMode).Result;
+
+                modelReturnJSON = response.Content.ReadAsAsync<RenewalViewModel>().Result;
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "HallOfFameSuccessfully")
+                        {
+                            return View(modelReturnJSON);
+                        }
+                        else
+                        {
+                            //ModelState.AddModelError("", "Senha Atual inválida! Favor tentar novamente.");
+                            TempData["returnMessage"] = "Ocorreu algum erro na exibição do Hall da Fama - Renovações FUT. (" + modelReturnJSON.returnMessage + ")";
+                            return View(hallOfFameMode);
+                        }
+                    default:
+                        TempData["returnMessage"] = "Ocorreu algum erro na exibição do Hall da Fama - Renovações FUT. (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View(hallOfFameMode);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                TempData["returnMessage"] = "Erro interno - Exibindo Hall da Fama - Renovações FUT: (" + ex.InnerException.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(hallOfFameMode);
+
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+                hallOfFameMode = null;
+            }
+        }
+
+        // GET: HallOfFame/RenewalPRO
+        public ActionResult RenewalPRO()
+        {
+
+            HttpResponseMessage response = null;
+            RenewalViewModel modelReturnJSON = null;
+            RenewalViewModel hallOfFameMode = new RenewalViewModel();
+
+            setViewBagVariables();
+
+            try
+            {
+                hallOfFameMode.actionUser = "renewal";
+                hallOfFameMode.seasonID = 0;
+                hallOfFameMode.renewalMode = "PRO";
+                hallOfFameMode.championshipIDRenewal = ConfigurationManager.AppSettings["renewal.pro.id"].ToString();
+                hallOfFameMode.championshipIDBenchRenewal = ConfigurationManager.AppSettings["renewal.pro.id.bench"].ToString();
+                hallOfFameMode.championshipIDRenewalWorldCupUefaEuro = String.Empty;
+                hallOfFameMode.totalLimitBlackList = Convert.ToInt16(ConfigurationManager.AppSettings["renewal.total.limit.blackList"].ToString());
+                hallOfFameMode.totalLimitBanWorldCupUefaEuro = 0;
+                response = GlobalVariables.WebApiClient.PostAsJsonAsync("HallOfFame", hallOfFameMode).Result;
+
+                modelReturnJSON = response.Content.ReadAsAsync<RenewalViewModel>().Result;
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "HallOfFameSuccessfully")
+                        {
+                            return View(modelReturnJSON);
+                        }
+                        else
+                        {
+                            //ModelState.AddModelError("", "Senha Atual inválida! Favor tentar novamente.");
+                            TempData["returnMessage"] = "Ocorreu algum erro na exibição do Hall da Fama - Renovações PRO. (" + modelReturnJSON.returnMessage + ")";
+                            return View(hallOfFameMode);
+                        }
+                    default:
+                        TempData["returnMessage"] = "Ocorreu algum erro na exibição do Hall da Fama - Renovações PRO. (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View(hallOfFameMode);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                TempData["returnMessage"] = "Erro interno - Exibindo Hall da Fama - Renovações PRO: (" + ex.InnerException.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(hallOfFameMode);
+
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+                hallOfFameMode = null;
+            }
+        }
+
+
+        // GET: HallOfFame/RenewalPROSquad
+        public ActionResult RenewalPROSquad(FormCollection formHTML)
+        {
+
+            HttpResponseMessage response = null;
+            RenewalPROCLUBSquadViewModel modelReturnJSON = null;
+            RenewalPROCLUBSquadViewModel hallOfFameMode = new RenewalPROCLUBSquadViewModel();
+
+            setViewBagVariables();
+
+            try
+            {
+                hallOfFameMode.actionUser = "renewalSquad";
+                hallOfFameMode.managerID = Convert.ToInt16(formHTML["userID"]); ;
+                hallOfFameMode.seasonID = Convert.ToInt16(formHTML["seasonID"]); ;
+                hallOfFameMode.clubName = formHTML["clubName"]; ;
+                response = GlobalVariables.WebApiClient.PostAsJsonAsync("HallOfFame", hallOfFameMode).Result;
+
+                modelReturnJSON = response.Content.ReadAsAsync<RenewalPROCLUBSquadViewModel>().Result;
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "HallOfFameSuccessfully")
+                        {
+                            string pathImg = "/images/team-logo/"+ modelReturnJSON.clubName + ".jpg";
+                            if (System.IO.File.Exists(HttpContext.Server.MapPath(pathImg)))
+                                { modelReturnJSON.pathImageClub = pathImg; }
+                            else
+                                { modelReturnJSON.pathImageClub = ConfigurationManager.AppSettings["path.image.default"].ToString(); }
+
+
+                            return View(modelReturnJSON);
+                        }
+                        else
+                        {
+                            //ModelState.AddModelError("", "Senha Atual inválida! Favor tentar novamente.");
+                            TempData["returnMessage"] = "Ocorreu algum erro na exibição do Hall da Fama - Renovações PRO Squad. (" + modelReturnJSON.returnMessage + ")";
+                            return View(hallOfFameMode);
+                        }
+                    default:
+                        TempData["returnMessage"] = "Ocorreu algum erro na exibição do Hall da Fama - Renovações PRO Squad. (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View(hallOfFameMode);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                TempData["returnMessage"] = "Erro interno - Exibindo Hall da Fama - Renovações PRO Squad: (" + ex.InnerException.Message + ")";
                 ModelState.AddModelError("", "application error.");
                 return View(hallOfFameMode);
 

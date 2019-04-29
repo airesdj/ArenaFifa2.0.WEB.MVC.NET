@@ -1143,6 +1143,10 @@
     <Content Include="Views\HallOfFame\AchievementsH2H.cshtml" />
     <Content Include="Views\HallOfFame\AchievementsFUT.cshtml" />
     <Content Include="Views\HallOfFame\AchievementsPRO.cshtml" />
+    <Content Include="Views\HallOfFame\RenewalH2H.cshtml" />
+    <Content Include="Views\HallOfFame\RenewalFUT.cshtml" />
+    <Content Include="Views\HallOfFame\RenewalPRO.cshtml" />
+    <Content Include="Views\HallOfFame\RenewalPROSquad.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
