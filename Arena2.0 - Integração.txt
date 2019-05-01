@@ -15,11 +15,14 @@ Hi Guys, voltando o assunto do Arena 2.0, a integraçãojá foi iniciada e está
 - Banco de Reservas
 - Inscrição no Banco de Reservas H2H/FUT
 - Inscrição no Banco de Reservas PRO CLUB
-- Todo Dashboard do Hall da Fama
+- Lista de Ranking das Torcidas do Arena
+- Lista da Lista Negra da Atual Temporada
+- Detalhes Por Usuário da Lista Negra da Atual Temporada
+- TODO Dashboard do Hall da Fama
+- TODO Dashboard do Ranking do Arena (*_NOVO_*)
 
 
 *_Seguem os pontos que AINDA NÃO estão integrados:_*
-- Todo Dashboard do Ranking do Arena
 - Todo Dashboard do Menu Moderador
 - Todo Dashboard do Tela de Campeonatos
 - Todos Processos Liberação da Renovação

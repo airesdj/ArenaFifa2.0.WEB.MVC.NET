@@ -433,7 +433,14 @@
     <Content Include="images\scorers-logo\192505.jpg" />
     <Content Include="images\scorers-logo\20801.jpg" />
     <Content Include="images\star_cheia.png" />
+    <Content Include="images\star_cheia_amarela.PNG" />
     <Content Include="images\star_cheia_cinza.png" />
+    <Content Include="images\star_meia.png" />
+    <Content Include="images\star_meia_amarela.PNG" />
+    <Content Include="images\star_meia_cinza.png" />
+    <Content Include="images\star_vazia.png" />
+    <Content Include="images\star_vazia_amarela.PNG" />
+    <Content Include="images\star_vazia_cinza.png" />
     <Content Include="images\t1.gif" />
     <Content Include="images\t2.gif" />
     <Content Include="images\team-logo\1899 Hoffenheim.jpg" />
@@ -1151,6 +1158,20 @@
     <Content Include="Views\HallOfFame\RenewalPROSquad.cshtml" />
     <Content Include="Views\Ranking\Summary.cshtml" />
     <Content Include="Views\Shared\_MenuSideBarRanking.cshtml" />
+    <Content Include="Views\Ranking\GeneralH2H.cshtml" />
+    <Content Include="Views\Ranking\GeneralFUT.cshtml" />
+    <Content Include="Views\Ranking\GeneralPRO.cshtml" />
+    <Content Include="Views\Ranking\CurrentH2H.cshtml" />
+    <Content Include="Views\Ranking\CurrentFUT.cshtml" />
+    <Content Include="Views\Ranking\_ListOfCurrentMode.cshtml" />
+    <Content Include="Views\Ranking\_ListOfGeneralMode.cshtml" />
+    <Content Include="Views\Ranking\CurrentPRO.cshtml" />
+    <Content Include="Views\Ranking\_ListOfDivisionMode.cshtml" />
+    <Content Include="Views\Ranking\SerieAH2H.cshtml" />
+    <Content Include="Views\Ranking\SerieBH2H.cshtml" />
+    <Content Include="Views\Ranking\SerieCH2H.cshtml" />
+    <Content Include="Views\Ranking\SerieAFUT.cshtml" />
+    <Content Include="Views\Ranking\SerieAPRO.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

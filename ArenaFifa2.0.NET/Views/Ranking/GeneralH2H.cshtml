@@ -1,0 +1,69 @@
+﻿@{
+    ViewBag.Title = "Ranking - General H2H";
+}
+
+
+<!-- page content -->
+<!-- page content -->
+<div class="gentelella-right_col" role="main" style="padding-left:20px">
+    <div class="gentelella-page-title">
+        <div class="gentelella-title_left">
+            <h3>RANKING GERAL ARENA FIFA - H2H</h3>
+        </div>
+    </div>
+    <br><br>
+    <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+        <div class="gentelella-x_panel">
+            <div class="gentelella-x_title">
+                <center>
+                    <img src="/images/logo-H2H-white.jpg" width="150" />
+                </center>
+                <br><br>
+                <h2>Relação de Técnicos do H2H (X1)</h2>
+                <ul class="gentelella-nav gentelella-navbar-right gentelella-panel_toolbox">
+                    <li>
+                        <a class="gentelella-collapse-link"><i class="gentelella-fa gentelella-fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="gentelella-clearfix"></div>
+            </div>
+            @Html.Partial("_ListOfGeneralMode")
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+
+@section Scripts {
+    <script>
+        $(function () {
+            if (detectMobileDevice() == 1) {
+                //$("#includedContentMenuMobile").load("/arena20/includes/menu-logged-mobile.html");
+                //$("#includedContentMenuRankingMobile").load("menu-my-matches-mobile.html");
+                hidden_show_ObjectMobile("footerMobile", "block");
+            }
+            if ('@ViewBag.inRenewNextSeason' == '1')
+                $("#liRenewNextSeason").show();
+            else
+                $("#liRenewNextSeason").hide();
+        });
+
+        $(document).ready(function () {
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+            else {
+                if ('@TempData["loggedUserID"]' != '') {
+                    $('tr[userID="@TempData["loggedUserID"]"]').attr("style", "background-color:yellow");
+                    $('img[userIDFullStar="@TempData["loggedUserID"]"]').attr("src", "/images/star_cheia_amarela.png");
+                    $('img[userIDHalfStar="@TempData["loggedUserID"]"]').attr("src", "/images/star_meia_amarela.png");
+                    $('img[userIDStarEmpty="@TempData["loggedUserID"]"]').attr("src", "/images/star_vazia_amarela.png");
+                }
+            }
+
+            if (detectMobileDevice() == 0)
+                activeSidebarMenu(window.location.pathname);
+            
+        });
+
+    </script>
+}
+
