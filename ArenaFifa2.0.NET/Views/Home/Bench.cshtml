@@ -63,7 +63,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach (var item in Model.listBench)
+                                                    @foreach (var item in Model.listOfBench)
                                                     {
                                                         if (item.typeBench == "H2H")
                                                         {
@@ -109,7 +109,7 @@
                                                 </thead>
                                                 <tbody>
                                                     @{i = 0;
-                                                        foreach (var item in Model.listBench)
+                                                        foreach (var item in Model.listOfBench)
                                                         {
                                                             if (item.typeBench == "FUT" && (item.team+"") != "")
                                                             {
@@ -156,7 +156,7 @@
                                                 </thead>
                                                 <tbody>
                                                     @{i = 0;
-                                                        foreach (var item in Model.listBench)
+                                                        foreach (var item in Model.listOfBench)
                                                         {
                                                             if (item.typeBench == "PRO" && (item.team + "") != "")
                                                             {

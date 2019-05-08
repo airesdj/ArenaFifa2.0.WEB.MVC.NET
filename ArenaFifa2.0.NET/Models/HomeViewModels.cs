@@ -43,24 +43,6 @@ namespace ArenaFifa20.NET.Models
         public string returnMessage { get; set; }
     }
 
-    public class BenchModesViewModel
-    {
-        public List<BenchModes> listBench { get; set; }
-        public string actionUser { get; set; }
-        public string returnMessage { get; set; }
-    }
-
-    public class BenchModes
-    {
-        public int id { get; set; }
-        public int userID { get; set; }
-        public string psnID { get; set; }
-        public string name { get; set; }
-        public string state { get; set; }
-        public string team { get; set; }
-        public string typeBench { get; set; }
-    }
-
     public class SubscribeBench
     {
         public int id { get; set; }
@@ -94,18 +76,6 @@ namespace ArenaFifa20.NET.Models
         public string actionUser { get; set; }
         public string returnMessage { get; set; }
     }
-
-    public class SeasonDetails
-    {
-        public int id { get; set; }
-        public string name { get; set; }
-        public byte active { get; set; }
-        public DateTime dtStartSeason { get; set; }
-        public DateTime dtEndSeason { get; set; }
-        public string typeMode { get; set; }
-        public string returnMessage { get; set; }
-    }
-
 
     public class RankingSupportersModel
     {

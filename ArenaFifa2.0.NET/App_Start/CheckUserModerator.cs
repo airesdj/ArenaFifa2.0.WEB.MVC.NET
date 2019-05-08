@@ -6,9 +6,9 @@ using System.Web.Mvc;
 
 namespace ArenaFifa20.NET.App_Start
 {
-    public class CheckSessionTimeOut
+    public class CheckUserModerator
     {
-        public class SessionTimeoutAttribute : ActionFilterAttribute
+        public class UserModeratorAttribute : ActionFilterAttribute
         {
             public override void OnActionExecuting(ActionExecutingContext filterContext)
             {
@@ -18,9 +18,13 @@ namespace ArenaFifa20.NET.App_Start
                     filterContext.Result = new RedirectResult("~/Account/Signin");
                     return;
                 }
+                else if (Convert.ToBoolean(HttpContext.Current.Session["user.isModerator"]) == false)
+                {
+                    filterContext.Result = new RedirectResult("~/Home/Index");
+                    return;
+                }
                 base.OnActionExecuting(filterContext);
             }
         }
     }
-
 }

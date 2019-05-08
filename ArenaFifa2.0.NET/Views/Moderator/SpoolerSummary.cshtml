@@ -1,0 +1,241 @@
+﻿@using ArenaFifa20.NET.Models
+@model SpoolerViewModel
+@{
+    ViewBag.Title = "Moderator Menu - Spooler";
+}
+
+
+<!-- page content -->
+<div class="gentelella-right_col" role="main" style="padding-left:20px">
+    <div class="gentelella-page-title">
+        <div class="gentelella-title">
+            <h3>VISUALIZAÇÃO DO SPOOLER DE E-MAIL DOS PROCESSOS ADMINISTRATIVOS</h3>
+        </div>
+    </div>
+    <br>
+    <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+        <div class="gentelella-x_panel">
+            <div class="gentelella-x_content">
+
+
+                <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                    <div class="gentelella-x_panel">
+                        <div class="gentelella-x_content">
+
+                            <div class="gentelella-row">
+                                <div class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-12">
+                                    <div class="gentelella-table-responsive">
+                                        <table class="gentelella-table gentelella-table-striped gentelella-jambo_table bulk_action">
+                                            <thead style="background-color:#2C3E4F;color:#fff;font-size:14px">
+                                                <tr class="gentelella-headings ">
+                                                    <th class="gentelella-column-title gentelella-a-center" colspan="5" width="100%">LISTA  DE PROCESSOS  EM  ANDAMENTO</th>
+                                                </tr>
+                                            </thead>
+                                            @if (Model.listSpoolerInProgress.Count > 0)
+                                            {
+                                                <thead style="background-color:#F7F7F7;color:#337ab7;font-size:11px">
+                                                    <tr class="gentelella-headings">
+                                                        <th class="gentelella-column-title" width="50%">Descrição do Processo</th>
+                                                        <th class="gentelella-column-title gentelella-a-center" width="10%">Total </th>
+                                                        <th class="gentelella-column-title gentelella-a-center" width="10%">Enviados </th>
+                                                        <th class="gentelella-column-title gentelella-a-center" width="10%">Restantes </th>
+                                                        <th class="gentelella-column-title gentelella-a-center" width="20%">Últ. Execução </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody style="color:#2C3E4F;font-size:10px;font-weight:bolder">
+                                                    @foreach (var item in Model.listSpoolerInProgress)
+                                                    {
+                                                        <tr class="gentelella-even gentelella-pointer">
+                                                            <td class=" ">@item.description</td>
+                                                            <td class="gentelella-a-center">@item.totalEmails</td>
+                                                            <td class="gentelella-a-center">@item.totalEmailsSent </td>
+                                                            <td class="gentelella-a-center">@item.totalEmailsMissingSend</td>
+                                                            <td class="gentelella-a-center">@item.dateFormattedLastProcessing</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            }
+                                            else
+                                            {
+                                                <thead style="background-color:#F7F7F7;color:#337ab7;font-size:11px">
+                                                    <tr class="gentelella-headings">
+                                                        <th class="gentelella-column-title" colspan="5" width="100%">Não há processo em andamento no spooler de e-mails.</th>
+                                                    </tr>
+                                                </thead>
+                                            }
+                                        </table>
+
+                                        <br><br>
+
+                                        <table class="gentelella-table gentelella-table-striped gentelella-jambo_table bulk_action">
+                                            <thead style="background-color:#2C3E4F;color:#fff;font-size:14px">
+                                                <tr class="gentelella-headings ">
+                                                    <th class="gentelella-column-title gentelella-a-center" colspan="4" width="100%">LISTA  DE PROCESSOS  AGUARDANDO  PROCESSAMENTO</th>
+                                                </tr>
+                                            </thead>
+                                            @if (Model.listSpoolerWaiting.Count > 0)
+                                            {
+                                                <thead style="background-color:#F7F7F7;color:#337ab7;font-size:11px">
+                                                    <tr class="gentelella-headings">
+                                                        <th class="gentelella-column-title" width="70%">Descrição do Processo</th>
+                                                        <th class="gentelella-column-title gentelella-a-center" width="10%">Total </th>
+                                                        <th class="gentelella-column-title gentelella-a-center" width="10%">Enviados </th>
+                                                        <th class="gentelella-column-title gentelella-a-center" width="10%">Restantes </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody style="color:#2C3E4F;font-size:10px;font-weight:bolder">
+                                                    @foreach (var item in Model.listSpoolerWaiting)
+                                                    {
+                                                        <tr class="gentelella-even gentelella-pointer">
+                                                            <td class=" ">@item.description</td>
+                                                            <td class="gentelella-a-center">@item.totalEmails</td>
+                                                            <td class="gentelella-a-center">@item.totalEmailsSent </td>
+                                                            <td class="gentelella-a-center">@item.totalEmailsMissingSend</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            }
+                                            else
+                                            {
+                                                <thead style="background-color:#F7F7F7;color:#337ab7;font-size:11px">
+                                                    <tr class="gentelella-headings">
+                                                        <th class="gentelella-column-title" colspan="4" width="100%">Não há processo aguardando no spooler de e-mails.</th>
+                                                    </tr>
+                                                </thead>
+                                            }
+                                        </table>
+
+                                    </div>
+                                </div>
+                                <div class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-12">
+                                    <div class="gentelella-table-responsive">
+                                        <table class="gentelella-table gentelella-table-striped gentelella-jambo_table bulk_action">
+                                            <thead style="background-color:#2C3E4F;color:#fff;font-size:14px">
+                                                <tr class="gentelella-headings ">
+                                                    <th class="gentelella-column-title gentelella-a-center" colspan="5" width="100%">LISTA  DE  PROCESSOS  ADMINISTRATIVOS   AGENDADOS  NO  HOST</th>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <thead style="background-color:#F7F7F7;color:#337ab7;font-size:11px">
+                                                <tr class="gentelella-headings">
+                                                    <th class="gentelella-column-title gentelella-a-center" width="5%">Horário </th>
+                                                    <th class="gentelella-column-title" width="55%">Descrição do Processo</th>
+                                                    <th class="gentelella-column-title gentelella-a-center" width="10%">Período </th>
+                                                    <th class="gentelella-column-title gentelella-a-center" width="20%">Últ. Execução </th>
+                                                    <th class="gentelella-column-title gentelella-a-center" width="10%">Enviados </th>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody style="color:#2C3E4F;font-size:10px;font-weight:bolder">
+                                                @foreach (var item in Model.listSpoolerAdmin)
+                                                {
+                                                    <tr class="gentelella-even gentelella-pointer">
+                                                        <td class="gentelella-a-center">@item.timeProcess</td>
+                                                        <td class=" ">@item.description</td>
+                                                        <td class="gentelella-a-center">@item.frequency</td>
+                                                        @if (item.processedToday) { <td class="gentelella-a-center gentelella-red">@item.dateFormattedLastProcessing</td> }
+                                                        else { <td class="gentelella-a-center ">@item.dateFormattedLastProcessing</td> }
+                                                        <td class="gentelella-a-center">@item.totalEmailsSent</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                            <br><br>
+                            <div class="gentelella-row">
+                                <div class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-12">
+                                    <div class="gentelella-table-responsive">
+                                        <table class="gentelella-table gentelella-table-striped gentelella-jambo_table bulk_action">
+                                            <thead style="background-color:#2C3E4F;color:#fff;font-size:14px">
+                                                <tr class="gentelella-headings ">
+                                                    <th class="gentelella-column-title gentelella-a-center" colspan="4" width="100%">LISTA DOS ÚLTIMOS 5 PROCESSOS  FINALIZADOS</th>
+                                                </tr>
+                                            </thead>
+                                            @if (Model.listSpoolerInProgress.Count > 0)
+                                            {
+                                            <thead style="background-color:#F7F7F7;color:#337ab7;font-size:11px">
+                                                <tr class="gentelella-headings">
+                                                    <th class="gentelella-column-title" width="60%">Descrição do Processo</th>
+                                                    <th class="gentelella-column-title gentelella-a-center" width="10%">Total </th>
+                                                    <th class="gentelella-column-title gentelella-a-center" width="10%">Enviados </th>
+                                                    <th class="gentelella-column-title gentelella-a-center" width="20%">Últ. Execução </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody style="color:#2C3E4F;font-size:10px;font-weight:bolder">
+                                                @foreach (var item in Model.listSpoolerFinished)
+                                                {
+                                                    <tr class="gentelella-even gentelella-pointer">
+                                                        <td class=" ">@item.description</td>
+                                                        <td class="gentelella-a-center">@item.totalEmails</td>
+                                                        <td class="gentelella-a-center">@item.totalEmailsSent </td>
+                                                        <td class="gentelella-a-center">@item.dateFormattedLastProcessing</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                            }
+                                            else
+                                            {
+                                                <thead style="background-color:#F7F7F7;color:#337ab7;font-size:11px">
+                                                    <tr class="gentelella-headings">
+                                                        <th class="gentelella-column-title" colspan="4" width="100%">Não há processo finalizado no spooler de e-mails.</th>
+                                                    </tr>
+                                                </thead>
+                                            }
+                                         </table>
+                                    </div>
+                                </div>
+
+                                <div class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-12">
+                                    <div class="gentelella-table-responsive">
+
+                                        <br><br><br>
+                                        <center>
+                                            <label class="gentelella-red" style="color:#2C3E4F;font-size:18px;text-decoration:underline">PRÓXIMA  EXECUÇÃO  PROGRAMADA  DO  SPOOLER:<br><br> ***  @Model.nextTimeProcessSpooler  ***</label>
+                                        </center>
+
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+@section Scripts {
+    <script>
+        $(function () {
+            if (detectMobileDevice() == 1) {
+                //$("#includedContentMenuMobile").load("/arena20/includes/menu-logged-mobile.html");
+                //$("#includedContentMenuRankingMobile").load("menu-my-matches-mobile.html");
+                hidden_show_ObjectMobile("footerMobile", "block");
+            }
+        });
+
+        $(document).ready(function () {
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+
+            if (detectMobileDevice() == 0)
+                activeSidebarMenu(window.location.pathname);
+        });
+
+    </script>
+}
+

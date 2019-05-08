@@ -18,6 +18,14 @@
     else
     {
         @Styles.Render("~/Content/gentelella-css")
+
+        if (ViewBag.inModeratorMenu == "1")
+        {
+            @Styles.Render("~/Content/gentelella-datatable-css")
+            <link href="/Content/dashboard-gentelella/bootstrap.min-checkbox.css" rel="stylesheet" />
+            <link href="/Content/dashboard-gentelella/docs.min-2.css" rel="stylesheet" />
+        }
+
     }
 </head>
 
@@ -40,8 +48,15 @@ else
         <div class="gentelella-container gentelella-body">
             <div class="gentelella-main_container" style="background-color:#2C3E4F">
                 <!-- /sidebar menu -->
-                @if (ViewBag.inHallOfFame == "1") { @Html.Partial("_MenuSideBarHallOfFame"); }
-                else if (ViewBag.inRanking == "1") { @Html.Partial("_MenuSideBarRanking"); }
+                @if (ViewBag.inHallOfFame == "1")
+                {@Html.Partial("_MenuSideBarHallOfFame");
+            }
+            else if (ViewBag.inRanking == "1")
+            { @Html.Partial("_MenuSideBarRanking");
+        }
+        else if (ViewBag.inModeratorMenu == "1")
+        { @Html.Partial("_MenuSideBarModerator");
+    }
                 <!-- /sidebar menu -->
 
                 <div id="includedContentMenuMobile"></div>
@@ -61,6 +76,12 @@ else
         @Scripts.Render("~/bundles/default-script")
         @Scripts.Render("~/bundles/jqueryaux")
         @Scripts.Render("~/bundles/carousel-portfolio-script")
+
+        @if (@ViewBag.inModeratorMenu == "1")
+        {
+            @Scripts.Render("~/bundles/gentelella-datatable-script")
+            @Scripts.Render("~/bundles/gentelella-form-script")
+        }
 
         @Html.Partial("_Footer")
         @RenderSection("scripts", required: false)

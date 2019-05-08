@@ -20,28 +20,32 @@ function includeFileScreenResultAction(pTitle) {
 	});
 }
 
-function includeFileScreenModal(pTitle, pID) {
-	$("#includedContentQuestionDelete").load("menu-moderator-question-modal.html", function() {
-		$("#modalScreeenDeleteTitle").html( "CADASTRO DE "+pTitle );
-		$("#modalScreeenDeleteSubTitle").html( "Exclusão" );
-		$("#modalScreeenDeleteQuestion").html ( "Deseja realmente excluir o item selecionado (#ID: "+pID+")?" );
-		$("#modalScreeenDeleteButton").on("click", function(){ $('#bs-result-modal-sm').modal('show'); });
-	}); 
-	$("#includedContentResultMessage").load("menu-moderator-result-modal.html", function() {
-		$("#modalScreeenResultTitle").html( "CADASTRO DE "+pTitle );
-		$("#modalScreeenResultSubTitle").html( "Exclusão" );
-		$("#modalScreeenResultMessage").html ( "O item (#ID: "+pID+") foi excluído com sucesso." );
-	}); 
+function includeFileScreenModalDelete(pTitle, actionName, actionForm) {
+	$("#modalScreeenDeleteTitle").html( "CADASTRO DE "+pTitle );
+	$("#modalScreeenDeleteSubTitle").html( "Exclusão" );
+    $("#modalScreeenDeleteButton").on("click", function () { submeteModerator(actionName, actionForm, ''); });
+
+    $("#modalScreeenResultTitle").html("CADASTRO DE " + pTitle);
+	$("#modalScreeenResultSubTitle").html( "Exclusão" );
 }
 
-function includeFileScreenModalGeneral(pTitle, pSubTitle, pQuestionMsg) {
-	$("#includedContentMessageGeneral").load("menu-moderator-question-modal-2.html", function() {
-		$("#modalScreeenMsgTitle").html( "CADASTRO DE "+pTitle );
-		$("#modalScreeenMsgSubTitle").html( pSubTitle );
-		$("#modalScreeenMsgQuestion").html ( pQuestionMsg );
-		$("#modalScreeenMsgButton").on("click", function(){ alert("Running process to upgrade the team squad..."); });
-	}); 
+function changeQuestionDescriptionDelete(pID) {
+    $('#selectedID').val(pID);
+    $("#modalScreeenDeleteQuestion").html("Deseja realmente excluir o item selecionado (#ID: " + pID + ")?");
 }
+
+function includeFileScreenModalGeneral(pTitle, pSubTitle, pQuestionMsg, actionName, actionForm) {
+	$("#modalScreeenMsgTitle").html( "CADASTRO DE "+pTitle );
+    $("#modalScreeenMsgSubTitle").html(pSubTitle);
+    $("#modalScreeenMsgQuestion").html(pQuestionMsg);
+    $("#modalScreeenMsgButton").on("click", function () { submeteModerator(actionName, actionForm, ''); });
+}
+function changeQuestionDescriptionGeneral(pID) {
+    var strQuestion = $("#modalScreeenMsgQuestion").html();
+    $('#selectedID').val(pID);
+    $("#modalScreeenMsgQuestion").html(strQuestion.replace("<selectid>", pID));
+}
+
 function includeFileScreenModalGeneralViewIntelegence(pHtmlFile, pTitle) {
 	$("#includedContentViewSendEmail").load(pHtmlFile, function() {
 		$("#modalScreeenMsgTitle").html( "CADASTRO DE "+pTitle );
@@ -49,15 +53,41 @@ function includeFileScreenModalGeneralViewIntelegence(pHtmlFile, pTitle) {
 		$("#includedContentChampionshipShortDetails").load("menu-moderator-championship-short-details.html"); 
 	}); 
 }
-function activateRegistrationForm(pNewPageRedirect) {
+function activateRegistrationForm(pNewPageRedirect, actionForm) {
 	window.Parsley.on('field:error', function() {
 		var ok = $('.gentelella-parsley-error').length === 0;
 		$('.bs-callout-warning').toggleClass('gentelella-hidden', ok);
-	})
-	  .on('form:submit', function() {
-		  //codigo
-		  window.location.href = pNewPageRedirect;
-	  });
+    })
+
+    if (pNewPageRedirect == "BenchDetails") {
+
+        $("#rdoTipoH2H").change(function () {
+            if (this.checked) {
+                $("#txtTime").prop('required', false).val('');
+            }
+        })
+
+        $("#rdoTipoFUT").change(function () {
+            if (this.checked) {
+                $("#txtTime").attr("required", "true");
+            }
+        })
+
+        $("#rdoTipoPRO").change(function () {
+            if (this.checked) {
+                $("#txtTime").attr("required", "true");
+            }
+        })
+
+        .on('form:success', function () {
+            return true; // Don't submit form for this demo
+        });
+
+        if (actionForm == "VIEW") {
+            $("input[type!='button']").attr('disabled', 'true');
+            $("select").attr('disabled', 'true');
+        }
+    }
 
 	window.Parsley.addValidator('datevalid', {
 	  validateString: function(value) {
@@ -70,4 +100,16 @@ function activateRegistrationForm(pNewPageRedirect) {
 		fr: ""
 	  }
 	});
+}
+function submeteModerator(actionName, actionForm, itemSelected) {
+    $("#actionForm").val(actionForm);
+    if (itemSelected != "") { $("#selectedID").val(itemSelected); }
+    if (actionForm == "VOLTAR") {
+        $("#comeback-form").attr("action", "/Moderator/" + actionName);
+        $("#comeback-form").submit();
+    }
+    else {
+        $("#registration-form").attr("action", "/Moderator/" + actionName);
+        $("#registration-form").submit();
+    }
 }

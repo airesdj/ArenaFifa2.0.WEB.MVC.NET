@@ -181,6 +181,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\CheckUserModerator.cs" />
     <Compile Include="App_Start\CheckSessionTimeOut.cs" />
     <Compile Include="App_Start\CustomValidators.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -188,6 +189,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\ModeratorController.cs" />
     <Compile Include="Controllers\RankingController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HallOfFameController.cs" />
@@ -197,6 +199,7 @@
     </Compile>
     <Compile Include="GlobalVariables.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\ModeratorViewModels.cs" />
     <Compile Include="Models\RankingViewModels.cs" />
     <Compile Include="Models\HallOfFameViewModels.cs" />
     <Compile Include="Models\HomeViewModels.cs" />
@@ -1104,6 +1107,10 @@
     <Content Include="Scripts\typeahead.jquery.js" />
     <Content Include="Scripts\typeahead.jquery.min.js" />
     <Content Include="Scripts\wow.min.js" />
+    <None Include="Views\Moderator\_MessageValidate.cshtml" />
+    <None Include="Views\Moderator\_QuestionModal.cshtml" />
+    <None Include="Views\Moderator\_QuestionModalv2.cshtml" />
+    <None Include="Views\Moderator\_ResultModal.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -1172,6 +1179,12 @@
     <Content Include="Views\Ranking\SerieCH2H.cshtml" />
     <Content Include="Views\Ranking\SerieAFUT.cshtml" />
     <Content Include="Views\Ranking\SerieAPRO.cshtml" />
+    <Content Include="Views\Moderator\Summary.cshtml" />
+    <Content Include="Views\Shared\_MenuSideBarModerator.cshtml" />
+    <Content Include="Views\Moderator\SpoolerSummary.cshtml" />
+    <Content Include="Views\Moderator\Seasons.cshtml" />
+    <Content Include="Views\Moderator\Bench.cshtml" />
+    <Content Include="Views\Moderator\BenchDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

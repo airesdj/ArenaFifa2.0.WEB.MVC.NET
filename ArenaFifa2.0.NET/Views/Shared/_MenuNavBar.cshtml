@@ -58,8 +58,15 @@
                             @if (Convert.ToBoolean(HttpContext.Current.Session["session.active"].ToString()) && Convert.ToBoolean(HttpContext.Current.Session["user.isModerator"].ToString()))
                             {
                                 <li>
-                                    <a class="nav-link" href="/dashboard-moderator-menu/summary.html" id="sub-nav1">
+                                    <a class="nav-link" href="/Moderator/Summary" id="sub-nav1">
                                         Moderador
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <a class="nav-link" href="" id="sub-nav1">
                                     </a>
                                 </li>
                             }

@@ -103,6 +103,7 @@ namespace ArenaFifa20.NET.Controllers
 
             try
             {
+                model.actionUser = "listMainPage";
                 response = GlobalVariables.WebApiClient.PostAsJsonAsync("Bench", model).Result;
 
                 modelReturnJSON = response.Content.ReadAsAsync<BenchModesViewModel>().Result;
