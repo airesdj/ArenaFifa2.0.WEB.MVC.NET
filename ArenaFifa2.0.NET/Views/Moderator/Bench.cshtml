@@ -100,9 +100,7 @@
             if (detectMobileDevice() == 0)
                 activeSidebarMenu(window.location.pathname);
 
-            var table = $('#datatable-responsive').DataTable();
-            table.order([[3, 'desc'], [0, 'asc']]);
-            table.draw();
+            setOrderingDatatableResponsive([3,'desc'], [0,'asc'])
 
             includeFileScreenModalDelete('BANCO DE RESERVAS', 'BenchDetails', 'DELETE');
             includeFileScreenModalGeneral('BANCO DE RESERVAS', 'Mover Técnico na Fila', 'Deseja mover o técnico <selectid> para o fim da fila do Banco de Reservas?', 'BenchDetails', 'MOVE');

@@ -113,3 +113,14 @@ function submeteModerator(actionName, actionForm, itemSelected) {
         $("#registration-form").submit();
     }
 }
+
+function setOrderingDatatableResponsive(arrayOrder1, arrayOrder2) {
+    var table = $('#datatable-responsive').DataTable();
+    if (arrayOrder2!=null)
+        table.order([[arrayOrder1[0], arrayOrder1[1]], [arrayOrder2[0], arrayOrder2[1]]]);
+    else
+        table.order([[arrayOrder1[0], arrayOrder1[1]]]);
+    //table.order([[3, 'desc'], [0, 'asc']]); --> example
+    table.draw();
+    table = null;
+}
