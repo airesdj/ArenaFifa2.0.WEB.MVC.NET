@@ -87,7 +87,6 @@ namespace ArenaFifa20.NET
                       "~/Content/dashboard-gentelella/bootstrap.min.css",
                       "~/Content/dashboard-gentelella/font-awesome.min.css",
                       "~/Content/dashboard-gentelella/custom.min.css",
-                      "~/Content/dashboard-gentelella/remove_this_css_docs.min-2.css",
                       "~/Content/fontawesome/css/fontawesome-all.min.css",
                       "~/Content/typeahead.css",
                       "~/Content/toastr.css",
