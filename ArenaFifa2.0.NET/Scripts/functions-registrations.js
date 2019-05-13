@@ -1,15 +1,7 @@
-function includeFileScreenModalCoaches(pID) {
-	$("#includedContentQuestionDelete").load("menu-moderator-question-modal.html", function() {
-		$("#modalScreeenDeleteTitle").html( "CADASTRO DE TÉCNICOS" );
-		$("#modalScreeenDeleteSubTitle").html( "Inativação" );
-		$("#modalScreeenDeleteQuestion").html ( "Deseja realmente inativar o técnico selecionado (#ID: "+pID+")?" );
-		$("#modalScreeenDeleteButton").on("click", function(){ $('#bs-result-modal-sm').modal('show'); });
-	}); 
-	$("#includedContentResultMessage").load("menu-moderator-result-modal.html", function() {
-		$("#modalScreeenResultTitle").html( "CADASTRO DE TÉCNICOS" );
-		$("#modalScreeenResultSubTitle").html( "Inativação" );
-		$("#modalScreeenResultMessage").html ( "O técnico (#ID: "+pID+") foi inativado com sucesso." );
-	}); 
+function includeFileScreenModalCoaches(actionName, actionForm) {
+	$("#modalScreeenDeleteTitle").html( "CADASTRO DE TÉCNICOS" );
+	$("#modalScreeenDeleteSubTitle").html( "Inativação" );
+    $("#modalScreeenDeleteButton").on("click", function () { submeteModerator(actionName, actionForm, ''); });
 }
 
 function includeFileScreenResultAction(pTitle) {
@@ -27,6 +19,11 @@ function includeFileScreenModalDelete(pTitle, actionName, actionForm) {
 
     $("#modalScreeenResultTitle").html("CADASTRO DE " + pTitle);
 	$("#modalScreeenResultSubTitle").html( "Exclusão" );
+}
+
+function changeQuestionDescriptionInativate(pID) {
+    $('#selectedID').val(pID);
+    $("#modalScreeenDeleteQuestion").html("Deseja realmente inativar o técnico selecionado (#ID: " + pID + ")?");
 }
 
 function changeQuestionDescriptionDelete(pID) {
@@ -58,7 +55,6 @@ function activateRegistrationForm(pNewPageRedirect, actionForm) {
 		var ok = $('.gentelella-parsley-error').length === 0;
 		$('.bs-callout-warning').toggleClass('gentelella-hidden', ok);
     })
-
     if (pNewPageRedirect == "BenchDetails") {
 
         $("#rdoTipoH2H").change(function () {
@@ -82,14 +78,39 @@ function activateRegistrationForm(pNewPageRedirect, actionForm) {
         .on('form:success', function () {
             return true; // Don't submit form for this demo
         });
+    }
+    else if (pNewPageRedirect == "UserDetails") {
 
-        if (actionForm == "VIEW") {
-            $("input[type!='button']").attr('disabled', 'true');
-            $("select").attr('disabled', 'true');
+        $("#cmbHeardUs").on("change", function () {
+            if ($(this).val() == "OUTROS") {
+                $("#whatkindofmedia").removeClass("disabled").removeAttr("disabled").focus();
+                $("#whatkindofmedia").attr("required", "true");
+            }
+            else {
+                $("#whatkindofmedia").val("");
+                $("#whatkindofmedia").addClass("disabled").attr("disabled", "true");
+                $("#whatkindofmedia").prop('required', false).val('');
+            }
+        });
+
+        if ($("#cmbHeardUs").val() == "OUTROS") {
+            $("#whatkindofmedia").removeClass("disabled").removeAttr("disabled").focus();
+            $("#whatkindofmedia").attr("required", "true");
         }
+        else {
+            $("#whatkindofmedia").val("");
+            $("#whatkindofmedia").addClass("disabled").attr("disabled", "true");
+            $("#whatkindofmedia").prop('required', false).val('');
+        }
+
     }
 
-	window.Parsley.addValidator('datevalid', {
+    if (actionForm == "VIEW") {
+        $("input[type!='button']").attr('disabled', 'true');
+        $("select").attr('disabled', 'true');
+    }
+
+    window.Parsley.addValidator('datevalid', {
 	  validateString: function(value) {
 		value = value.replace("_", "");
 		if (value.length<10) { return false; }
@@ -114,9 +135,11 @@ function submeteModerator(actionName, actionForm, itemSelected) {
     }
 }
 
-function setOrderingDatatableResponsive(arrayOrder1, arrayOrder2) {
+function setOrderingDatatableResponsive(arrayOrder1, arrayOrder2, arrayOrder3) {
     var table = $('#datatable-responsive').DataTable();
-    if (arrayOrder2!=null)
+    if (arrayOrder2 != null && arrayOrder3 != null)
+        table.order([[arrayOrder1[0], arrayOrder1[1]], [arrayOrder2[0], arrayOrder2[1]], [arrayOrder3[0], arrayOrder3[1]]]);
+    else if (arrayOrder3 == null)
         table.order([[arrayOrder1[0], arrayOrder1[1]], [arrayOrder2[0], arrayOrder2[1]]]);
     else
         table.order([[arrayOrder1[0], arrayOrder1[1]]]);

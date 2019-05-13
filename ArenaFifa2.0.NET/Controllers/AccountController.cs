@@ -247,38 +247,6 @@ namespace ArenaFifa20.NET.Controllers
             return View();
         }
 
-        private IEnumerable<string> GetAllModes()
-        {
-            return new List<string>
-            {
-                "H2H E/OU FUT","APENAS PRO CLUB"
-            };
-        }
-
-        private IEnumerable<string> GetAllTypeHowFindUs()
-        {
-            return new List<string>
-            {
-                "INTERNET","AMIGOS","BANNER","SITE DE BUSCA","FACEBOOK","OUTROS"
-            };
-        }
-
-        private IEnumerable<string> GetAllStates()
-        {
-            return new List<string>
-            {
-                "Acre","Alagoas","Amapá","Amazonas","Bahia","Ceará","Distrito Federal","Espírito Santo","Goiás","Maranhão","Mato Grosso do Sul","Minas Gerais","Pará","Paraíba","Paraná","Pernambuco","Piauí","Rio de Janeiro","Rio Grande do Norte","Rio Grande do Sul","Rondônia","Roraima","Santa Catarina","São Paulo","Sergipe","Tocantins"
-            };
-        }
-
-        private IEnumerable<string> GetAllTeams()
-        {
-            return new List<string>
-            {
-                "ABC-RN","Adap-PR","Alagoinhas-AL","Alecrim-RN","América-MG","América-RJ","Americano-RJ","América De Natal-RN","ASA-AL","Atlético-GO","Atlético-MG","Atlético-PR","Avaí-SC","Bahia-BA","Bangu-RJ","Baraúnas-RN","Baré-RR","Boa Vista-RJ","Botafogo-PB","Botafogo-RJ","Bragantino-SP","Brasiliense-DF","Cabofriense-RJ","Cajazeiras-PB","Camaçari-BA","Campinense-PB","Cascavel-PR","Caxias-RS","Ceará-CE","Ceilândia-DF","Central-PE","Chapecoense-SC","Colo Colo-BA","Corinthians-AL","Corinthians-SP","Coritiba-PR","CRAC-GO","Criciúma-SC","Cruzeiro-MG","Duque De Caxias-RJ","Esportivo-RS","Figueirense-SC","Flamengo-PI","Flamengo-RJ","Fluminense-BA","Fluminense-RJ","Fortaleza-CE","Gama-DF","Goiás-GO","Grêmio-AC","Grêmio-MT","Grêmio-RS","Grêmio Prudente-SP","Guarani-SP","Internacional-RS","Ipatinga-MG","Iraty-PR","Itapipoca-CE","Ituiutaba-MG","J. Maluceli-PR","Ji Paraná-PR","Joinville-SC","Juazeiro-BA","Juventude-RS","Juventus-SP","Linhares-SE","Londrina-PR","Luverdense-MT","Macaé-RJ","Madureira-RJ","Marília-SP","Moto Clube-SE","Nacional-AM","Náutico-PE","Nova Iguaçu-RJ","Palmas-TO","Palmeiras-SP","Paraná-PR","Payssandú-PA","Ponte Preta-SP","Portuguesa-SP","Poções-BA","Porto-PE","Rio Branco-AC","Rio Claro-SP","Roraima-RO","Salgueiro-PE","Santo André-SP","Santos-SP","São_Caetano","São José-RS","São Paulo-SP","São Raimundo-PA","Serra-ES","Serrano-PE","Sertãozinho-SP","Sport-PE","Tigres do Brasil-RJ","Tocantinópolis-TO","Treze-PB","Tupi-MG","Ulbra-RS","União Rondonópolis-RO","União-MT","Vasco-RJ","Veranópolis-RS","Vila Nova-GO","Vila_Nova-MG","Vitória-BA","Volta Redonda-RJ"
-            };
-        }
-
         private IEnumerable<SelectListItem> GetSelectListItems(IEnumerable<string> elements)
         {
             // Create an empty list to hold result of the operation
@@ -536,10 +504,12 @@ namespace ArenaFifa20.NET.Controllers
 
         private void CreateListsToFormRegister(RegisterViewModel model)
         {
-            model.listWhatHowFindUs = GetSelectListItems(GetAllTypeHowFindUs());
-            model.listStates = GetSelectListItems(GetAllStates());
-            model.listTeams = GetSelectListItems(GetAllTeams());
-            model.listModes = GetSelectListItems(GetAllModes());
+            var objFunctions = new Commons.functions();
+            model.listWhatHowFindUs = GetSelectListItems(objFunctions.GetAllTypeHowFindUsRegister());
+            model.listStates = GetSelectListItems(objFunctions.GetAllStatesRegister());
+            model.listTeams = GetSelectListItems(objFunctions.GetAllTeamsRegister());
+            model.listModes = GetSelectListItems(objFunctions.GetAllModesRegister());
+            objFunctions = null;
         }
 
         private string getBodyHtmlRegister(RegisterViewModel model)

@@ -118,8 +118,6 @@ namespace ArenaFifa20.NET.Models
     }
 
 
-
-
     public class RegisterViewModel
     {
         public int id { get; set; }

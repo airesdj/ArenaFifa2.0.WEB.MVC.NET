@@ -1107,6 +1107,12 @@
     <Content Include="Scripts\typeahead.jquery.js" />
     <Content Include="Scripts\typeahead.jquery.min.js" />
     <Content Include="Scripts\wow.min.js" />
+    <Content Include="Views\Moderator\AcceptingNewSeason.cshtml" />
+    <Content Include="Views\Moderator\AcceptingNewSeasonDetails.cshtml" />
+    <Content Include="Views\Moderator\Scorer.cshtml" />
+    <Content Include="Views\Moderator\ScorerDetails.cshtml" />
+    <Content Include="Views\Moderator\User.cshtml" />
+    <Content Include="Views\Moderator\UserDetails.cshtml" />
     <None Include="Views\Moderator\_MessageValidate.cshtml" />
     <None Include="Views\Moderator\_QuestionModal.cshtml" />
     <None Include="Views\Moderator\_QuestionModalv2.cshtml" />

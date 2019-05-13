@@ -1,7 +1,7 @@
 ﻿@using ArenaFifa20.NET.Models
-@model BenchModesViewModel
+@model UserViewModel
 @{
-    ViewBag.Title = "Moderator Menu - Bench";
+    ViewBag.Title = "Moderator Menu - Coach";
 }
 
 
@@ -9,7 +9,7 @@
 <div class="gentelella-right_col" role="main" style="padding-left:20px">
     <div class="gentelella-page-title">
         <div class="gentelella-title">
-            <h3>CADASTRO DE MANUTENÇÃO DO BANCO DE RESERVAS</h3>
+            <h3>CADASTRO DE TÉCNICOS</h3>
         </div>
     </div>
     <br>
@@ -27,33 +27,49 @@
                         <div class="gentelella-x_panel">
                             <div class="gentelella-x_content">
 
-                                <button type="button" class="gentelella-btn gentelella-btn-round gentelella-btn-success" onClick="JAVASCRIPT: submeteModerator('BenchDetails', 'ADD');">Incluir Novo Item de Cadastro</button>
+                                <div class="gentelella-col-md-10 gentelella-col-sm-10 gentelella-col-xs-12">
+                                    <button type="button" class="gentelella-btn gentelella-btn-round gentelella-btn-success" onClick="JAVASCRIPT: submeteModerator('UserDetails', 'ADD');">Incluir Novo Item de Cadastro</button>
+                                </div>
+                                <div id="waiting" class="gentelella-col-md-2 gentelella-col-sm-2 gentelella-col-xs-12 gentelella-a-center">
+                                    Aguarde o processamento...<br />
+                                    <img width="70" heigh="70" src="/images/aguarde.gif" />
+                                </div>
                                 <br><br>
 
                                 <table id="datatable-responsive" class="gentelella-table gentelella-table-striped gentelella-table-bordered gentelella-dt-responsive gentelella-nowrap" cellspacing="0" width="100%">
                                     <thead style="background-color:#2C3E4F;color:white">
                                         <tr>
-                                            <th width="5%" class="gentelella-a-center">ID</th>
-                                            <th width="35%">Nome do Técnico/Manager</th>
-                                            <th width="20%">Psn ID</th>
-                                            <th width="10%" class="gentelella-a-center">Modalidade</th>
-                                            <th width="18%" class="gentelella-a-center">Time FUT/PRO CLUB</th>
+                                            <th width="8%" class="gentelella-a-center">ID</th>
+                                            <th width="45%">Nome</th>
+                                            <th width="22%">Psn ID</th>
+                                            <th width="5%" class="gentelella-a-center">Ativo?</th>
+                                            <th width="8%" class="gentelella-a-center">Moderador?</th>
                                             <th width="12%" class="gentelella-a-center">Ação</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (var item in Model.listOfBench)
+                                        @foreach (var item in Model.listOfUser)
                                         {
                                             <tr>
-                                                <td class="gentelella-a-right">@item.id.ToString("00")</td>
+                                                <td class="gentelella-a-right">@item.id</td>
                                                 <td>@item.name</td>
                                                 <td>@item.psnID</td>
-                                                <td class="gentelella-a-center">@item.typeBench</td>
-                                                <td class="gentelella-a-center">@item.team</td>
+                                                @if (item.userActive)
+                                                {
+                                                    <td class="gentelella-a-center">Sim</td> }
+                                                else
+                                                {
+                                                    <td class="gentelella-a-center">Não</td>}
+                                                @if (item.userModerator)
+                                                {
+                                                    <td class="gentelella-a-center">Sim</td> }
+                                                else
+                                                {
+                                                    <td class="gentelella-a-center">Não</td>}
                                                 <td class="gentelella-a-center">
-                                                    <a href="JAVASCRIPT: submeteModerator('BenchDetails', 'VIEW', '@item.id');" title="Visualizar dados do item de cadastro." class="gentelella-btn gentelella-btn-primary gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-folder gentelella-fa-1-2x"></i></a>
-                                                    <a onClick="JAVASCRIPT: changeQuestionDescriptionDelete('@item.id');" href="" data-toggle="modal" data-target="#bs-delete-modal-sm" title="Excluir item do cadastro." class="gentelella-btn gentelella-btn-danger gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-trash gentelella-fa-1-2x"></i></a>
-                                                    <a onClick="JAVASCRIPT: changeQuestionDescriptionGeneral('@item.id');" href="" data-toggle="modal" data-target="#bs-message-general-modal-sm" title="Colocar técnico no fim&#13;do banco de reservas." class="gentelella-btn gentelella-btn-warning gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-refresh gentelella-fa-1-2x"></i></a>
+                                                    <a href="JAVASCRIPT: submeteModerator('UserDetails', 'VIEW', '@item.id');" title="Visualizar dados do item de cadastro." class="gentelella-btn gentelella-btn-primary gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-folder gentelella-fa-1-2x"></i></a>
+                                                    <a href="JAVASCRIPT: submeteModerator('UserDetails', 'EDIT', '@item.id');" title="Alterar dados do item de cadastro." class="gentelella-btn gentelella-btn-info gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-edit gentelella-fa-1-2x"></i></a>
+                                                    <a onClick="JAVASCRIPT: changeQuestionDescriptionInativate('@item.id');" href="" data-toggle="modal" data-target="#bs-delete-modal-sm" title="Excluir item do cadastro." class="gentelella-btn gentelella-btn-danger gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-trash gentelella-fa-1-2x"></i></a>
                                                 </td>
                                             </tr>
                                         }
@@ -100,11 +116,8 @@
             if (detectMobileDevice() == 0)
                 activeSidebarMenu(window.location.pathname);
 
-            includeFileScreenModalDelete('BANCO DE RESERVAS', 'BenchDetails', 'DELETE');
-            includeFileScreenModalGeneral('BANCO DE RESERVAS', 'Mover Técnico na Fila', 'Deseja mover o técnico <selectid> para o fim da fila do Banco de Reservas?', 'BenchDetails', 'MOVE');
-
-            setOrderingDatatableResponsive([3, 'desc'], [0, 'asc'], null)
-
+            includeFileScreenModalCoaches('UserDetails', 'DELETE');
+            $("#waiting").hide();
         });
 
     </script>
