@@ -105,7 +105,7 @@ namespace ArenaFifa20.NET.Models
     }
 
 
-    public class ChampionshipDetailsModel
+    public class TeamTypeDetailsModel
     {
         public int id { get; set; }
         public string name { get; set; }
@@ -117,10 +117,17 @@ namespace ArenaFifa20.NET.Models
         public string name { get; set; }
         public string typeMode { get; set; }
         public int typeModeID { get; set; }
-        public int userID { get; set; }
         public int teamSofifaID { get; set; }
         public byte teamDeleted { get; set; }
+        public string teamSofifaURL { get; set; }
         public byte hasImage { get; set; }
+        public int userID { get; set; }
+        public string userName { get; set; }
+        public string psnID { get; set; }
+        public string pathLogo { get; set; }
+        public List<TeamTypeDetailsModel> listOfType { get; set; }
+        public List<UserDetailsModel> listOfUser { get; set; }
+        public List<ScorerDetails> listOfScorer { get; set; }
         public string actionUser { get; set; }
         public string returnMessage { get; set; }
     }
@@ -217,68 +224,20 @@ namespace ArenaFifa20.NET.Models
     public class UserDetailsModel
     {
         public int id { get; set; }
-
-        [Required]
-        [Display(Name = "PSN ID")]
-        [StringLength(10, ErrorMessage = "O {0} deve ter no máximo {1} caracteres.")]
         public string psnID { get; set; }
-
-        [Required]
-        [Display(Name = "Nome Completo")]
-        [StringLength(50, ErrorMessage = "O {0} deve ter no máximo {1} caracteres.")]
         public string name { get; set; }
-
-        [Required]
-        [EmailAddress]
-        [Display(Name = "Email")]
         public string Email { get; set; }
-
-        [Required]
-        [StringLength(10, ErrorMessage = "A {0} deve ter de {2} a no máximo {1} caracteres.", MinimumLength = 4)]
-        [DataType(DataType.Password)]
-        [Display(Name = "Senha")]
         public string Password { get; set; }
-
-        [Required]
-        [DataType(DataType.Password)]
-        [Display(Name = "Confirma Senha")]
-        [StringLength(10, ErrorMessage = "A {0} deve ter de {2} a no máximo {1} caracteres.", MinimumLength = 4)]
-        [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "A Senha e a Confirmação da Senha não correspondem.")]
         public string ConfirmPassword { get; set; }
-
-        [Required]
-        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        [Display(Name = "Data Nascimento")]
         public DateTime birthday { get; set; }
         public string birthdayFormatted { get; set; }
-
-        [Required]
-        [Display(Name = "Estado")]
         public string state { get; set; }
-
-        [Required]
-        [Display(Name = "Como Soube?")]
         public string howfindus { get; set; }
-
-        [Display(Name = "Qual?")]
-        [StringLength(80, ErrorMessage = "O {0} deve ter no máximo {2} caracteres.")]
         public string whatkindofmedia { get; set; }
-
-        [Required]
-        [Display(Name = "Seu Time?")]
         public string team { get; set; }
-
-        [Required]
-        [Display(Name = "Modalidade que Deseja?")]
         public string yourmode { get; set; }
-
-        [Display(Name = "Deseja Receber Email Alerta?")]
         public byte receiveWarningEachRound { get; set; }
-
-        [Display(Name = "Deseja Receber Email Situação Campeonato?")]
         public byte receiveTeamTable { get; set; }
-
-        [Display(Name = "Deseja Participar?")]
         public byte wishParticipate { get; set; }
 
         public IEnumerable<SelectListItem> listWhatHowFindUs { get; set; }
@@ -296,4 +255,188 @@ namespace ArenaFifa20.NET.Models
         public string actionUser { get; set; }
         public string returnMessage { get; set; }
     }
+
+    public class TeamListViewModel
+    {
+        public int id { get; set; }
+        public string teamType { get; set; }
+        public List<TeamDetailsModel> listOfTeam { get; set; }
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
+    }
+
+    public class BlogListViewModel
+    {
+        public int id { get; set; }
+        public int userID { get; set; }
+        public List<BlogDetailsModel> listOfBlog { get; set; }
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
+    }
+
+    public class BlogDetailsModel
+    {
+        public int id { get; set; }
+        public int userID { get; set; }
+        public string psnID { get; set; }
+        public string userName { get; set; }
+        public string title { get; set; }
+        public DateTime registerDate { get; set; }
+        public String registerDateFormatted { get; set; }
+        public double registerDateTimeFormatted { get; set; }
+        public string registerTime { get; set; }
+        public string text { get; set; }
+        public List<ChampionshipUserDetailsModel> listOfUser { get; set; }
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
+    }
+
+    public class ChampionshipListViewModel
+    {
+        public int id { get; set; }
+        public List<ChampionshipDetailsModel> listOfChampionship { get; set; }
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
+    }
+
+    public class ChampionshipDetailsModel
+    {
+        public int id { get; set; }
+        public int seasonID { get; set; }
+        public string name { get; set; }
+        public int totalTeam { get; set; }
+        public DateTime startDate { get; set; }
+        public String startDateFormatted { get; set; }
+        public DateTime drawDate { get; set; }
+        public String drawDateFormatted { get; set; }
+        public Boolean active { get; set; }
+        public Boolean forGroup { get; set; }
+        public Boolean twoTurns { get; set; }
+        public Boolean justOneTurn { get; set; }
+        public int totalGroup { get; set; }
+        public Boolean playoff { get; set; }
+        public Boolean twoLegs { get; set; }
+        public int totalQualify { get; set; }
+        public int totalRelegation { get; set; }
+        public int totalDayStageOne { get; set; }
+        public int totalDayStagePlayoff { get; set; }
+        public string type { get; set; }
+        public string typeName { get; set; }
+        public int totalQualifyNextStage { get; set; }
+        public string console { get; set; }
+        public DateTime lastUpdate { get; set; }
+        public string psnIDUpdate { get; set; }
+        public int totalTeamQualifyDivAbove { get; set; }
+        public string stagePlayoffFormatted { get; set; }
+        public int championshipDestiny { get; set; }
+        public int championshipSource { get; set; }
+        public int doubleRound { get; set; }
+        public int userID1 { get; set; }
+        public int userID2 { get; set; }
+        public string userName1 { get; set; }
+        public string userName2 { get; set; }
+        public string psnID1 { get; set; }
+        public string psnID2 { get; set; }
+        public string teamName1 { get; set; }
+        public string teamName2 { get; set; }
+        public int started { get; set; }
+        public int firstStageID { get; set; }
+        public string seasonName { get; set; }
+        public string listTeamsAdd { get; set; }
+        public string listUsersAdd { get; set; }
+        public string listStagesAdd { get; set; }
+        public string listUsersStage2Add { get; set; }
+        public string listTeamsStage0Add { get; set; }
+        public List<ChampionshipTeamDetailsModel> listOfTeam { get; set; }
+        public List<ChampionshipUserDetailsModel> listOfUser { get; set; }
+        public List<ChampionshipStageDetailsModel> listOfStage { get; set; }
+        public List<ChampionshipTypeDetailsModel> listOfType { get; set; }
+        public List<TeamTypeDetailsModel> listOfTeamType { get; set; }
+        public List<ChampionshipUserDetailsModel> listOfUserStage2 { get; set; }
+        public List<ChampionshipTeamDetailsModel> listOfTeamStage0 { get; set; }
+        public List<ChampionshipUserDetailsModel> listOfModerator { get; set; }
+        public List<ChampionshipDetailsModel> listOfChampionship { get; set; }
+        public List<ChampionshipStageDetailsModel> listOfAllStages { get; set; }
+        public List<ChampionshipUserDetailsModel> listOfAllUsers { get; set; }
+        public List<ChampionshipTeamDetailsModel> listOfAllTeams { get; set; }
+
+        //manage championship
+        public List<ChampionshipUserDetailsModel> listOfUserGetIn { get; set; }
+        public List<ChampionshipUserDetailsModel> listOfUserGetOut { get; set; }
+        public string labelUserGetIn { get; set; }
+        public string labelUserGetOut { get; set; }
+        public string labelActionButton { get; set; }
+        public string titleView { get; set; }
+        public string pathLogoChampionship { get; set; }
+        public string pathLogoType { get; set; }
+
+        public string psnOperation { get; set; }
+        public int idUserOperation { get; set; }
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
+    }
+
+    public class TeamTypeListViewModel
+    {
+        public List<TeamTypeDetailsModel> listOfType { get; set; }
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
+    }
+
+    public class ChampionshipTeamListViewModel
+    {
+        public List<ChampionshipTeamDetailsModel> listOfTeam { get; set; }
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
+    }
+
+    public class ChampionshipTeamDetailsModel
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+        public string type { get; set; }
+    }
+
+    public class ChampionshipTypeListViewModel
+    {
+        public List<ChampionshipTypeDetailsModel> listOfType { get; set; }
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
+    }
+
+    public class ChampionshipTypeDetailsModel
+    {
+        public string id { get; set; }
+        public string name { get; set; }
+    }
+
+    public class ChampionshipUserListViewModel
+    {
+        public List<ChampionshipUserDetailsModel> listOfUser { get; set; }
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
+    }
+
+    public class ChampionshipUserDetailsModel
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+        public string psnID { get; set; }
+        public string email { get; set; }
+        public string actionUser { get; set; }
+    }
+
+    public class ChampionshipStageListViewModel
+    {
+        public List<ChampionshipStageDetailsModel> listOfStage { get; set; }
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
+    }
+
+    public class ChampionshipStageDetailsModel
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+    }
+
 }

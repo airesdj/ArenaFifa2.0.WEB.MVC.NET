@@ -81,6 +81,11 @@ else
         {
             @Scripts.Render("~/bundles/gentelella-datatable-script")
             @Scripts.Render("~/bundles/gentelella-form-script")
+
+            if (@ViewBag.inModeratorMenuTextEditor == "1")
+            {
+                @Scripts.Render("~/bundles/gentelella-editor-script")
+            }
         }
 
         @Html.Partial("_Footer")

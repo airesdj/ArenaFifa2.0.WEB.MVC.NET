@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net;
 using static ArenaFifa20.NET.App_Start.CheckSessionTimeOut;
+using System.Text;
 
 namespace ArenaFifa20.NET.Controllers
 {
@@ -489,23 +490,33 @@ namespace ArenaFifa20.NET.Controllers
         private string getBodyHtml(ContactUsViewModel model)
         {
 
-            string strBodyHtml = string.Empty;
+            StringBuilder strBodyHtml = new StringBuilder();
 
+            try
+            {
+                strBodyHtml.Append("<span style='PADDING-RIGHT: 0px;PADDING-LEFT: 0px;FONT-SIZE: 11px;PADDING-BOTTOM: 0px;MARGIN: 0px;COLOR: #333333;PADDING-TOP: 0px;BACKGROUND-REPEAT: repeat-x;FONT-FAMILY: Arial, Helvetica, sans-serif;TEXT-ALIGN: left'>");
+                strBodyHtml.Append("<p>&nbsp;<br><br></p>");
+                strBodyHtml.Append("<span style='font-size:16px;font-family:Verdana;color:red'><b>Assunto: " + model.subject + ".</b></span>");
+                strBodyHtml.Append("<br><br><br>");
+                strBodyHtml.Append("<span style='font-size:13px;font-family:Verdana;color:blue'><b>Dados do E-mail:</b></span>");
+                strBodyHtml.Append("<br><br>");
+                strBodyHtml.Append("<span style='font-size:10px;font-family:Verdana;color:black'><b>Nome:</b>&nbsp;&nbsp;" + model.name + "</span>");
+                strBodyHtml.Append("<br>");
+                strBodyHtml.Append("<span style='font-size:10px;font-family:Verdana;color:black'><b>E-mail:</b>&nbsp;&nbsp;" + model.Email + "</span>");
+                strBodyHtml.Append("<br><br>");
+                strBodyHtml.Append("<span style='font-size:10px;font-family:Verdana;color:blue'><b>Comentário:</b>&nbsp;&nbsp;" + model.message + "</span>");
+                strBodyHtml.Append("</span>");
 
-            strBodyHtml = strBodyHtml + "<span style='PADDING-RIGHT: 0px;PADDING-LEFT: 0px;FONT-SIZE: 11px;PADDING-BOTTOM: 0px;MARGIN: 0px;COLOR: #333333;PADDING-TOP: 0px;BACKGROUND-REPEAT: repeat-x;FONT-FAMILY: Arial, Helvetica, sans-serif;TEXT-ALIGN: left'>";
-            strBodyHtml = strBodyHtml + "<p>&nbsp;<br><br></p>";
-            strBodyHtml = strBodyHtml + "<span style='font-size:16px;font-family:Verdana;color:red'><b>Assunto: " + model.subject + ".</b></span>";
-            strBodyHtml = strBodyHtml + "<br><br><br>";
-            strBodyHtml = strBodyHtml + "<span style='font-size:13px;font-family:Verdana;color:blue'><b>Dados do E-mail:</b></span>";
-            strBodyHtml = strBodyHtml + "<br><br>";
-            strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>Nome:</b>&nbsp;&nbsp;" + model.name + "</span>";
-            strBodyHtml = strBodyHtml + "<br>";
-            strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>E-mail:</b>&nbsp;&nbsp;" + model.Email + "</span>";
-            strBodyHtml = strBodyHtml + "<br><br>";
-            strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:blue'><b>Comentário:</b>&nbsp;&nbsp;" + model.message + "</span>";
-            strBodyHtml = strBodyHtml + "</span>";
-
-            return strBodyHtml;
+                return strBodyHtml.ToString();
+            }
+            catch
+            {
+                return String.Empty;
+            }
+            finally
+            {
+                strBodyHtml = null;
+            }
 
         }
     }

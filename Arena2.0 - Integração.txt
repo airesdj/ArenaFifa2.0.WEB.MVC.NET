@@ -23,8 +23,9 @@ Hi Guys, voltando o assunto do Arena 2.0, a integraçãojá foi iniciada e está
 
 
 *_Seguem os pontos que AINDA NÃO estão integrados:_*
-- Todo Dashboard do Menu Moderador (*_EM ANDAMENTPO: 08/14_*)
-- Todo Dashboard do Tela de Campeonatos
+- Todo Dashboard do Menu Moderador (*_EM ANDAMENTPO: 10/14_*)
+- Todo Dashboard das Tela de Meus Jogos
+- Todo Dashboard das Tela de Campeonatos
 - Todos Processos Liberação da Renovação
 - Todos Processos Geração da Nova Temporada
 - Todos Processos Batch:

@@ -1,11 +1,11 @@
 ﻿using ArenaFifa20.NET.Models;
+using SYSEmail;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web;
+using System.Text;
 using System.Web.Mvc;
 using static ArenaFifa20.NET.App_Start.CheckUserModerator;
 
@@ -18,6 +18,7 @@ namespace ArenaFifa20.NET.Controllers
         {
             ViewBag.inGentelella = "1";
             ViewBag.inModeratorMenu = "1";
+            ViewBag.inModeratorMenuTextEditor = String.Empty;
         }
 
         // GET: Moderator/Summary
@@ -1043,6 +1044,1079 @@ namespace ArenaFifa20.NET.Controllers
         }
 
 
+        // GET: Moderator/Team
+        [UserModerator]
+        public ActionResult Team()
+        {
+
+            HttpResponseMessage response = null;
+            TeamListViewModel modelReturnJSON = null;
+
+            setViewBagVariables();
+
+            try
+            {
+                response = GlobalVariables.WebApiClient.GetAsync("Team").Result;
+                modelReturnJSON = response.Content.ReadAsAsync<TeamListViewModel>().Result;
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                        {
+
+                            return View(modelReturnJSON);
+                        }
+                        else
+                        {
+                            TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Cadastro de Times. (" + modelReturnJSON.returnMessage + ")";
+                            return View(modelReturnJSON);
+                        }
+                    default:
+                        TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Cadastro de Times. (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View(modelReturnJSON);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                TempData["returnMessage"] = "Erro interno - Exibindo Menu Moderador - Cadastro de Times: (" + ex.InnerException.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(modelReturnJSON);
+
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+            }
+        }
+
+        // GET: Moderator/TeamDetails
+        [UserModerator]
+        public ActionResult TeamDetails(FormCollection formHTML)
+        {
+
+            HttpResponseMessage response = new HttpResponseMessage();
+            TeamDetailsModel modelReturnJSON = new TeamDetailsModel();
+            List<UserDetailsModel> listOfUser = new List<UserDetailsModel>();
+            List<TeamTypeDetailsModel> listOfType = new List<TeamTypeDetailsModel>();
+
+
+            string actionForm = formHTML["actionForm"].ToLower();
+
+            setViewBagVariables();
+            ViewBag.actionFormHiddenValue = "";
+
+            try
+            {
+
+                if (actionForm == "delete")
+                {
+
+                    modelReturnJSON.actionUser = "dellCrud";
+                    modelReturnJSON.id = Convert.ToInt32(formHTML["selectedID"]);
+
+                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("Team", modelReturnJSON).Result;
+                    modelReturnJSON = response.Content.ReadAsAsync<TeamDetailsModel>().Result;
+                    TempData["actionSuccessfully"] = "Registro excluído com sucesso";
+
+                }
+                else if (actionForm == "save")
+                {
+
+                    modelReturnJSON.actionUser = actionForm;
+
+                    modelReturnJSON.id = Convert.ToInt32(formHTML["selectedID"]);
+                    modelReturnJSON.name = formHTML["txtNome"];
+                    modelReturnJSON.typeModeID = Convert.ToInt16(formHTML["cmbTipo"]);
+                    modelReturnJSON.teamSofifaURL = formHTML["txtUrl"];
+                    if (!String.IsNullOrEmpty(formHTML["txtIdSofifa"]))
+                        modelReturnJSON.teamSofifaID = Convert.ToInt32(formHTML["txtIdSofifa"]);
+                    if (!String.IsNullOrEmpty(formHTML["cmbTecnico"]))
+                        modelReturnJSON.userID = Convert.ToInt32(formHTML["cmbTecnico"]);
+                    modelReturnJSON.psnID = formHTML["txtPsn"];
+
+                    modelReturnJSON.pathLogo = getPathLogoTeam(formHTML["txtNome"]);
+
+                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("Team", modelReturnJSON).Result;
+                    modelReturnJSON = response.Content.ReadAsAsync<TeamDetailsModel>().Result;
+                    if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                    {
+                        if (modelReturnJSON.id == 0) { TempData["actionSuccessfully"] = "Registro incluído com sucesso"; }
+                        else { TempData["actionSuccessfully"] = "Registro alterado com sucesso"; }
+                    }
+                    else if (modelReturnJSON.id == 0) { actionForm = "ADD"; }
+                    else if (modelReturnJSON.id > 0) { actionForm = "EDIT"; }
+                }
+                else if (actionForm == "add" || actionForm == "view" || actionForm == "edit")
+                {
+
+                    modelReturnJSON.returnMessage = "ModeratorSuccessfully";
+                    response.StatusCode = HttpStatusCode.Created;
+                }
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "ModeratorSuccessfully" )
+                        {
+
+                            if (actionForm == "save" || actionForm == "delete")
+                            {
+                                return RedirectToAction("Team", "Moderator");
+                            }
+                            else
+                            {
+                                if (actionForm == "add" || actionForm == "edit")
+                                {
+                                    getLists(ref listOfUser, ref listOfType, response);
+                                }
+
+                                if (actionForm == "view" || actionForm == "edit")
+                                {
+
+                                    response = GlobalVariables.WebApiClient.GetAsync("Team/" + formHTML["selectedID"]).Result;
+                                    modelReturnJSON = response.Content.ReadAsAsync<TeamDetailsModel>().Result;
+
+                                    if (actionForm=="view")
+                                    {
+                                        UserDetailsModel userDetails = new UserDetailsModel();
+                                        userDetails.id = modelReturnJSON.userID;
+                                        userDetails.name = modelReturnJSON.userName;
+                                        userDetails.psnID = modelReturnJSON.psnID;
+                                        listOfUser.Add(userDetails);
+                                        modelReturnJSON.listOfUser = listOfUser;
+
+                                        userDetails = null;
+
+                                        TeamTypeDetailsModel typeDetails = new TeamTypeDetailsModel();
+                                        typeDetails.id = modelReturnJSON.typeModeID;
+                                        typeDetails.name = modelReturnJSON.typeMode;
+                                        listOfType.Add(typeDetails);
+                                        modelReturnJSON.listOfType = listOfType;
+
+                                        typeDetails = null;
+                                    }
+                                    else
+                                    {
+                                        modelReturnJSON.listOfUser = listOfUser;
+                                        modelReturnJSON.listOfType = listOfType;
+                                    }
+                                    modelReturnJSON.pathLogo = getPathLogoTeam(modelReturnJSON.name);
+
+                                }
+                                else if (actionForm == "add")
+                                {
+                                    modelReturnJSON.listOfUser = listOfUser;
+                                    modelReturnJSON.listOfType = listOfType;
+                                    modelReturnJSON.id = 0;
+                                }
+                                modelReturnJSON.actionUser = actionForm.ToUpper();
+                                if (!String.IsNullOrEmpty(modelReturnJSON.returnMessage) && modelReturnJSON.returnMessage != "ModeratorSuccessfully")
+                                    TempData["returnMessage"] = modelReturnJSON.returnMessage + " - " + actionForm + ". (" + modelReturnJSON.returnMessage + ")";
+                                return View(modelReturnJSON);
+                            }
+                        }
+                        else
+                        {
+                            modelReturnJSON.actionUser = actionForm;
+                            if (modelReturnJSON.listOfType==null)
+                            {
+                                getLists(ref listOfUser, ref listOfType, response);
+                                modelReturnJSON.listOfType = listOfType;
+                                modelReturnJSON.listOfUser = listOfUser;
+                            }
+                            TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Cadastro de Times - " + actionForm + ". (" + modelReturnJSON.returnMessage + ")";
+                            return View(modelReturnJSON);
+                        }
+                    default:
+                        modelReturnJSON.actionUser = actionForm;
+                        if (modelReturnJSON.listOfType==null)
+                        {
+                            getLists(ref listOfUser, ref listOfType, response);
+                            modelReturnJSON.listOfType = listOfType;
+                            modelReturnJSON.listOfUser = listOfUser;
+                        }
+                        TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Cadastro de Times - " + actionForm + ". (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View(modelReturnJSON);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                modelReturnJSON.actionUser = actionForm;
+                if (modelReturnJSON.listOfType==null)
+                {
+                    getLists(ref listOfUser, ref listOfType, response);
+                    modelReturnJSON.listOfType = listOfType;
+                    modelReturnJSON.listOfUser = listOfUser;
+                }
+                TempData["returnMessage"] = "Erro interno - Exibindo Menu Moderador - Cadastro de Times - " + actionForm + ": (" + ex.InnerException.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(modelReturnJSON);
+
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+                listOfUser = null;
+                listOfType = null;
+            }
+        }
+
+        // GET: Moderator/UpdateTeamPlayersList
+        [UserModerator]
+        public ActionResult UpdateTeamPlayersList(FormCollection formHTML)
+        {
+
+            HttpResponseMessage response = new HttpResponseMessage();
+            TeamDetailsModel modelReturnJSON = new TeamDetailsModel();
+
+
+            string actionForm = formHTML["actionForm"].ToLower();
+
+            setViewBagVariables();
+            ViewBag.actionFormHiddenValue = "";
+
+            try
+            {
+
+                modelReturnJSON.actionUser = "updateTeamPlayersList";
+                modelReturnJSON.id = Convert.ToInt32(formHTML["selectedID"]);
+                modelReturnJSON.teamSofifaURL = formHTML["selectedIDTeamURL"].Replace("http://", "https://");
+                modelReturnJSON.name = formHTML["selectedIDTeamNameWithType"];
+                modelReturnJSON.pathLogo = getPathLogoTeam(formHTML["selectedIDTeamName"]);
+
+                if (ConfigurationManager.AppSettings["use.url.standard.sofifa.html"].ToString()=="1")
+                {
+                    var arrayUrlTEamSofifa = modelReturnJSON.teamSofifaURL.Split(Convert.ToChar("/"));
+                    modelReturnJSON.teamSofifaURL = ConfigurationManager.AppSettings["url.team.sofifa.html.standard"].ToString();
+                    modelReturnJSON.teamSofifaURL += "?teamSofifaID=" + arrayUrlTEamSofifa[arrayUrlTEamSofifa.Length - 1];
+                    modelReturnJSON.teamSofifaID = Convert.ToInt32(arrayUrlTEamSofifa[arrayUrlTEamSofifa.Length - 1]);
+                }
+
+                response = GlobalVariables.WebApiClient.PostAsJsonAsync("Team", modelReturnJSON).Result;
+                modelReturnJSON = response.Content.ReadAsAsync<TeamDetailsModel>().Result;
+                if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                    TempData["actionSuccessfully"] = "Lista de Jogadores atualizada com sucesso";
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                        {
+                            return View(modelReturnJSON);
+                        }
+                        else
+                        {
+                            modelReturnJSON.actionUser = actionForm;
+                            modelReturnJSON.listOfScorer = new List<ScorerDetails>();
+                            TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Cadastro de Times -UpdateTeamPlayersList. (" + modelReturnJSON.returnMessage + ")";
+                            return View(modelReturnJSON);
+                        }
+                    default:
+                        modelReturnJSON.actionUser = actionForm;
+                        modelReturnJSON.listOfScorer = new List<ScorerDetails>();
+                        TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Cadastro de Times - UpdateTeamPlayersList. (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View(modelReturnJSON);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                modelReturnJSON.actionUser = actionForm;
+                modelReturnJSON.listOfScorer = new List<ScorerDetails>();
+                TempData["returnMessage"] = "Erro interno - Exibindo Menu Moderador - Cadastro de Times - UpdateTeamPlayersList: (" + ex.InnerException.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(modelReturnJSON);
+
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+            }
+        }
+
+
+        // GET: Moderator/Blog
+        [UserModerator]
+        public ActionResult Blog()
+        {
+
+            HttpResponseMessage response = null;
+            BlogListViewModel modelReturnJSON = null;
+
+            setViewBagVariables();
+
+            try
+            {
+                response = GlobalVariables.WebApiClient.GetAsync("Blog").Result;
+                modelReturnJSON = response.Content.ReadAsAsync<BlogListViewModel>().Result;
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                        {
+
+                            return View(modelReturnJSON);
+                        }
+                        else
+                        {
+                            TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Cadastro de Blogs. (" + modelReturnJSON.returnMessage + ")";
+                            return View(modelReturnJSON);
+                        }
+                    default:
+                        TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Cadastro de Blogs. (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View(modelReturnJSON);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                TempData["returnMessage"] = "Erro interno - Exibindo Menu Moderador - Cadastro de Blogs: (" + ex.InnerException.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(modelReturnJSON);
+
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+            }
+        }
+
+        // GET: Moderator/BlogDetails
+        [UserModerator]
+        [ValidateInput(false)]
+        public ActionResult BlogDetails(FormCollection formHTML)
+        {
+
+            HttpResponseMessage response = new HttpResponseMessage();
+            BlogDetailsModel modelReturnJSON = new BlogDetailsModel();
+            List<ChampionshipUserDetailsModel> listOfUser = new List<ChampionshipUserDetailsModel>();
+
+            string actionForm = formHTML["actionForm"].ToLower();
+
+            setViewBagVariables();
+            ViewBag.actionFormHiddenValue = "";
+            ViewBag.inModeratorMenuTextEditor = "1";
+
+            try
+            {
+
+                if (actionForm == "delete")
+                {
+
+                    modelReturnJSON.actionUser = "dellCrud";
+                    modelReturnJSON.id = Convert.ToInt32(formHTML["selectedID"]);
+                    modelReturnJSON.userID = Convert.ToInt32(formHTML["selectedUserID"]);
+
+                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("Blog", modelReturnJSON).Result;
+                    modelReturnJSON = response.Content.ReadAsAsync<BlogDetailsModel>().Result;
+                    TempData["actionSuccessfully"] = "Registro excluído com sucesso";
+
+                }
+                else if (actionForm == "save")
+                {
+
+                    modelReturnJSON.actionUser = actionForm;
+
+                    modelReturnJSON.id = Convert.ToInt32(formHTML["selectedID"]);
+                    modelReturnJSON.userID = Convert.ToInt32(formHTML["cmbTecnico"]);
+                    modelReturnJSON.title = formHTML["txtTitulo"];
+                    modelReturnJSON.text = Server.HtmlDecode(formHTML["txtConteudo"]);
+                    if (modelReturnJSON.id==0)
+                    {
+                        modelReturnJSON.registerDate = DateTime.Now.Date;
+                        modelReturnJSON.registerTime = DateTime.Now.ToString("HH:mm");
+                    }
+                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("Blog", modelReturnJSON).Result;
+                    modelReturnJSON = response.Content.ReadAsAsync<BlogDetailsModel>().Result;
+                    if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                    {
+                        if (modelReturnJSON.id == 0) { TempData["actionSuccessfully"] = "Registro incluído com sucesso"; }
+                        else { TempData["actionSuccessfully"] = "Registro alterado com sucesso"; }
+                    }
+                    else if (modelReturnJSON.id == 0) { actionForm = "ADD"; }
+                    else if (modelReturnJSON.id > 0) { actionForm = "EDIT"; }
+                }
+                else if (actionForm == "add" || actionForm == "view" || actionForm == "edit")
+                {
+
+                    modelReturnJSON.returnMessage = "ModeratorSuccessfully";
+                    response.StatusCode = HttpStatusCode.Created;
+                }
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                        {
+
+                            if (actionForm == "save" || actionForm == "delete")
+                            {
+                                return RedirectToAction("Blog", "Moderator");
+                            }
+                            else
+                            {
+                                if (actionForm == "add")
+                                {
+                                    getListModerator(ref listOfUser, response);
+                                }
+
+                                if (actionForm == "view" || actionForm == "edit")
+                                {
+
+                                    response = GlobalVariables.WebApiClient.GetAsync("Blog/" + (formHTML["selectedUserID"] + "|" + formHTML["selectedID"])).Result;
+                                    modelReturnJSON = response.Content.ReadAsAsync<BlogDetailsModel>().Result;
+
+                                    ChampionshipUserDetailsModel userDetails = new ChampionshipUserDetailsModel();
+                                    userDetails.id = modelReturnJSON.userID;
+                                    userDetails.name = modelReturnJSON.userName;
+                                    userDetails.psnID = modelReturnJSON.psnID;
+                                    listOfUser.Add(userDetails);
+                                    modelReturnJSON.listOfUser = listOfUser;
+
+                                    userDetails = null;
+
+                                }
+                                else if (actionForm == "add")
+                                {
+                                    modelReturnJSON.listOfUser = listOfUser;
+                                    modelReturnJSON.id = 0;
+                                }
+                                modelReturnJSON.actionUser = actionForm.ToUpper();
+                                if (!String.IsNullOrEmpty(modelReturnJSON.returnMessage) && modelReturnJSON.returnMessage != "ModeratorSuccessfully")
+                                    TempData["returnMessage"] = modelReturnJSON.returnMessage + " - " + actionForm + ". (" + modelReturnJSON.returnMessage + ")";
+                                return View(modelReturnJSON);
+                            }
+                        }
+                        else
+                        {
+                            modelReturnJSON.actionUser = actionForm;
+                            if (modelReturnJSON.listOfUser == null)
+                            {
+                                getListModerator(ref listOfUser, response);
+                                modelReturnJSON.listOfUser = listOfUser;
+                            }
+                            TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Cadastro de Blogs - " + actionForm + ". (" + modelReturnJSON.returnMessage + ")";
+                            return View(modelReturnJSON);
+                        }
+                    default:
+                        modelReturnJSON.actionUser = actionForm;
+                        if (modelReturnJSON.listOfUser == null)
+                        {
+                            getListModerator(ref listOfUser, response);
+                            modelReturnJSON.listOfUser = listOfUser;
+                        }
+                        TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Cadastro de Blogs - " + actionForm + ". (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View(modelReturnJSON);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                modelReturnJSON.actionUser = actionForm;
+                if (modelReturnJSON.listOfUser == null)
+                {
+                    getListModerator(ref listOfUser, response);
+                    modelReturnJSON.listOfUser = listOfUser;
+                }
+                TempData["returnMessage"] = "Erro interno - Exibindo Menu Moderador - Cadastro de Blogs - " + actionForm + ": (" + ex.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(modelReturnJSON);
+
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+                listOfUser = null;
+            }
+        }
+
+
+        // GET: Moderator/Championship
+        [UserModerator]
+        public ActionResult Championship()
+        {
+
+            HttpResponseMessage response = null;
+            ChampionshipListViewModel modelReturnJSON = null;
+
+            setViewBagVariables();
+
+            try
+            {
+                response = GlobalVariables.WebApiClient.GetAsync("Championship").Result;
+                modelReturnJSON = response.Content.ReadAsAsync<ChampionshipListViewModel>().Result;
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                        {
+
+                            return View(modelReturnJSON);
+                        }
+                        else
+                        {
+                            TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Cadastro de Campeonatos. (" + modelReturnJSON.returnMessage + ")";
+                            return View(modelReturnJSON);
+                        }
+                    default:
+                        TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Cadastro de Campeonatos. (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View(modelReturnJSON);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                TempData["returnMessage"] = "Erro interno - Exibindo Menu Moderador - Cadastro de Campeonatos: (" + ex.InnerException.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(modelReturnJSON);
+
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+            }
+        }
+
+
+        // GET: Moderator/ChampionshipDetails
+        [UserModerator]
+        public ActionResult ChampionshipDetails(FormCollection formHTML)
+        {
+
+            HttpResponseMessage response = new HttpResponseMessage();
+            ChampionshipDetailsModel modelReturnJSON = new ChampionshipDetailsModel();
+
+            string actionForm = formHTML["actionForm"].ToLower();
+
+            setViewBagVariables();
+            ViewBag.actionFormHiddenValue = "";
+
+            try
+            {
+
+                if (actionForm == "save")
+                {
+
+                    modelReturnJSON.actionUser = actionForm;
+
+                    modelReturnJSON.id = Convert.ToInt32(formHTML["selectedID"]);
+                    modelReturnJSON.userID1 = Convert.ToInt32(formHTML["cmbModerador1"]);
+                    modelReturnJSON.userID2 = Convert.ToInt32(formHTML["cmbModerador2"]);
+                    modelReturnJSON.name = formHTML["txtDescricao"];
+                    modelReturnJSON.totalQualify = Convert.ToInt16(formHTML["txtQtClassificados"]);
+                    modelReturnJSON.totalRelegation = Convert.ToInt16(formHTML["txtQtRebaixados"]);
+                    modelReturnJSON.totalQualifyNextStage = Convert.ToInt16(formHTML["txtQtClassifMoreThan"]);
+                    modelReturnJSON.totalDayStagePlayoff = Convert.ToInt16(formHTML["txtQtDiaPartidaPlayoff"]);
+                    if (formHTML["chkAtivo"] == "on")
+                        modelReturnJSON.active = true;
+                    modelReturnJSON.started = Convert.ToInt32(formHTML["drawDone"]);
+
+                    modelReturnJSON.startDate = Convert.ToDateTime(formHTML["txtDtInicio"]);
+                    modelReturnJSON.drawDate = Convert.ToDateTime(formHTML["txtDtSorteio"]);
+                    if (formHTML["chkTurnoReturno"] == "on")
+                        modelReturnJSON.twoTurns = true;
+                    if (formHTML["chkPorGupos"] == "on")
+                        modelReturnJSON.forGroup = true;
+                    if (formHTML["chkPlayoff"] == "on")
+                        modelReturnJSON.playoff = true;
+                    if (formHTML["chkTurno"] == "on")
+                        modelReturnJSON.justOneTurn = true;
+                    if (formHTML["chkIdaVolta"] == "on")
+                        modelReturnJSON.twoLegs = true;
+
+                    modelReturnJSON.type = formHTML["cmbTipo"];
+
+                    modelReturnJSON.totalTeam = Convert.ToInt16(formHTML["txtQtTimes"]);
+                    modelReturnJSON.totalGroup = Convert.ToInt16(formHTML["txtQtGrupos"]);
+                    modelReturnJSON.totalDayStageOne = Convert.ToInt16(formHTML["txtQtDiaPartidaFaseInicial"]);
+
+                    modelReturnJSON.listTeamsAdd = formHTML["listTimesPorCampeonato"];
+                    modelReturnJSON.listTeamsStage0Add = formHTML["listTimesPreCopa"];
+                    modelReturnJSON.listUsersAdd = formHTML["listTecnicosPorCampeonato"];
+                    modelReturnJSON.listUsersStage2Add = formHTML["listTecnicoProxFase"];
+                    modelReturnJSON.listStagesAdd = formHTML["listStageIDs"];
+
+                    modelReturnJSON.idUserOperation = Convert.ToUInt16(Session["user.id"].ToString());
+                    modelReturnJSON.psnOperation = Session["user.psnID"].ToString();
+
+                    modelReturnJSON.console = formHTML["consoleID"];
+
+                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("Championship", modelReturnJSON).Result;
+                    modelReturnJSON = new ChampionshipDetailsModel();
+                    modelReturnJSON = response.Content.ReadAsAsync<ChampionshipDetailsModel>().Result;
+                    if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                    {
+                        if (modelReturnJSON.id == 0) { TempData["actionSuccessfully"] = "Registro incluído com sucesso"; }
+                        else { TempData["actionSuccessfully"] = "Registro alterado com sucesso"; }
+                    }
+                    else if (modelReturnJSON.id == 0) { actionForm = "ADD"; }
+                    else if (modelReturnJSON.id > 0) { actionForm = "EDIT"; }
+                }
+                else if (actionForm == "view" || actionForm == "edit")
+                {
+
+                    modelReturnJSON.returnMessage = "ModeratorSuccessfully";
+                    response.StatusCode = HttpStatusCode.Created;
+                }
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                        {
+
+                            if (actionForm == "save")
+                            {
+                                return RedirectToAction("Championship", "Moderator");
+                            }
+                            else
+                            {
+                                if (actionForm == "view" || actionForm == "edit")
+                                {
+
+                                    response = GlobalVariables.WebApiClient.GetAsync("Championship/" + formHTML["selectedID"]).Result;
+                                    modelReturnJSON = response.Content.ReadAsAsync<ChampionshipDetailsModel>().Result;
+
+                                    List<ChampionshipTypeDetailsModel> listOfType = new List<ChampionshipTypeDetailsModel>();
+                                    ChampionshipTypeDetailsModel typeDetails = new ChampionshipTypeDetailsModel();
+                                    typeDetails.id = modelReturnJSON.type;
+                                    typeDetails.name = modelReturnJSON.typeName;
+                                    listOfType.Add(typeDetails);
+                                    modelReturnJSON.listOfType = listOfType;
+
+                                    List<ChampionshipUserDetailsModel> listOfUser = new List<ChampionshipUserDetailsModel>();
+                                    getListModerator(ref listOfUser, response);
+                                    modelReturnJSON.listOfModerator = listOfUser;
+
+                                    TeamTypeListViewModel teamTypeModel = new TeamTypeListViewModel();
+                                    response = GlobalVariables.WebApiClient.GetAsync("TeamType").Result;
+                                    teamTypeModel = response.Content.ReadAsAsync<TeamTypeListViewModel>().Result;
+
+                                    modelReturnJSON.listOfTeamType = teamTypeModel.listOfType;
+
+
+                                    ChampionshipDetailsModel championshipModel = new ChampionshipDetailsModel();
+                                    ChampionshipListViewModel championshipListModel = new ChampionshipListViewModel();
+
+                                    championshipModel.actionUser = "getAllActive";
+                                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("Championship", championshipModel).Result;
+                                    championshipListModel = response.Content.ReadAsAsync<ChampionshipListViewModel>().Result;
+
+                                    modelReturnJSON.listOfChampionship = championshipListModel.listOfChampionship;
+
+                                    listOfType = null;
+                                    typeDetails = null;
+                                    listOfUser = null;
+                                    teamTypeModel = null;
+                                    championshipModel = null;
+                                    championshipListModel = null;
+                                }
+                                modelReturnJSON.actionUser = actionForm.ToUpper();
+                                if (!String.IsNullOrEmpty(modelReturnJSON.returnMessage) && modelReturnJSON.returnMessage != "ModeratorSuccessfully")
+                                    TempData["returnMessage"] = modelReturnJSON.returnMessage + " - " + actionForm + ". (" + modelReturnJSON.returnMessage + ")";
+                                return View(modelReturnJSON);
+                            }
+                        }
+                        else
+                        {
+                            modelReturnJSON.actionUser = actionForm;
+                            TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Cadastro de Campeonatos - " + actionForm + ". (" + modelReturnJSON.returnMessage + ")";
+                            return View(modelReturnJSON);
+                        }
+                    default:
+                        modelReturnJSON.actionUser = actionForm;
+                        TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Cadastro de Campeonatos - " + actionForm + ". (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View(modelReturnJSON);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                modelReturnJSON.actionUser = actionForm;
+                TempData["returnMessage"] = "Erro interno - Exibindo Menu Moderador - Cadastro de Campeonatos - " + actionForm + ": (" + ex.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(modelReturnJSON);
+
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+            }
+        }
+
+
+
+        // GET: Moderator/ManageChampionshipDetails
+        [UserModerator]
+        public ActionResult ManageChampionshipDetails(FormCollection formHTML)
+        {
+
+            HttpResponseMessage response = new HttpResponseMessage();
+            ChampionshipDetailsModel modelReturnJSON = new ChampionshipDetailsModel();
+
+            string actionForm = formHTML["actionForm"].ToLower();
+            string typeSearch = String.Empty;
+
+            setViewBagVariables();
+            ViewBag.actionFormHiddenValue = "";
+
+            try
+            {
+
+                if (actionForm.IndexOf("save") > -1)
+                {
+                    systemEmail objEmail = new systemEmail();
+
+                    string[] arrayIN = formHTML["cmbInputIN"].Split(Convert.ToChar(";"));
+                    string[] arrayOUT = formHTML["cmbInputOUT"].Split(Convert.ToChar(";"));
+                    string subjectEmail = String.Empty;
+                    string divisionName = String.Empty;
+
+                    modelReturnJSON.actionUser = actionForm;
+                    modelReturnJSON.seasonName = formHTML["selectedIDSeasonName"];
+                    modelReturnJSON.type = formHTML["selectedIDType"];
+                    modelReturnJSON.userID1 = Convert.ToInt32(arrayIN[0]);
+                    modelReturnJSON.userName1 = arrayIN[1];
+                    modelReturnJSON.psnID1 = arrayIN[2];
+                    modelReturnJSON.userID2 = Convert.ToInt32(arrayOUT[0]);
+                    modelReturnJSON.userName2 = arrayOUT[1];
+                    modelReturnJSON.psnID2 = arrayOUT[2];
+
+                    if (actionForm == "save_send_invite")
+                    {
+                        modelReturnJSON.teamName1 = arrayIN[1];
+                        if (modelReturnJSON.type.Substring(0, 3) == "DIV")
+                            modelReturnJSON.teamName1 += " (" + arrayIN[2] + ")";
+
+                        if (modelReturnJSON.type == "DIV1" || modelReturnJSON.type == "FUT1") { divisionName = "Série A"; }
+                        else if (modelReturnJSON.type == "DIV2" || modelReturnJSON.type == "FUT2") { divisionName = "Série B"; }
+                        else if (modelReturnJSON.type == "DIV3" || modelReturnJSON.type == "FUT3") { divisionName = "Série C"; }
+                        else if (modelReturnJSON.type == "DIV4" || modelReturnJSON.type == "FUT4") { divisionName = "Série D"; }
+
+
+                        if (modelReturnJSON.type == "FUT2") { subjectEmail = "Convite para participar da " + modelReturnJSON.seasonName + " do Campeonatos de FUT"; }
+                        else if (modelReturnJSON.type == "FUT1") { subjectEmail = "Convite para participar da " + modelReturnJSON.seasonName + " do Campeonatos de FUT"; }
+                        else if (modelReturnJSON.type == "DIV3" || modelReturnJSON.type == "DIV4") { subjectEmail = "Convite para participar da " + modelReturnJSON.seasonName + " do Campeonatos de H2H"; }
+                        else if (modelReturnJSON.type == "DIV1" || modelReturnJSON.type == "FUT2") { subjectEmail = "Convite para acesso a " + divisionName + " da " + modelReturnJSON.seasonName + " do Campeonatos de H2H"; }
+
+                        objEmail.SendEmail(getBodyHtml(modelReturnJSON, divisionName), arrayOUT[3], "CONTACT-US", subjectEmail);
+
+                        response.StatusCode = HttpStatusCode.Created;
+                        modelReturnJSON.returnMessage = "ModeratorSuccessfully";
+                        TempData["actionSuccessfully"] = "Email convite para o técnico: " + modelReturnJSON.userName2 + " (" + modelReturnJSON.psnID2 + "), foi enviado com sucesso.";
+
+                    }
+                    else if (actionForm == "save_manager_swap")
+                    {
+
+                        modelReturnJSON.actionUser = "userExchange";
+                        modelReturnJSON.idUserOperation = Convert.ToUInt16(Session["user.id"].ToString());
+                        modelReturnJSON.psnOperation = Session["user.psnID"].ToString();
+
+                        response = GlobalVariables.WebApiClient.PostAsJsonAsync("Championship", modelReturnJSON).Result;
+                        modelReturnJSON = new ChampionshipDetailsModel();
+                        modelReturnJSON = response.Content.ReadAsAsync<ChampionshipDetailsModel>().Result;
+
+                        if (modelReturnJSON.type == "DIV3" || modelReturnJSON.type == "DIV4" || modelReturnJSON.type == "FUT1" || modelReturnJSON.type == "PRO1")
+                            subjectEmail = "Re: Convite para participar";
+                        else if (modelReturnJSON.type == "DIV1" || modelReturnJSON.type == "DIV2")
+                            subjectEmail = "Re: Convite para Acesso";
+
+                        objEmail.SendEmail(getBodyHtmlSwapManager(modelReturnJSON), arrayIN[3], "CONTACT-US", subjectEmail);
+
+                        if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                        {
+                            if (modelReturnJSON.type.Substring(0,3)=="DIV")
+                                TempData["actionSuccessfully"] = "A troca de técnicos dos campeonatos de H2H foi efetuada com sucesso.";
+                            else if (modelReturnJSON.type.Substring(0, 3) == "FUT")
+                                TempData["actionSuccessfully"] = "A troca de times & técnicos dos campeonatos de FUT foi efetuada com sucesso.";
+                            else if (modelReturnJSON.type.Substring(0, 3) == "PRO")
+                                TempData["actionSuccessfully"] = "A troca de clubes & manager dos campeonatos de PRO CLUB foi efetuada com sucesso.";
+                        }
+
+                    }
+                    else if (actionForm == "save_club_swap")
+                    {
+                        modelReturnJSON.actionUser = "managerexchange";
+                        modelReturnJSON.idUserOperation = Convert.ToUInt16(Session["user.id"].ToString());
+                        modelReturnJSON.psnOperation = Session["user.psnID"].ToString();
+
+                        response = GlobalVariables.WebApiClient.PostAsJsonAsync("Championship", modelReturnJSON).Result;
+                        modelReturnJSON = new ChampionshipDetailsModel();
+                        modelReturnJSON = response.Content.ReadAsAsync<ChampionshipDetailsModel>().Result;
+
+                        subjectEmail = "Re: Troca de Managers";
+
+                        objEmail.SendEmail(getBodyHtmlSwapManagerPRO(modelReturnJSON), arrayIN[3], "CONTACT-US", subjectEmail);
+
+                        if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                        {
+                            TempData["actionSuccessfully"] = "A Troca de Clubes no PRO CLUB foi efetuada com sucesso.";
+                        }
+                    }
+
+                    objEmail = null;
+                }
+                else if (actionForm == "send_invite" || actionForm == "manager_swap" || actionForm == "club_swap")
+                {
+
+                    modelReturnJSON.returnMessage = "ModeratorSuccessfully";
+                    modelReturnJSON.actionUser = actionForm.ToUpper();
+                    response.StatusCode = HttpStatusCode.Created;
+                }
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                        {
+
+                            if (actionForm.IndexOf("save") > -1)
+                            {
+                                return RedirectToAction("Championship", "Moderator");
+                            }
+                            else
+                            {
+                                if (actionForm == "send_invite" || actionForm == "manager_swap" || actionForm == "club_swap")
+                                {
+
+                                    response = GlobalVariables.WebApiClient.GetAsync("Championship/" + formHTML["selectedID"]).Result;
+                                    modelReturnJSON = response.Content.ReadAsAsync<ChampionshipDetailsModel>().Result;
+
+                                    ChampionshipUserListViewModel listOfUserGetIn = new ChampionshipUserListViewModel();
+                                    ChampionshipUserListViewModel listOfUserGetOut = new ChampionshipUserListViewModel();
+                                    ChampionshipTeamListViewModel listOfTeam = new ChampionshipTeamListViewModel();
+
+                                    if (actionForm == "send_invite")
+                                    {
+                                        modelReturnJSON.titleView = "Enviar E-mail Convite Temporada";
+                                        modelReturnJSON.labelActionButton = "Enviar E-mail";
+
+                                        response = GlobalVariables.WebApiClient.GetAsync("ChampionshipTeam/" + formHTML["selectedID"]).Result;
+                                        listOfTeam = response.Content.ReadAsAsync<ChampionshipTeamListViewModel>().Result;
+                                        modelReturnJSON.listOfTeam = listOfTeam.listOfTeam;
+                                        modelReturnJSON.labelUserGetIn = "Escolha um Time do Campeonato";
+
+                                        if (formHTML["selectedType"] == "DIV1")
+                                        {
+                                            modelReturnJSON.labelUserGetOut = "Escolha um Técnico da Série B do H2H";
+                                            typeSearch = "DIV2";
+                                        }
+                                        else if (formHTML["selectedType"] == "DIV2")
+                                        {
+                                            modelReturnJSON.labelUserGetOut = "Escolha um Técnico da Série C do H2H";
+                                            typeSearch = "DIV3";
+                                        }
+                                        else if (formHTML["selectedType"] == "DIV3")
+                                        {
+                                            modelReturnJSON.labelUserGetOut = "Escolha um Técnico do Banco de reservas do H2H";
+                                            typeSearch = "BCO-H2H";
+                                        }
+                                        else if (formHTML["selectedType"] == "FUT1")
+                                        {
+                                            modelReturnJSON.labelUserGetOut = "Escolha um Técnico da Banco de reservas do FUT";
+                                            typeSearch = "BCO-FUT";
+                                        }
+                                        else if (formHTML["selectedType"] == "PRO1")
+                                        {
+                                            modelReturnJSON.labelUserGetOut = "Escolha um Técnico da Banco de reservas do PRO CLUB";
+                                            typeSearch = "BCO-PRO";
+                                        }
+
+
+                                        response = GlobalVariables.WebApiClient.GetAsync("ChampionshipUser/" + typeSearch).Result;
+                                        listOfUserGetOut = response.Content.ReadAsAsync<ChampionshipUserListViewModel>().Result;
+                                        modelReturnJSON.listOfUserGetOut = listOfUserGetOut.listOfUser;
+
+                                        modelReturnJSON.listOfUserGetIn = new List<ChampionshipUserDetailsModel>();
+                                    }
+                                    else
+                                    {
+                                        if (actionForm == "manager_swap")
+                                        {
+                                            if (formHTML["selectedType"].Substring(0,3)=="DIV")
+                                                modelReturnJSON.titleView = "Efetuar APENAS Troca de Técnico nos campeonatos de H2H (X1)";
+                                            else if (formHTML["selectedType"].Substring(0, 3) == "FUT")
+                                                modelReturnJSON.titleView = "Efetuar Troca de Time & Técnico nos campeonatos de FUT (Ultimate Team)";
+                                            else if (formHTML["selectedType"].Substring(0, 3) == "PRO")
+                                                modelReturnJSON.titleView = "Efetuar Troca de Clube & Manager nos campeonatos de PRO CLUB";
+                                        }
+                                        else if (actionForm == "club_swap")
+                                        {
+                                            modelReturnJSON.titleView = "Efetuar Troca APENAS de Manager do Clube nos campeonatos de PRO CLUB";
+                                        }
+                                        modelReturnJSON.labelActionButton = "Efetuar Troca";
+
+                                        modelReturnJSON.listOfTeam = new List<ChampionshipTeamDetailsModel>();
+
+                                        typeSearch = formHTML["selectedType"];
+
+                                        if (formHTML["selectedType"] == "DIV1")
+                                        {
+                                            modelReturnJSON.labelUserGetIn = "Escolha um Técnico para ENTRAR da Série A do H2H";
+                                        }
+                                        else if (formHTML["selectedType"] == "DIV2")
+                                        {
+                                            modelReturnJSON.labelUserGetIn = "Escolha um Técnico para ENTRAR da Série B do H2H";
+                                        }
+                                        else if (formHTML["selectedType"] == "DIV3")
+                                        {
+                                            modelReturnJSON.labelUserGetIn = "Escolha um Técnico para ENTRAR da Série C do H2H";
+                                        }
+                                        else if (formHTML["selectedType"] == "FUT1")
+                                        {
+                                            modelReturnJSON.labelUserGetIn = "Escolha um Técnico para ENTRAR da Série A do FUT";
+                                        }
+                                        else if (formHTML["selectedType"] == "PRO1")
+                                        {
+                                            modelReturnJSON.labelUserGetIn = "Escolha um Técnico para ENTRAR da Série A do PRO CLUB";
+                                        }
+                                        response = GlobalVariables.WebApiClient.GetAsync("ChampionshipUser/" + (formHTML["selectedID"] + "|" + typeSearch)).Result;
+                                        listOfUserGetIn = response.Content.ReadAsAsync<ChampionshipUserListViewModel>().Result;
+                                        modelReturnJSON.listOfUserGetIn = listOfUserGetIn.listOfUser;
+
+
+
+                                        if (formHTML["selectedType"] == "DIV1")
+                                        {
+                                            modelReturnJSON.labelUserGetOut = "Escolha um Técnico para SAIR da Série A do H2H";
+                                        }
+                                        else if (formHTML["selectedType"] == "DIV2")
+                                        {
+                                            modelReturnJSON.labelUserGetOut = "Escolha um Técnico para SAIR da Série B do H2H";
+                                        }
+                                        else if (formHTML["selectedType"] == "DIV3")
+                                        {
+                                            modelReturnJSON.labelUserGetOut = "Escolha um Técnico para SAIR da Série C do H2H";
+                                        }
+                                        else if (formHTML["selectedType"] == "FUT1")
+                                        {
+                                            modelReturnJSON.labelUserGetOut = "Escolha um Técnico para SAIR da Série A do FUT";
+                                        }
+                                        else if (formHTML["selectedType"] == "PRO1")
+                                        {
+                                            modelReturnJSON.labelUserGetOut = "Escolha um Técnico para SAIR da Série A do PRO CLUB";
+                                        }
+                                        response = GlobalVariables.WebApiClient.GetAsync("ChampionshipUser/" + typeSearch).Result;
+                                        listOfUserGetOut = response.Content.ReadAsAsync<ChampionshipUserListViewModel>().Result;
+                                        modelReturnJSON.listOfUserGetOut = listOfUserGetOut.listOfUser;
+
+                                    }
+
+                                    listOfUserGetIn = null;
+                                    listOfUserGetOut = null;
+                                    listOfTeam = null;
+                                }
+                                modelReturnJSON.actionUser = actionForm.ToUpper();
+                                if (!String.IsNullOrEmpty(modelReturnJSON.returnMessage) && modelReturnJSON.returnMessage != "ModeratorSuccessfully")
+                                    TempData["returnMessage"] = modelReturnJSON.returnMessage + " - " + actionForm + ". (" + modelReturnJSON.returnMessage + ")";
+                                return View(modelReturnJSON);
+                            }
+                        }
+                        else
+                        {
+                            modelReturnJSON.actionUser = actionForm;
+                            TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Cadastro de Campeonatos - Gerenciar Ação - " + actionForm + ". (" + modelReturnJSON.returnMessage + ")";
+                            return View(modelReturnJSON);
+                        }
+                    default:
+                        modelReturnJSON.actionUser = actionForm;
+                        TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Cadastro de Campeonatos - Gerenciar Ação - " + actionForm + ". (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View(modelReturnJSON);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                modelReturnJSON.actionUser = actionForm;
+                modelReturnJSON.listOfUserGetIn = new List<ChampionshipUserDetailsModel>();
+                modelReturnJSON.listOfTeam = new List<ChampionshipTeamDetailsModel>();
+                modelReturnJSON.listOfUserGetOut = new List<ChampionshipUserDetailsModel>();
+                TempData["returnMessage"] = "Erro interno - Exibindo Menu Moderador - Cadastro de Campeonatos - Gerenciar Ação - " + actionForm + ": (" + ex.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(modelReturnJSON);
+
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+            }
+        }
+
+
+
+
+        private string getPathLogoTeam(string teamName)
+        {
+            string realPathTeamLogo = String.Empty;
+
+
+            string logoPath = ConfigurationManager.AppSettings["team.path.image"].ToString() + "/" + teamName + ".jpg";
+
+            if (System.IO.File.Exists(HttpContext.Server.MapPath(logoPath)))
+            { realPathTeamLogo = logoPath; }
+            else { realPathTeamLogo = ConfigurationManager.AppSettings["avatar.path.default"].ToString(); }
+
+
+            return realPathTeamLogo;
+        }
+
+        private void getLists(ref List<UserDetailsModel> listUsers, ref List<TeamTypeDetailsModel> listTypes, HttpResponseMessage response)
+        {
+
+            TeamDetailsModel modelReturnJSON3 = new TeamDetailsModel();
+
+            response = GlobalVariables.WebApiClient.GetAsync("HomeUser").Result;
+            modelReturnJSON3 = response.Content.ReadAsAsync<TeamDetailsModel>().Result;
+
+            listUsers = modelReturnJSON3.listOfUser;
+
+            response = GlobalVariables.WebApiClient.GetAsync("TeamType").Result;
+            modelReturnJSON3 = response.Content.ReadAsAsync<TeamDetailsModel>().Result;
+
+            listTypes = modelReturnJSON3.listOfType;
+
+            modelReturnJSON3 = null;
+        }
+
+        private void getListModerator(ref List<ChampionshipUserDetailsModel> listUsers, HttpResponseMessage response)
+        {
+            ChampionshipUserListViewModel modelReturnJSON3 = new ChampionshipUserListViewModel();
+            ChampionshipUserDetailsModel userModel = new ChampionshipUserDetailsModel();
+
+            userModel.id = 0;
+            userModel.actionUser = "getListModerator";
+
+            response = GlobalVariables.WebApiClient.PostAsJsonAsync("User", userModel).Result;
+            modelReturnJSON3 = response.Content.ReadAsAsync<ChampionshipUserListViewModel>().Result;
+
+            listUsers = modelReturnJSON3.listOfUser;
+
+            modelReturnJSON3 = null;
+            userModel = null;
+        }
+
         private IEnumerable<SelectListItem> GetSelectListItems(IEnumerable<string> elements)
         {
             // Create an empty list to hold result of the operation
@@ -1092,5 +2166,190 @@ namespace ArenaFifa20.NET.Controllers
 
             return strReturn;
         }
+
+        private string getBodyHtml(ChampionshipDetailsModel model, string divisionName)
+        {
+
+            StringBuilder strBodyHtml = new StringBuilder();
+
+            try
+            {
+
+                strBodyHtml.Append("<p style='font-size:24px'><b>ARENA FIFA</b></p>");
+                strBodyHtml.Append("<br>");
+                strBodyHtml.Append("<b>Olá " + model.userName1 + " (" + model.psnID1 + "),</b><br><br>");
+
+                if (model.type=="DIV3" || model.type == "DIV4")
+                {
+                    strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:black'>Abriu uma vaga para participar da " + model.seasonName + "  do Arena Fifa.</span>");
+				    strBodyHtml.Append("<br>");
+				    strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:black'>Se aceitar você PODRERÁ treinar o time <b>" + model.teamName1 + " (provavelmente) </b>da " + divisionName + " na " + model.seasonName + "  do Arena Fifa nos campeonatos de H2H (X1).</span>");
+                    strBodyHtml.Append("<br><br>");
+                    strBodyHtml.Append("<span style='font-size:14px;font-family:Verdana;color:red'><b>Todos eles serão disputados com o " + HttpContext.Application["fifa.codImgCurrent"].ToString() + " e no PS4.</b></span>");
+                    strBodyHtml.Append("<br><br>");
+                    strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:black'>Existe um técnico a sua frente, o tempo dele responder está se esgotando, portanto se desejar participar, deverá responder este e-mail dentro de 24 horas, caso contrario estaremos disponibilizando sua vaga para outro técnico.</span>");
+                }
+                else if (model.type == "DIV1" || model.type == "DIV3")
+                {
+				    strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:black'>Abriu uma vaga para participar da " + divisionName + " na " + model.seasonName + "  do Arena Fifa nos campeonatos de H2H (X1).</span>");
+				    strBodyHtml.Append("<br>");
+				    strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:black'>Se aceitar você PODRERÁ treinar o time <b>" + model.teamName1 + " (provavelmente) </b>da " + divisionName + ".</span>");
+				    strBodyHtml.Append("<br><br>");
+				    strBodyHtml.Append("<span style='font-size:14px;font-family:Verdana;color:red'><b>Todos eles serão disputados com o " + HttpContext.Application["fifa.codImgCurrent"].ToString() + " e no PS4.</b></span>");
+				    strBodyHtml.Append("<br><br>");
+				    //strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:black'>Você está sendo escolhido por ser o primeiro da lista dos técnicos da " & Request("dsTituloTecnico") & " que NÃO está pontuado negativamente na Lista Negra, portanto se desejar participar, responde este e-mail dentro de 24 horas caso contrário estaremos disponibilizando sua vaga para o técnico seguinte.</span>");
+                    strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:black'>Existe um técnico a sua frente, o tempo dele responder está se esgotando, portanto se desejar participar, deverá responder este e-mail dentro de 24 horas, caso contrario estaremos disponibilizando sua vaga para outro técnico.</span>");
+                }
+                else if (model.type == "FUT1")
+                {
+				    strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:black'>Abriu uma vaga para participar da " + divisionName + " na " + model.seasonName + "  do Arena Fifa nos campeonatos de FUT (Ultimate Team).</span>");
+				    strBodyHtml.Append("<br>");
+				    strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:black'>Se aceitar você irá treinar o seu mesmo time que já vem jogando: <b>" + model.teamName1 + " </b>.</span>");
+				    strBodyHtml.Append("<br><br>");
+				    strBodyHtml.Append("<span style='font-size:14px;font-family:Verdana;color:red'><b>Todos eles serão disputados com o " + HttpContext.Application["fifa.codImgCurrent"].ToString() + " e no PS4.</b></span>");
+				    strBodyHtml.Append("<br><br>");
+				    strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:black'>Existe um técnico a sua frente, o tempo dele responder está se esgotando, portanto se desejar participar, deverá responder este e-mail dentro de 24 horas, caso contrário estaremos disponibilizando sua vaga para outro técnico.</span>");
+                }
+                else if (model.type == "FUT2")
+                {
+				    strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:black'>Abriu uma vaga para participar da " + divisionName + " na " + model.seasonName + "  do Arena Fifa nos campeonatos de FUT (Ultimate Team).</span>");
+				    strBodyHtml.Append("<br>");
+				    strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:black'>Se aceitar você irá treinar o time que fez a inscrição: <b>" + model.teamName1 +  " </b>.</span>");
+				    strBodyHtml.Append("<br><br>");
+				    strBodyHtml.Append("<span style='font-size:14px;font-family:Verdana;color:red'><b>Todos eles serão disputados com o " + HttpContext.Application["fifa.codImgCurrent"].ToString() + " e no PS4.</b></span>");
+				    strBodyHtml.Append("<br><br>");
+				    strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:black'>Existe um técnico a sua frente, o tempo dele responder está se esgotando, portanto se desejar participar, deverá responder este e-mail dentro de 24 horas, caso contrário estaremos disponibilizando sua vaga para outro técnico.</span>");
+                }
+
+                strBodyHtml.Append("<br><br><br>");
+			    strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:black'>Atenciosamente,</span>");
+			    strBodyHtml.Append("<br>");
+			    strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:black'><b>Moderação ARENA FIFA</b></span>");
+			    strBodyHtml.Append("<br>");
+			    strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:black'>Nosso Site: <a style='color:blue' href='http://www.arenafifa.com.br/'>http://www.arenafifa.com.br/</a></span>");
+			    strBodyHtml.Append("<br>");
+			    strBodyHtml.Append("</span>");
+
+                return strBodyHtml.ToString();
+            }
+            catch
+            {
+                return String.Empty;
+            }
+            finally
+            {
+                strBodyHtml = null;
+            }
+
+        }
+
+        private string getBodyHtmlSwapManager(ChampionshipDetailsModel model)
+        {
+
+            StringBuilder strBodyHtml = new StringBuilder();
+
+            try
+            {
+
+                strBodyHtml.Append("<span style='PADDING-RIGHT: 0px;PADDING-LEFT: 0px;FONT-SIZE: 11px;PADDING-BOTTOM: 0px;MARGIN: 0px;COLOR: #333333;PADDING-TOP: 0px;BACKGROUND-REPEAT: repeat-x;FONT-FAMILY: Arial, Helvetica, sans-serif;TEXT-ALIGN: left'>");
+                strBodyHtml.Append("<p style='font-size:24px'><b>ARENA FIFA</b></p>");
+                strBodyHtml.Append("<br>");
+                if (model.type.Substring(0,3) == "DIV")
+                    strBodyHtml.Append("Parabéns " + model.userName1 + " <b>(" + model.psnID1 + ")</b>, você estará participando da temporada como o novo técnico do <b>" + model.teamName1 + "</b>.<br><br>");
+                else if (model.type.Substring(0, 3) == "FUT")
+                    strBodyHtml.Append("Parabéns " + model.userName1 + " <b>(" + model.psnID1 + ")</b>, você estará participando da temporada com o <b>" + model.teamName1 + "</b>.<br><br>");
+                else if (model.type.Substring(0, 3) == "PRO")
+                    strBodyHtml.Append("Parabéns " + model.userName1 + " <b>(" + model.psnID1 + ")</b>, você estará participando da temporada como manager do <b>" + model.teamName1 + "</b>.<br><br>");
+
+                    if (model.type == "DIV4")
+                {
+                    strBodyHtml.Append("Irá disputar a Série D do H2H (X1).  Também poderá competir na Liga Europa e na Copa UEFA se ainda o <b>" + model.teamName1  + "</ b> estiver ativo nas competições.<br><br>");
+                    strBodyHtml.Append("Boa sorte e seja bem vindo ao site.<br><br>");
+                }
+                else if (model.type == "DIV3")
+                {
+                    strBodyHtml.Append("Irá disputar a Série C do H2H (X1).  Também poderá competir na Liga Europa e na Copa UEFA se ainda o <b>" + model.teamName1 + "</ b> estiver ativo nas competições.<br><br>");
+                    strBodyHtml.Append("Boa sorte e seja bem vindo ao site.<br><br>");
+                }
+                else if (model.type == "DIV2")
+                {
+                    strBodyHtml.Append("Irá disputar a Série B do H2H (X1).  Também poderá competir na Liga dos Campeões e na Copa UEFA se ainda o <b>" + model.teamName1 + "</ b> estiver ativo nas competições.<br><br>");
+                    strBodyHtml.Append("Boa sorte em seu novo desafio.<br><br>");
+                }
+                else if (model.type == "DIV1")
+                {
+                    strBodyHtml.Append("Irá disputar a Série A do H2H (X1).  Também poderá competir na Liga dos Campeões e na Copa UEFA se ainda o <b>" + model.teamName1 + "</ b> estiver ativo nas competições.<br><br>");
+                    strBodyHtml.Append("Boa sorte em seu novo desafio.<br><br>");
+                }
+                else if (model.type == "FUT1")
+                {
+                    strBodyHtml.Append("Irá disputar a Série A do FUT (Ultimate Team).  Também poderá competir na Copa FUT (se o time ainda estiver ativo na competição) com o time <b>" + model.teamName1 + "</ b>.<br><br>");
+                    strBodyHtml.Append("Seja bem vindo e boa sorte para seu time neste desafio.<br><br>");
+                }
+                else if (model.type == "PRO1")
+                {
+                    strBodyHtml.Append("Irá disputar a Série A do PRO CLUB.  Também poderá competir na Copa PRO CLUB (se o clube ainda estiver ativo na competição) com o clube <b>" + model.teamName1 + "</ b>.<br><br>");
+                    strBodyHtml.Append("Seja bem vindo e boa sorte para seu clube neste desafio.<br><br>");
+                }
+
+                strBodyHtml.Append("<br><br><br>");
+                strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:black'>Atenciosamente,</span>");
+                strBodyHtml.Append("<br>");
+                strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:black'><b>Moderação ARENA FIFA</b></span>");
+                strBodyHtml.Append("<br>");
+                strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:black'>Nosso Site: <a style='color:blue' href='http://www.arenafifa.com.br/'>http://www.arenafifa.com.br/</a></span>");
+                strBodyHtml.Append("<br>");
+                strBodyHtml.Append("</span>");
+
+                return strBodyHtml.ToString();
+            }
+            catch
+            {
+                return String.Empty;
+            }
+            finally
+            {
+                strBodyHtml = null;
+            }
+
+        }
+
+        private string getBodyHtmlSwapManagerPRO(ChampionshipDetailsModel model)
+        {
+
+            StringBuilder strBodyHtml = new StringBuilder();
+
+            try
+            {
+
+                strBodyHtml.Append("<span style='PADDING-RIGHT: 0px;PADDING-LEFT: 0px;FONT-SIZE: 11px;PADDING-BOTTOM: 0px;MARGIN: 0px;COLOR: #333333;PADDING-TOP: 0px;BACKGROUND-REPEAT: repeat-x;FONT-FAMILY: Arial, Helvetica, sans-serif;TEXT-ALIGN: left'>");
+                strBodyHtml.Append("<p style='font-size:24px'><b>ARENA FIFA</b></p>");
+                strBodyHtml.Append("<br>");
+                strBodyHtml.Append("Parabéns " + model.userName1 + " <b>(" + model.psnID1 + ")</b>, você será o NOVO manager do club <b>" + model.teamName1 + "</b> no site do ARENA e participará da Série Ae a Copa PRO CLUB (se o clube ainda estiver ativo na competição).<br><br>");
+                strBodyHtml.Append("Boa sorte para seu clube neste seu desafio.<br><br>");
+
+                strBodyHtml.Append("<br><br><br>");
+                strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:black'>Atenciosamente,</span>");
+                strBodyHtml.Append("<br>");
+                strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:black'><b>Moderação ARENA FIFA</b></span>");
+                strBodyHtml.Append("<br>");
+                strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:black'>Nosso Site: <a style='color:blue' href='http://www.arenafifa.com.br/'>http://www.arenafifa.com.br/</a></span>");
+                strBodyHtml.Append("<br>");
+                strBodyHtml.Append("</span>");
+
+                return strBodyHtml.ToString();
+            }
+            catch
+            {
+                return String.Empty;
+            }
+            finally
+            {
+                strBodyHtml = null;
+            }
+
+        }
+
+
     }
 }

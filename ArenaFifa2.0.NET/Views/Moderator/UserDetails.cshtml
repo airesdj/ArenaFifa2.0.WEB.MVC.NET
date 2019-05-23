@@ -33,6 +33,13 @@
                         <code style="background-color:#fff">Todos os campos com (*) são de preenchimento obrigatório.</code>
                     </p>
                     <br />
+                    <div class="gentelella-row ">
+                        <div class="gentelella-col-md-1 gentelella-col-sm-12 gentelella-col-xs-12">
+                            <label for="idSofifa">ID :</label>
+                            <input type="text" id="txtId" name="txtId" size="1000" class="gentelella-form-control" data-parsley-type="integer" value="@Model.id" />
+                        </div>
+                    </div>
+                    <br>
                     <div class="gentelella-row">
                         <div class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-12">
                             <label for="deacricao">Nome Completo <i style="color:red">*</i> :</label>
@@ -60,7 +67,7 @@
                             <label for="deacricao">E-mail <i style="color:red">*</i> :</label>
                             <input type="email" id="txtEmail" class="gentelella-form-control" name="txtEmail" data-parsley-maxlength="80" required value="@Model.Email" />
                         </div>
-                        <div id="divPassWD"class="gentelella-col-md-4 gentelella-col-sm-4 gentelella-col-xs-12">
+                        <div id="divPassWD" class="gentelella-col-md-4 gentelella-col-sm-4 gentelella-col-xs-12">
                             <label for="deacricao">Senha <i style="color:red">*</i> :</label>
                             <input class="gentelella-form-control" data-val="true" data-val-length="A Senha deve ter de 4 a no máximo 10 caracteres." data-val-length-max="10" data-val-length-min="4" data-val-required="O campo Senha é obrigatório." id="txtPassword" name="txtPassword" type="password" required />
                         </div>
@@ -141,7 +148,7 @@
                         <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
                             <br>
                             <div class="gentelella-ln_solid"></div>
-                            <input type="button" class="gentelella-btn gentelella-btn-primary" onClick="JAVASCTIPT: submeteModerator('@actionBack', 'VOLTAR', '');" value="Voltar" />
+                            <input type="button" class="gentelella-btn gentelella-btn-primary" onClick="JAVASCRIPT: submeteModerator('@actionBack', 'VOLTAR', '');" value="Voltar" />
                             <input type="submit" class="gentelella-btn gentelella-btn-success" value="Salvar Dados" />
                         </div>
                     </div>

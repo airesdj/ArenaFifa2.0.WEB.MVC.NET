@@ -38,7 +38,7 @@
                     <br />
                     <div class="gentelella-row ">
                         <div class="gentelella-col-md-1 gentelella-col-sm-12 gentelella-col-xs-12">
-                            <label for="idSofifa">ID Jogador<i style="color:red">*</i> :</label>
+                            <label for="idSofifa">ID Jogador :</label>
                             <input type="text" id="txtId" name="txtId" size="1000" class="gentelella-form-control" data-parsley-type="integer" value="@Model.id" />
                         </div>
                     </div>
@@ -94,7 +94,7 @@
                         <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
                             <br>
                             <div class="gentelella-ln_solid"></div>
-                            <input type="button" class="gentelella-btn gentelella-btn-primary" onClick="JAVASCTIPT: submeteModerator('@actionBack', 'VOLTAR', '');" value="Voltar" />
+                            <input type="button" class="gentelella-btn gentelella-btn-primary" onClick="JAVASCRIPT: submeteModerator('@actionBack', 'VOLTAR', '');" value="Voltar" />
                             <input type="submit" class="gentelella-btn gentelella-btn-success" value="Salvar Dados" />
                         </div>
                     </div>
@@ -126,17 +126,17 @@
 
             $("#cmbTime").find("option[value='@Model.teamID']").attr("selected", "true");
 
-            if ('@Model.actionUser' != 'VIEW') {
+            if ('@Model.actionUser' == 'EDIT') {
                 $("#txtId").addClass("disabled");
                 $("#txtId").attr("disabled", "true");
+            }
+            else if ('@Model.actionUser' == 'ADD') {
+                $("#txtId").val("");
+                $("#rowImage").hide();
             }
 
             if ('@Model.scorerType' == 'PRO') {
                 $("#txtUrl").removeAttr("data-parsley-type");
-            }
-
-            if ('@Model.actionUser' == 'ADD') {
-                $("#rowImage").hide();
             }
 
             if ($("#selectedID").val() == "") { $("#selectedID").val("0"); }

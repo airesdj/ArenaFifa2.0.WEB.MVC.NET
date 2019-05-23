@@ -63,6 +63,13 @@ namespace ArenaFifa20.NET
                       "~/Content/portfolio-filter-gallery/portfolio-filter-gallery.js",
                       "~/Content/fancybox-master/jquery.fancybox.min.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/gentelella-editor-script").Include(
+                      "~/Scripts/dashboard-gentelella/bootstrap-wysiwyg.min.js",
+                      "~/Scripts/dashboard-gentelella/jquery.hotkeys.js",
+                      "~/Scripts/dashboard-gentelella/prettify.js",
+                      "~/Scripts/dashboard-gentelella/jquery.tagsinput.js",
+                      "~/Scripts/dashboard-gentelella/switchery.min.js"));
+
             bundles.Add(new StyleBundle("~/Content/default-css").Include(
                       "~/Content/fontawesome/css/fontawesome-all.min.css",
                       "~/Content/arena20-icons.css",

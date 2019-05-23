@@ -11,6 +11,7 @@ using System.Net;
 using System.Configuration;
 using SYSEmail;
 using static ArenaFifa20.NET.App_Start.CheckSessionTimeOut;
+using System.Text;
 
 namespace ArenaFifa20.NET.Controllers
 {
@@ -515,82 +516,95 @@ namespace ArenaFifa20.NET.Controllers
         private string getBodyHtmlRegister(RegisterViewModel model)
         {
 
-            string strBodyHtml = string.Empty;
+            //string strBodyHtml = string.Empty;
+            StringBuilder strBodyHtml = new StringBuilder();
 
+            try
+            {
+                strBodyHtml.Append("<span style='PADDING-RIGHT: 0px;PADDING-LEFT: 0px;FONT-SIZE: 11px;PADDING-BOTTOM: 0px;MARGIN: 0px;COLOR: #333333;PADDING-TOP: 0px;BACKGROUND-REPEAT: repeat-x;FONT-FAMILY: Arial, Helvetica, sans-serif;TEXT-ALIGN: left'>");
+                strBodyHtml.Append("<p>Olá " + model.name + ",<br><br></p>");
+                strBodyHtml.Append("<span style='font-size:16px;font-family:Verdana;color:red'><b>O Sistema acaba de efetuar seu cadastro no site Arena Fifa.</b></span>");
+                strBodyHtml.Append("<br><br><br>");
+                strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:blue'><b>Dados Cadastrais:</b></span>");
+                strBodyHtml.Append("<br><br>");
+                strBodyHtml.Append("<span style='font-size:10px;font-family:Verdana;color:black'><b>PSN ID:</b>&nbsp;&nbsp;" + model.psnID + "</span>");
+                strBodyHtml.Append("<br>");
+                strBodyHtml.Append("<span style='font-size:10px;font-family:Verdana;color:black'><b>E-mail:</b>&nbsp;&nbsp;" + model.Email + "</span>");
+                strBodyHtml.Append("<br>");
+                strBodyHtml.Append("<span style='font-size:10px;font-family:Verdana;color:black'><b>Data de Nascimento:</b>&nbsp;&nbsp;" + model.birthday.ToString("dd/MM/yyyy") + "</span>");
+                strBodyHtml.Append("<br>");
+                strBodyHtml.Append("<span style='font-size:10px;font-family:Verdana;color:black'><b>E-mail:</b>&nbsp;&nbsp;" + model.state + "</span>");
+                strBodyHtml.Append("<br>");
+                if (model.inEmailWarning)
+                {
+                    strBodyHtml.Append("<span style='font-size:10px;font-family:Verdana;color:black'><b>Deseja receber e-mails de alerta de fechamento da rodada.</b></span>");
+                }
+                else
+                {
+                    strBodyHtml.Append("<span style='font-size:10px;font-family:Verdana;color:black'><b>NÃO Deseja receber e-mails de alerta de fechamento da rodada.</b></span>");
+                }
+                strBodyHtml.Append("<br>");
+                if (model.inEmailTeamTable)
+                {
+                    strBodyHtml.Append("<span style='font-size:10px;font-family:Verdana;color:black'><b>Deseja receber e-mails de informe sobre a classificação dos participantes após a última rodada.</b></span>");
 
-            strBodyHtml = strBodyHtml + "<span style='PADDING-RIGHT: 0px;PADDING-LEFT: 0px;FONT-SIZE: 11px;PADDING-BOTTOM: 0px;MARGIN: 0px;COLOR: #333333;PADDING-TOP: 0px;BACKGROUND-REPEAT: repeat-x;FONT-FAMILY: Arial, Helvetica, sans-serif;TEXT-ALIGN: left'>";
-            strBodyHtml = strBodyHtml + "<p>Olá " + model.name + ",<br><br></p>";
-            strBodyHtml = strBodyHtml + "<span style='font-size:16px;font-family:Verdana;color:red'><b>O Sistema acaba de efetuar seu cadastro no site Arena Fifa.</b></span>";
-            strBodyHtml = strBodyHtml + "<br><br><br>";
-            strBodyHtml = strBodyHtml + "<span style='font-size:12px;font-family:Verdana;color:blue'><b>Dados Cadastrais:</b></span>";
-            strBodyHtml = strBodyHtml + "<br><br>";
-            strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>PSN ID:</b>&nbsp;&nbsp;" + model.psnID + "</span>";
-            strBodyHtml = strBodyHtml + "<br>";
-            strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>E-mail:</b>&nbsp;&nbsp;" + model.Email + "</span>";
-            strBodyHtml = strBodyHtml + "<br>";
-            strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>Data de Nascimento:</b>&nbsp;&nbsp;" + model.birthday.ToString("dd/MM/yyyy") + "</span>";
-            strBodyHtml = strBodyHtml + "<br>";
-            strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>E-mail:</b>&nbsp;&nbsp;" + model.state + "</span>";
-            strBodyHtml = strBodyHtml + "<br>";
-            if (model.inEmailWarning)
-            {
-                strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>Deseja receber e-mails de alerta de fechamento da rodada.</b></span>";
-            }
-            else
-            {
-                strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>NÃO Deseja receber e-mails de alerta de fechamento da rodada.</b></span>";
-            }
-            strBodyHtml = strBodyHtml + "<br>";
-            if (model.inEmailTeamTable)
-            {
-                strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>Deseja receber e-mails de informe sobre a classificação dos participantes após a última rodada.</b></span>";
+                }
+                else
+                {
+                    strBodyHtml.Append("<span style='font-size:10px;font-family:Verdana;color:black'><b>NÃO Deseja receber e-mails de informe sobre a classificação dos participantes após a última rodada.</b></span>");
+                }
+                strBodyHtml.Append("<br>");
+                if (model.inParticipate)
+                {
+                    strBodyHtml.Append("<span style='font-size:10px;font-family:Verdana;color:black'><b>Deseja participar dos campeonatos disponíveis.</b></span>");
+                }
+                else
+                {
+                    strBodyHtml.Append("<span style='font-size:10px;font-family:Verdana;color:black'><b>NÃO Deseja receber e-mails de informe sobre a classificação dos participantes após a última rodada.</b></span>");
+                }
+                strBodyHtml.Append("<br>");
+                strBodyHtml.Append("<span style='font-size:10px;font-family:Verdana;color:black'><b>Como ficou sabendo do Arena Fifa?</b>&nbsp;&nbsp;" + model.howfindus + "</span>");
+                if (model.whathowfindus != string.Empty)
+                {
+                    strBodyHtml.Append("<br>");
+                    strBodyHtml.Append("<span style='font-size:10px;font-family:Verdana;color:black'><b>Qual?</b>&nbsp;&nbsp;" + model.whathowfindus + "</span>");
+                }
+                strBodyHtml.Append("<br>");
+                strBodyHtml.Append("<span style='font-size:10px;font-family:Verdana;color:black'><b>Time Escolhido:</b>&nbsp;&nbsp;" + model.team + "</span>");
+                strBodyHtml.Append("<br><br><br>");
+                strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:blue'><b>Como participar dos campeonatos ?</b></span>");
+                strBodyHtml.Append("<br>");
+                strBodyHtml.Append("<span style='font-size:10px;font-family:Verdana;color:black'><b>Nosso site tem como objetivo despertar o interesse competir com diversas pessoas e que todos possam se divertir de forma sadia.</b></span>");
+                strBodyHtml.Append("<br>");
+                strBodyHtml.Append("<span style='font-size:10px;font-family:Verdana;color:black'><b>A participação é totalmente gratuita</b></span>");
+                strBodyHtml.Append("<br><br>");
+                strBodyHtml.Append("<center>");
+                strBodyHtml.Append("<br><br><br><br>");
+                strBodyHtml.Append("<span style='font-size:10px;font-family:Verdana;color:black'><b>Para acessar, entre em </b>&nbsp;&nbsp;<a href='http://www.arenafifa.com.br/'>http://www.arenafifa.com.br/</a></span>");
+                strBodyHtml.Append("<br><br><br>");
+                strBodyHtml.Append("<span style='font-size:10px;font-family:Verdana;color:blue'><b>O Regulamento do Site e dos Campeonatos se encontram em nosso portal, visite e conheça um pouco mais dos campeonatos que estamos disponibilizando.</b></span>");
+                strBodyHtml.Append("<br><br><br>");
+                strBodyHtml.Append("<span style='font-size:16px;font-family:Verdana;color:red'><b>Obrigado e Boa Sorte!!!</b></span>");
+                strBodyHtml.Append("<br><br><br>");
+                strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:black'>Atenciosamente,</span>");
+                strBodyHtml.Append("<br><br>");
+                strBodyHtml.Append("<span style='font-size:12px;font-family:Verdana;color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SAC ARENA FIFA</span>");
+                strBodyHtml.Append("<br><br>");
+                strBodyHtml.Append("</center>");
+                strBodyHtml.Append("</span>");
+
+                return strBodyHtml.ToString();
 
             }
-            else
+            catch
             {
-                strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>NÃO Deseja receber e-mails de informe sobre a classificação dos participantes após a última rodada.</b></span>";
+                return String.Empty;
             }
-            strBodyHtml = strBodyHtml + "<br>";
-            if (model.inParticipate)
+            finally
             {
-                strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>Deseja participar dos campeonatos disponíveis.</b></span>";
+                strBodyHtml = null;
             }
-            else
-            {
-                strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>NÃO Deseja receber e-mails de informe sobre a classificação dos participantes após a última rodada.</b></span>";
-            }
-            strBodyHtml = strBodyHtml + "<br>";
-            strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>Como ficou sabendo do Arena Fifa?</b>&nbsp;&nbsp;" + model.howfindus + "</span>";
-            if (model.whathowfindus != string.Empty)
-            {
-                strBodyHtml = strBodyHtml + "<br>";
-                strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>Qual?</b>&nbsp;&nbsp;" + model.whathowfindus + "</span>";
-            }
-            strBodyHtml = strBodyHtml + "<br>";
-            strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>Time Escolhido:</b>&nbsp;&nbsp;" + model.team + "</span>";
-            strBodyHtml = strBodyHtml + "<br><br><br>";
-            strBodyHtml = strBodyHtml + "<span style='font-size:12px;font-family:Verdana;color:blue'><b>Como participar dos campeonatos ?</b></span>";
-            strBodyHtml = strBodyHtml + "<br>";
-            strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>Nosso site tem como objetivo despertar o interesse competir com diversas pessoas e que todos possam se divertir de forma sadia.</b></span>";
-            strBodyHtml = strBodyHtml + "<br>";
-            strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>A participação é totalmente gratuita</b></span>";
-            strBodyHtml = strBodyHtml + "<br><br>";
-            strBodyHtml = strBodyHtml + "<center>";
-            strBodyHtml = strBodyHtml + "<br><br><br><br>";
-            strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:black'><b>Para acessar, entre em </b>&nbsp;&nbsp;<a href='http://www.arenafifa.com.br/'>http://www.arenafifa.com.br/</a></span>";
-            strBodyHtml = strBodyHtml + "<br><br><br>";
-            strBodyHtml = strBodyHtml + "<span style='font-size:10px;font-family:Verdana;color:blue'><b>O Regulamento do Site e dos Campeonatos se encontram em nosso portal, visite e conheça um pouco mais dos campeonatos que estamos disponibilizando.</b></span>";
-            strBodyHtml = strBodyHtml + "<br><br><br>";
-            strBodyHtml = strBodyHtml + "<span style='font-size:16px;font-family:Verdana;color:red'><b>Obrigado e Boa Sorte!!!</b></span>";
-            strBodyHtml = strBodyHtml + "<br><br><br>";
-            strBodyHtml = strBodyHtml + "<span style='font-size:12px;font-family:Verdana;color:black'>Atenciosamente,</span>";
-            strBodyHtml = strBodyHtml + "<br><br>";
-            strBodyHtml = strBodyHtml + "<span style='font-size:12px;font-family:Verdana;color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SAC ARENA FIFA</span>";
-            strBodyHtml = strBodyHtml + "<br><br>";
-            strBodyHtml = strBodyHtml + "</center>";
-            strBodyHtml = strBodyHtml + "</span>";
 
-            return strBodyHtml;
 
         }
         //

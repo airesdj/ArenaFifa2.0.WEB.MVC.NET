@@ -108,11 +108,11 @@
                                     @if (!String.IsNullOrEmpty(HttpContext.Current.Session["user.currentTeam"].ToString()))
                                     {
                                         <span class="fables-iconarrow-light"></span>
-                                        <b>Atual Time:</b>HttpContext.Current.Session["user.currentTeam"].ToString();
+                                        <b>Atual Time: </b>@HttpContext.Current.Session["user.currentTeam"].ToString();
                                     }
                                     else
                                     {
-                                        <b>Atual Time:</b>@MvcHtmlString.Create(" Está sem time atualmente.")
+                                        <b>Atual Time: </b>@MvcHtmlString.Create(" Está sem time atualmente.")
                                     }
                                 </p>
                                 <p class="fables-third-text-color font-12">

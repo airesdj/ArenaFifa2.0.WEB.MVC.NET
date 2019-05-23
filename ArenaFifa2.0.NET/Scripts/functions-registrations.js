@@ -104,23 +104,84 @@ function activateRegistrationForm(pNewPageRedirect, actionForm) {
         }
 
     }
+    else if (pNewPageRedirect == "TeamDetails") {
+        var COD_TYPE_FUT = "37";
+        var COD_TYPE_PRO = "42";
+
+
+        $("#cmbTipo").on("change", function () {
+            if ($(this).val() != COD_TYPE_FUT && $(this).val() != COD_TYPE_PRO) {
+                $("#txtUrl").removeClass("disabled").removeAttr("disabled").focus();
+                $("#txtUrl").attr("required", "true");
+                $("#txtIdSofifa").removeClass("disabled").removeAttr("disabled").focus();
+                $("#txtIdSofifa").attr("required", "true");
+                $("#cmbTecnico").val("");
+                $("#cmbTecnico").addClass("disabled").attr("disabled", "true");
+                $("#cmbTecnico").prop('required', false).val('');
+                $("#starURL").show();
+                $("#starSofifaID").show();
+                $("#starCoach").hide();
+            }
+            else {
+                $("#txtUrl").val("");
+                $("#txtUrl").addClass("disabled").attr("disabled", "true");
+                $("#txtUrl").prop('required', false).val('');
+                $("#txtIdSofifa").val("");
+                $("#txtIdSofifa").addClass("disabled").attr("disabled", "true");
+                $("#txtIdSofifa").prop('required', false).val('');
+                $("#cmbTecnico").removeClass("disabled").removeAttr("disabled").focus();
+                $("#cmbTecnico").attr("required", "true");
+                $("#starURL").hide();
+                $("#starSofifaID").hide();
+                $("#starCoach").show();
+            }
+        });
+
+        if ($("#cmbTipo").val() != COD_TYPE_FUT && $("#cmbTipo").val() != COD_TYPE_PRO) {
+            $("#txtUrl").removeClass("disabled").removeAttr("disabled").focus();
+            $("#txtUrl").attr("required", "true");
+            $("#txtIdSofifa").removeClass("disabled").removeAttr("disabled").focus();
+            $("#txtIdSofifa").attr("required", "true");
+            $("#cmbTecnico").val("");
+            $("#cmbTecnico").addClass("disabled").attr("disabled", "true");
+            $("#cmbTecnico").prop('required', false).val('');
+            $("#starURL").show();
+            $("#starSofifaID").show();
+            $("#starCoach").hide();
+        }
+        else {
+            $("#txtUrl").val("");
+            $("#txtUrl").addClass("disabled").attr("disabled", "true");
+            $("#txtUrl").prop('required', false).val('');
+            $("#txtIdSofifa").val("");
+            $("#txtIdSofifa").addClass("disabled").attr("disabled", "true");
+            $("#txtIdSofifa").prop('required', false).val('');
+            $("#cmbTecnico").removeClass("disabled").removeAttr("disabled").focus();
+            $("#cmbTecnico").attr("required", "true");
+            $("#starURL").hide();
+            $("#starSofifaID").hide();
+            $("#starCoach").show();
+        }
+    }
 
     if (actionForm == "VIEW") {
         $("input[type!='button']").attr('disabled', 'true');
         $("select").attr('disabled', 'true');
     }
 
-    window.Parsley.addValidator('datevalid', {
-	  validateString: function(value) {
-		value = value.replace("_", "");
-		if (value.length<10) { return false; }
-		else { return moment(value, "DD/MM/YYYY").isValid(); }
-	  },
-	  messages: {
-		en: 'O campo é inválido.',
-		fr: ""
-	  }
-	});
+    if (pNewPageRedirect != "BlogDetails") {
+        window.Parsley.addValidator('datevalid', {
+            validateString: function (value) {
+                value = value.replace("_", "");
+                if (value.length < 10) { return false; }
+                else { return moment(value, "DD/MM/YYYY").isValid(); }
+            },
+            messages: {
+                en: 'O campo é inválido.',
+                fr: ""
+            }
+        });
+    }
 }
 function submeteModerator(actionName, actionForm, itemSelected) {
     $("#actionForm").val(actionForm);
