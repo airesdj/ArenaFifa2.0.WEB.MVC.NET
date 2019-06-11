@@ -27,6 +27,7 @@
 }
 .gentelella-teamtable-relegated {
   color: #c7254e;
+  font-weight: bold;
 }
 .gentelella-btn-teamtable-qualified{background-color:steelblue}
 .gentelella-btn-teamtable-relegated{background-color:#c7254e}
@@ -76,3 +77,6 @@ span.btn-stage-active {COLOR: #FFF; TEXT-DECORATION: none}
 .team-goals-looser{font-size:60px;color:#000;}
 .team-goals-winner{font-size:60px;color:red}
 .own-goal{color:red}
+.score-win{color:steelblue}
+.score-draw{color:#000}
+.score-lost{color:red}

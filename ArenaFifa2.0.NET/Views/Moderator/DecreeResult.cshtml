@@ -1,0 +1,203 @@
+﻿@using ArenaFifa20.NET.Models
+@model ChampionshipMatchTableDetailsModel
+@{
+    ViewBag.Title = "Moderator Menu - Launch Result - Decree";
+}
+
+
+<!-- page content -->
+<div class="gentelella-right_col" role="main" style="padding-left:20px">
+    <div class="gentelella-page-title">
+        <div class="gentelella-title">
+            <h3>DECRETAR RESULTADO DA PARTIDA</h3>
+        </div>
+    </div>
+    <br>
+
+    <div class="gentelella-col-md-14 gentelella-col-sm-14 gentelella-col-xs-14" style="background-color:#F7F7F7">
+        <div class="gentelella-x_panel">
+            <div class="gentelella-x_content">
+
+                @Html.Partial("_MessageValidate")
+
+                <form id="comeback-form" action=""></form>
+
+                <form action="/Moderator/DecreeResult" class="form-horizontal" id="registration-form" method="post" role="form" data-parsley-validate>
+
+
+                    @Html.AntiForgeryToken()
+                    @{ TempData["FullModel"] = Model; }
+                    <input type="hidden" id="actionForm" name="actionForm" value="SAVE_DECREE_RESULT" />
+                    <input type="hidden" id="selectedID" name="selectedID" value="@Model.championshipID" />
+                    <input type="hidden" id="matchID" name="matchID" value="@Model.matchID" />
+                    <input type="hidden" id="modeType" name="modeType" value="@Model.modeType" />
+                    <center>
+                        <img id="championshipLogo" src="@Model.pathLogoChampionship" width="80" />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <img id="sportLogo" src="@Model.pathLogoType" width="100" />
+                        <br><br>
+                        <code><h4>@(Model.stageName + " - " + Model.roundDetails)</h4></code>
+                        <br><br>
+                        <label class="gentelella-control-label">
+                            @(Model.teamNameHome + "-" + Model.teamTypeHome)&nbsp;&nbsp;<img src="@Model.pathLogoTeamHome" width="40" />
+                            &nbsp;&nbsp;X&nbsp;&nbsp;
+                            <img src="@Model.pathLogoTeamAway" width="40" />&nbsp;&nbsp;@(Model.teamNameAway + "-" + Model.teamTypeAway)
+                        </label>
+                    </center>
+                    <br>
+                    <fieldset style="border:1px solid #2C3E4F;padding-left:10px">
+                        <br>
+                        <label class="gentelella-blue" style="font-size:14px;text-align:left;width:160px">Dados do Campeonato:</label>
+                        <div class="gentelella-row">
+                            <div class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-12">
+                                <label for="deacricao">Descrição:</label>
+                                &nbsp;&nbsp;
+                                <label class="gentelella-red">@Model.championshipName</label>
+                            </div>
+                            <div class="gentelella-col-md-3 gentelella-col-sm-3 gentelella-col-xs-12">
+                                <label for="deacricao">Temporada:</label>
+                                &nbsp;&nbsp;
+                                <label class="gentelella-red">@Model.seasonName</label>
+                            </div>
+                            <div class="gentelella-col-md-3 gentelella-col-sm-3 gentelella-col-xs-12">
+                                <label for="deacricao">Número/Código da Partida:</label>
+                                &nbsp;&nbsp;
+                                <label class="gentelella-red">@Model.matchID</label>
+                            </div>
+                        </div>
+                        <div class="gentelella-row">
+                            <div class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-12">
+                                <label for="deacricao">Técnico/Manager Mandante:</label>
+                                &nbsp;&nbsp;
+                                <label class="gentelella-red">@(Model.userHomeName + " (" + Model.psnIDHome + ")")</label>
+                            </div>
+                            <div class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-12">
+                                <label for="deacricao">Técnico/Manager Visitante:</label>
+                                &nbsp;&nbsp;
+                                <label class="gentelella-red">@(Model.userAwayName + " (" + Model.psnIDAway + ")")</label>
+                            </div>
+                        </div>
+                        @if (Model.groupID > 0)
+                        {
+                            <div class="gentelella-row">
+                                <div class="gentelella-col-md-4 gentelella-col-sm-4 gentelella-col-xs-12">
+                                    <label for="deacricao">Grupo? </label>
+                                    &nbsp;&nbsp;
+                                    <label class="gentelella-red">@Model.groupName</label>
+                                </div>
+                            </div>
+                        }
+                        <br>
+                    </fieldset>
+                    <br>
+                    <p>
+                        <code style="background-color:#fff">Todos os campos com (*) são de preenchimento obrigatório.</code>
+                    </p>
+                    <br>
+                    <div class="gentelella-row">
+                        <div class="gentelella-col-md-9 gentelella-col-sm-9 gentelella-col-xs-12">
+                            <label class="gentelella-control-label" for="decree" id="labelFirstCombobox">Escolha uma Mensagem de Decreto Programado </label><i style="color:red">*</i> :
+                            <select id="cmbMessageDecree" name="cmbMessageDecree" class="gentelella-form-control" required>
+                                <option value="">Selecione...</option>
+                                <option value="Placar decretado de 0x0 devido a omissão total dos dois técnicos.">Decreta 0x0 por OMISSÃO TOTAL dos dois técnicos/managers</option>
+                                <option value="Placar decretado de 0x0 devido a omissão parcial dos dois técnicos.">Decreta 0x0 por OMISSÃO PARCIAL dos dois técnicos/managers</option>
+                                <option value="Placar decretado de 0x0 devido a incompatibilidade de horários.">Decreta 0x0 por INCOMPATIBILIDADE DE HORÁRIOS</option>
+                                <option value="Placar decretado de 0x0 porque os dois técnicos não podem realizar a partida dentro do prazo da rodada.">Decreta 0x0 por NÃO REALIZAÇÃO DO JOGO</option>
+                                <option value="Decretado WO (3x0) para o técnico do time do @Model.teamNameHome por omissão total do técnico do time do @Model.teamNameAway.|Home">Decreta WO por OMISSÃO TOTAL em favor do time @Model.teamNameHome</option>
+                                <option value="Decretado WO (3x0) para o técnico do time do @Model.teamNameAway por omissão total do técnico do time do @Model.teamNameHome.|Away">Decreta WO por OMISSÃO TOTAL em favor do time @Model.teamNameAway</option>
+                                <option value="Decretado WO (3x0) para o técnico do time do @Model.teamNameHome por omissão parcial do técnico do time do @Model.teamNameAway.|Home">Decreta WO por OMISSÃO PARCIAL em favor do time @Model.teamNameHome</option>
+                                <option value="Decretado WO (3x0) para o técnico do time do @Model.teamNameAway por omissão parcial do técnico do time do @Model.teamNameHome.|Away">Decreta WO por OMISSÃO PARCIAL em favor do time @Model.teamNameAway</option>
+                                <option value="Decretado WO (3x0) para o técnico do time do @Model.teamNameHome porque o técnico do time do @Model.teamNameAway pediu para sair do campeonato.|Home">Decreta WO por DESISTÊNCIA em favor do time @Model.teamNameHome</option>
+                                <option value="Decretado WO (3x0) para o técnico do time do @Model.teamNameAway porque o técnico do time do @Model.teamNameHome pediu para sair do campeonato.|Away">Decreta WO por DESISTÊNCIA em favor do time @Model.teamNameAway</option>
+                                <option value="Decretado WO (3x0) para o técnico do time do @Model.teamNameHome porque o técnico do time do @Model.teamNameAway não poderá realizar a partida dentro do prazo, mas sem pontuação negativa pois o mesmo avisou com antecedência.|Home">Decreta WO por JOGO NÃO REALIZADO em favor do time @Model.teamNameHome</option>
+                                <option value="Decretado WO (3x0) para o técnico do time do @Model.teamNameAway porque o técnico do time do @Model.teamNameHome não poderá realizar a partida dentro do prazo, mas sem pontuação negativa pois o mesmo avisou com antecedência.|Away">Decreta WO por JOGO NÃO REALIZADO em favor do time @Model.teamNameAway</option>
+                            </select>
+                        </div>
+                        <div class="gentelella-col-md-3 gentelella-col-sm-3 gentelella-col-xs-12">
+                            <label class="gentelella-control-label" for="dtInicio" id="labelSecondCombobox">Escolha um Decreto </label> :
+                            <select id="cmbDecree" name="cmbDecree" class="gentelella-form-control">
+                                <option value="">Selecione...</option>
+                                <option value="LN_ADV">Advertência</option>
+                                <option value="LN_OMP">Omissão Parcial</option>
+                                <option value="LN_OMT">Omissão Total</option>
+                                <option value="LN_ADP">Atitude Antidesportiva</option>
+                            </select>
+                            <br>
+                        </div>
+                    </div>
+
+                    <div class="gentelella-form-group gentelella-a-right">
+                        <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                            <div class="gentelella-ln_solid"></div>
+                            <input type="button" class="gentelella-btn gentelella-btn-primary" onClick="JAVASCRIPT: submeteModerator('LaunchResultDetails', 'VOLTAR_DECREE', '');" value="Voltar" />
+                            <input type="button" class="gentelella-btn gentelella-btn-success" value="Decretar" />
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+@Html.Partial("_QuestionModalv2")
+@section Scripts {
+    <script>
+    $(function () {
+        if (detectMobileDevice() == 1) {
+            //$("#includedContentMenuMobile").load("/arena20/includes/menu-logged-mobile.html");
+            //$("#includedContentMenuRankingMobile").load("menu-my-matches-mobile.html");
+            hidden_show_ObjectMobile("footerMobile", "block");
+        }
+    });
+
+        function includeFileScreenModalGeneralScorer() {
+            $("#modalScreeenMsgTitle").html("DECRETO DA PARTIDA");
+            $("#modalScreeenMsgSubTitle").html("CONFIRMAÇÃO DO DECRETO");
+            $("#modalScreeenMsgQuestion").html("");
+            $("#modalScreeenMsgButton").on("click", function () { submeteModerator('DecreeResult', 'SAVE_DECREE_RESULT', ''); });
+        }
+
+    $(document).ready(function () {
+        if ('@TempData["returnMessage"]' != '')
+            toastr.error('Aviso: @TempData["returnMessage"].');
+
+        if (detectMobileDevice() == 0)
+            activeSidebarMenu("LaunchResult");
+
+        includeFileScreenModalGeneralScorer();
+        $(".gentelella-btn-success").click(function () {
+            if ($('select#cmbMessageDecree option:selected').val() == "") {
+                $("#registration-form").submit();
+            }
+            else {
+                $(this).attr("data-toggle", "modal");
+                $(this).attr("data-target", "#bs-message-general-modal-sm");
+
+                var decreeDetails = "Dados do Decreto:<br />- " + $('select#cmbMessageDecree option:selected').val().replace("|Home", "").replace("|Away", "");
+
+                if ($('select#cmbDecree option:selected').val() != "") {
+                    decreeDetails = decreeDetails + "<br /><br />" +
+                        "- <b>COM decreto: " + $('select#cmbDecree option:selected').text() + "</b>";
+                }
+                else {
+                    decreeDetails = decreeDetails + "<br /><br />" +
+                                    "- <b>SEM decreto informado.</b>";
+                }
+
+                $("#modalScreeenMsgQuestion").html("Deseja realizar o decreto da partida?<br/><br/>" + decreeDetails);
+
+                $('#bs-message-general-modal-sm').modal('show');
+                $(this).attr("data-toggle", "");
+                $(this).attr("data-target", "");
+
+            }
+
+        });
+
+        activateRegistrationForm("DecreeResult", '@Model.actionUser');
+    });
+
+    </script>
+}
+

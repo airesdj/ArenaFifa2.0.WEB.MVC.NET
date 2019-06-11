@@ -34,6 +34,22 @@ namespace ArenaFifa20.NET.Models
         public string returnMessage { get; set; }
     }
 
+    public class StandardDetailsModel_v2
+    {
+        public string id { get; set; }
+        public string name { get; set; }
+        public string type { get; set; }
+        public string pathImg { get; set; }
+    }
+
+    public class StandardDetailsModel
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+        public string type { get; set; }
+        public string pathImg { get; set; }
+    }
+
     public class SpoolerTypeModel
     {
         public int id { get; set; }
@@ -105,12 +121,6 @@ namespace ArenaFifa20.NET.Models
     }
 
 
-    public class TeamTypeDetailsModel
-    {
-        public int id { get; set; }
-        public string name { get; set; }
-    }
-
     public class TeamDetailsModel
     {
         public int id { get; set; }
@@ -125,7 +135,7 @@ namespace ArenaFifa20.NET.Models
         public string userName { get; set; }
         public string psnID { get; set; }
         public string pathLogo { get; set; }
-        public List<TeamTypeDetailsModel> listOfType { get; set; }
+        public List<StandardDetailsModel> listOfType { get; set; }
         public List<UserDetailsModel> listOfUser { get; set; }
         public List<ScorerDetails> listOfScorer { get; set; }
         public string actionUser { get; set; }
@@ -322,6 +332,7 @@ namespace ArenaFifa20.NET.Models
         public int totalDayStagePlayoff { get; set; }
         public string type { get; set; }
         public string typeName { get; set; }
+        public string modeType { get; set; }
         public int totalQualifyNextStage { get; set; }
         public string console { get; set; }
         public DateTime lastUpdate { get; set; }
@@ -347,18 +358,18 @@ namespace ArenaFifa20.NET.Models
         public string listStagesAdd { get; set; }
         public string listUsersStage2Add { get; set; }
         public string listTeamsStage0Add { get; set; }
-        public List<ChampionshipTeamDetailsModel> listOfTeam { get; set; }
+        public List<StandardDetailsModel> listOfTeam { get; set; }
         public List<ChampionshipUserDetailsModel> listOfUser { get; set; }
-        public List<ChampionshipStageDetailsModel> listOfStage { get; set; }
-        public List<ChampionshipTypeDetailsModel> listOfType { get; set; }
-        public List<TeamTypeDetailsModel> listOfTeamType { get; set; }
+        public List<StandardDetailsModel> listOfStage { get; set; }
+        public List<StandardDetailsModel_v2> listOfType { get; set; }
+        public List<StandardDetailsModel> listOfTeamType { get; set; }
         public List<ChampionshipUserDetailsModel> listOfUserStage2 { get; set; }
-        public List<ChampionshipTeamDetailsModel> listOfTeamStage0 { get; set; }
+        public List<StandardDetailsModel> listOfTeamStage0 { get; set; }
         public List<ChampionshipUserDetailsModel> listOfModerator { get; set; }
         public List<ChampionshipDetailsModel> listOfChampionship { get; set; }
-        public List<ChampionshipStageDetailsModel> listOfAllStages { get; set; }
+        public List<StandardDetailsModel> listOfAllStages { get; set; }
         public List<ChampionshipUserDetailsModel> listOfAllUsers { get; set; }
-        public List<ChampionshipTeamDetailsModel> listOfAllTeams { get; set; }
+        public List<StandardDetailsModel> listOfAllTeams { get; set; }
 
         //manage championship
         public List<ChampionshipUserDetailsModel> listOfUserGetIn { get; set; }
@@ -370,44 +381,150 @@ namespace ArenaFifa20.NET.Models
         public string pathLogoChampionship { get; set; }
         public string pathLogoType { get; set; }
 
+        //launch result
+        public List<ChampionshipMatchTableDetailsModel> listOfMatch { get; set; }
+        public List<StandardDetailsModel> listOfGroup { get; set; }
+        public List<ChampionshipTeamTableDetailsModel> listOfTeamTable { get; set; }
+
+
+        public string stageID_Round { get; set; }
         public string psnOperation { get; set; }
         public int idUserOperation { get; set; }
         public string actionUser { get; set; }
         public string returnMessage { get; set; }
     }
 
+    public class ChampionshipMatchTableViewModel
+    {
+        public List<ChampionshipMatchTableDetailsModel> listOfMatch { get; set; }
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
+    }
+
+    public class ChampionshipTeamTableListViewModel
+    {
+        public List<ChampionshipTeamTableDetailsModel> listOfTeamTable { get; set; }
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
+    }
+
+
+    public class ChampionshipGroupListViewModel
+    {
+        public List<StandardDetailsModel> listOfGroup { get; set; }
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
+    }
+
+
+    public class ChampionshipMatchTableDetailsModel
+    {
+        public int matchID { get; set; }
+        public int championshipID { get; set; }
+        public string championshipName { get; set; }
+        public string seasonName { get; set; }
+        public int stageID { get; set; }
+        public string stageName { get; set; }
+        public int groupID { get; set; }
+        public string groupName { get; set; }
+        public DateTime startDate { get; set; }
+        public DateTime endDate { get; set; }
+        public int teamHomeID { get; set; }
+        public int teamAwayID { get; set; }
+        public string totalGoalsHome { get; set; }
+        public string totalGoalsAway { get; set; }
+        public DateTime launchDate { get; set; }
+        public int round { get; set; }
+        public string roundDetails { get; set; }
+        public int userHomeID { get; set; }
+        public string userHomeName { get; set; }
+        public string psnIDHome { get; set; }
+        public int userAwayID { get; set; }
+        public string userAwayName { get; set; }
+        public string psnIDAway { get; set; }
+        public int playoffGame { get; set; }
+        public string teamNameHome { get; set; }
+        public string teamURLHome { get; set; }
+        public int teamWithImageHome { get; set; }
+        public string teamTypeHome { get; set; }
+        public string teamNameAway { get; set; }
+        public string teamURLAway { get; set; }
+        public int teamWithImageAway { get; set; }
+        public string teamTypeAway { get; set; }
+        public string pathLogoChampionship { get; set; }
+        public string pathLogoType { get; set; }
+        public string pathLogoTeamHome { get; set; }
+        public string pathLogoTeamAway { get; set; }
+        public string modeType { get; set; }
+        public int userIDAction { get; set; }
+        public string psnIDAction { get; set; }
+        public string messageBlackList { get; set; }
+        public string typeBlackList { get; set; }
+        public int userID1 { get; set; }
+        public int userID2 { get; set; }
+        public int blackListIDUser1 { get; set; }
+        public string messageBlackListUser1 { get; set; }
+        public int blackListIDUser2 { get; set; }
+        public string messageBlackListUser2 { get; set; }
+        public string userName1 { get; set; }
+        public string userName2 { get; set; }
+        public string psnID1 { get; set; }
+        public string psnID2 { get; set; }
+        public int totalRecordsOfHistoric { get; set; }
+        public List<ScorerDetails> listOfScorerTeamHome { get; set; }
+        public List<ScorerDetails> listOfScorerTeamAway { get; set; }
+        public List<ScorerMatchDetails> listOfScorerMatch { get; set; }
+        public List<ChampionshipCommentMatchDetailsModel> listOfCommentMatch { get; set; }
+        public List<ChampionshipCommentMatchUsersDetailsModel> listOfUsersCommentMatch { get; set; }
+        public List<ChampionshipMatchTableDetailsModel> listOfMatch { get; set; }
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
+    }
+
+
+    public class ChampionshipTeamTableDetailsModel
+    {
+        public int championshipID { get; set; }
+        public int teamID { get; set; }
+        public int groupID { get; set; }
+        public int totalPoint { get; set; }
+        public int totalPlayed { get; set; }
+        public int totalWon { get; set; }
+        public int totalDraw { get; set; }
+        public int totalLost { get; set; }
+        public int totalGoalsFOR { get; set; }
+        public int totalGoalsAGainst { get; set; }
+        public int orden { get; set; }
+        public string teamName { get; set; }
+        public string teamURL { get; set; }
+        public string teamType { get; set; }
+        public string psnID { get; set; }
+        public int deletedCurrentSeason { get; set; }
+        public int previousPosition { get; set; }
+        public string pathTeamLogo { get; set; }
+        public string actionUser { get; set; }
+    }
+
+
     public class TeamTypeListViewModel
     {
-        public List<TeamTypeDetailsModel> listOfType { get; set; }
+        public List<StandardDetailsModel> listOfType { get; set; }
         public string actionUser { get; set; }
         public string returnMessage { get; set; }
     }
 
     public class ChampionshipTeamListViewModel
     {
-        public List<ChampionshipTeamDetailsModel> listOfTeam { get; set; }
+        public List<StandardDetailsModel> listOfTeam { get; set; }
         public string actionUser { get; set; }
         public string returnMessage { get; set; }
-    }
-
-    public class ChampionshipTeamDetailsModel
-    {
-        public int id { get; set; }
-        public string name { get; set; }
-        public string type { get; set; }
     }
 
     public class ChampionshipTypeListViewModel
     {
-        public List<ChampionshipTypeDetailsModel> listOfType { get; set; }
+        public List<StandardDetailsModel> listOfType { get; set; }
         public string actionUser { get; set; }
         public string returnMessage { get; set; }
-    }
-
-    public class ChampionshipTypeDetailsModel
-    {
-        public string id { get; set; }
-        public string name { get; set; }
     }
 
     public class ChampionshipUserListViewModel
@@ -428,15 +545,78 @@ namespace ArenaFifa20.NET.Models
 
     public class ChampionshipStageListViewModel
     {
-        public List<ChampionshipStageDetailsModel> listOfStage { get; set; }
+        public List<StandardDetailsModel> listOfStage { get; set; }
         public string actionUser { get; set; }
         public string returnMessage { get; set; }
     }
 
-    public class ChampionshipStageDetailsModel
+    public class ScorerMatchViewModel
+    {
+        public int matchID { get; set; }
+        public int championshipID { get; set; }
+
+        public List<ScorerMatchDetails> listOfScorerMatch { get; set; }
+
+        public string loadScorersIDHome { get; set; }
+        public string loadScorersIDAway { get; set; }
+        public string loadScorersGoalsHome { get; set; }
+        public string loadScorersGoalsAway { get; set; }
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
+    }
+
+    public class ScorerMatchDetails
+    {
+        public int teamID { get; set; }
+        public string teamName { get; set; }
+        public string teamType { get; set; }
+        public int scorerID { get; set; }
+        public string scorerName { get; set; }
+        public string scorerNickname { get; set; }
+        public int totalGoals { get; set; }
+        public string sideScorer { get; set; }
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
+    }
+
+    public class ChampionshipCommentMatchListViewModel
+    {
+        public List<ChampionshipCommentMatchDetailsModel> listOfCommentMatch { get; set; }
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
+    }
+
+    public class ChampionshipCommentMatchUsersListViewModel
+    {
+        public List<ChampionshipCommentMatchUsersDetailsModel> listOfUsersCommentMatch { get; set; }
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
+    }
+
+    public class ChampionshipCommentMatchDetailsModel
     {
         public int id { get; set; }
-        public string name { get; set; }
+        public int matchID { get; set; }
+        public int championshipID { get; set; }
+        public int userID { get; set; }
+        public string userName { get; set; }
+        public string psnID { get; set; }
+        public DateTime commentDate { get; set; }
+        public string commentHour { get; set; }
+        public string comment { get; set; }
+        public string teamName { get; set; }
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
+    }
+
+    public class ChampionshipCommentMatchUsersDetailsModel
+    {
+        public int userID { get; set; }
+        public string userName { get; set; }
+        public string psnID { get; set; }
+        public string email { get; set; }
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
     }
 
 }

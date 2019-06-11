@@ -190,6 +190,26 @@ function submeteModerator(actionName, actionForm, itemSelected) {
         $("#comeback-form").attr("action", "/Moderator/" + actionName);
         $("#comeback-form").submit();
     }
+    else if (actionForm == "VOLTAR_DECREE") {
+        $("#actionForm").val("SHOW_CHAMPIONSHIP_DETAILS");
+        $("#cmbMessageDecree").find("option[value='Placar decretado de 0x0 devido a omissão total dos dois técnicos.']").attr("selected", "true");
+        $("#registration-form").attr("action", "/Moderator/" + actionName);
+        $("#registration-form").submit();
+    }
+    else if (actionForm == "VOLTAR_COMMENT") {
+        $("#actionForm").val("SHOW_CHAMPIONSHIP_DETAILS");
+        $("#txtComment").val(".");
+        checkFormValid(0);
+        $("#registration-form").attr("action", "/Moderator/" + actionName);
+        $("#registration-form").submit();
+    }
+    else if (actionForm == "DELETE_BLACKLIST" || actionForm == "ADD_BLACKLIST") {
+        $("#actionForm").val(actionForm);
+        $("#txtComment").val(".");
+        checkFormValid(0);
+        $("#registration-form").attr("action", "/Moderator/" + actionName);
+        $("#registration-form").submit();
+    }
     else {
         $("#registration-form").attr("action", "/Moderator/" + actionName);
         $("#registration-form").submit();

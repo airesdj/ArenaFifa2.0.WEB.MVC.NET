@@ -2,7 +2,7 @@
 
 Hi Guys, voltando o assunto do Arena 2.0, a integraçãojá foi iniciada e está sendo colocado inteligência nas páginas feitas na nossa demo.
 
-*_Seguem os pontos que JÁ estão integrados:_*
+*_Funcionalidades que JÁ estão integradas:_*
 - Tela principal
 - Menu Independente
 - Menu Logado Independente
@@ -22,8 +22,12 @@ Hi Guys, voltando o assunto do Arena 2.0, a integraçãojá foi iniciada e está
 - TODO Dashboard do Ranking do Arena (*_NOVO_*)
 
 
-*_Seguem os pontos que AINDA NÃO estão integrados:_*
-- Todo Dashboard do Menu Moderador (*_EM ANDAMENTPO: 10/14_*)
+*_Funcionalidade que está EM ANDAMENTO:_*
+- Todo Dashboard do Menu Moderador (*_13/14_*) ==> Gerar Fase está *EM ANDAMENTO*
+		. Faltam: Gerar Fase e Sorteio
+
+
+*_Funcionalidades que AINDA NÃO começaram o processo de integração:_*
 - Todo Dashboard das Tela de Meus Jogos
 - Todo Dashboard das Tela de Campeonatos
 - Todos Processos Liberação da Renovação
@@ -37,7 +41,8 @@ Hi Guys, voltando o assunto do Arena 2.0, a integraçãojá foi iniciada e está
 	. Verificar Imagens de Times: PRO e FUT
 	. Partidas Pendentes de Decreto
 	. Técnivos atingindo limite da lista negra
-
+- Gerar os Menus para Mobile
+- Testar o site no IE
 
 
 *Obs.: Para quem conhece está sendo feito 2 projetos, um é o controller do site, quem controla as chamadas das views e regras (WEB MVC C#) e o outro é a persistencia no banco de dados (MySQL) onde tem regras de negócio e chamada das procedures do banco (WEB API C#).*

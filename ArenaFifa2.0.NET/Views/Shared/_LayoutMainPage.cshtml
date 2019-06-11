@@ -26,6 +26,12 @@
             <link href="/Content/dashboard-gentelella/docs.min-2.css" rel="stylesheet" />
         }
 
+        if (ViewBag.inScorerDetails == "1")
+        {
+            <link href="/Content/show-score-details.css" rel="stylesheet" />
+            <link href="/Content/jplist/jplist.demo-pages.min.css" rel="stylesheet" />
+        }
+
     }
 </head>
 
@@ -49,14 +55,11 @@ else
             <div class="gentelella-main_container" style="background-color:#2C3E4F">
                 <!-- /sidebar menu -->
                 @if (ViewBag.inHallOfFame == "1")
-                {@Html.Partial("_MenuSideBarHallOfFame");
-            }
-            else if (ViewBag.inRanking == "1")
-            { @Html.Partial("_MenuSideBarRanking");
-        }
-        else if (ViewBag.inModeratorMenu == "1")
-        { @Html.Partial("_MenuSideBarModerator");
-    }
+                    { @Html.Partial("_MenuSideBarHallOfFame"); }
+                else if (ViewBag.inRanking == "1")
+                    { @Html.Partial("_MenuSideBarRanking"); }
+                else if (ViewBag.inModeratorMenu == "1")
+                    { @Html.Partial("_MenuSideBarModerator"); }
                 <!-- /sidebar menu -->
 
                 <div id="includedContentMenuMobile"></div>
@@ -77,6 +80,9 @@ else
         @Scripts.Render("~/bundles/jqueryaux")
         @Scripts.Render("~/bundles/carousel-portfolio-script")
 
+       @if (@ViewBag.inUsingAjaxRazor == "1") { @Scripts.Render("~/bundles/jqueryajax"); }
+       @if (@ViewBag.inCalculateScore == "1") { <script src="/Scripts/calculate-score.js"></script> }
+
         @if (@ViewBag.inModeratorMenu == "1")
         {
             @Scripts.Render("~/bundles/gentelella-datatable-script")
@@ -85,6 +91,10 @@ else
             if (@ViewBag.inModeratorMenuTextEditor == "1")
             {
                 @Scripts.Render("~/bundles/gentelella-editor-script")
+            }
+            if (@ViewBag.inLaunchResult == "1")
+            {
+                <script src="/Scripts/functions-launch-result.js"></script>
             }
         }
 

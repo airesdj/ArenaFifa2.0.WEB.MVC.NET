@@ -15,6 +15,10 @@ namespace ArenaFifa20.NET
                         "~/Scripts/jquery/jquery.validate.js",
                         "~/Scripts/jquery/jquery.validate.unobtrusive.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/jqueryajax").Include(
+                        "~/Scripts/jquery.unobtrusive-ajax.js",
+                        "~/Scripts/jquery.unobtrusive-ajax.min.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/jqueryaux").Include(
                         "~/Scripts/jquery/circle-progress.min.js",
                         "~/Scripts/jquery/circle-progress.min.js",
