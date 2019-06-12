@@ -545,9 +545,26 @@ namespace ArenaFifa20.NET.Models
 
     public class ChampionshipStageListViewModel
     {
-        public List<StandardDetailsModel> listOfStage { get; set; }
+        public List<ChampionshipStageDetailsModel> listOfStage { get; set; }
+        public int championshipID { get; set; }
+        public int stageID { get; set; }
+        public int previousStageID { get; set; }
+        public DateTime startStageDate { get; set; }
+        public string championshipName { get; set; }
+        public string championshipType { get; set; }
+        public string pathLogoChampionship { get; set; }
+        public string pathLogoType { get; set; }
         public string actionUser { get; set; }
         public string returnMessage { get; set; }
+    }
+
+    public class ChampionshipStageDetailsModel
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+        public int totalMatchesNoResult { get; set; }
+        public int existMatches { get; set; }
+        public string status { get; set; }
     }
 
     public class ScorerMatchViewModel

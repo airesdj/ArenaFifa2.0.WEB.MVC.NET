@@ -94,10 +94,25 @@ namespace ArenaFifa20.NET
             { realPathChampionshipLogo = logoPath; }
             else { realPathChampionshipLogo = String.Empty; }
 
-            logoPath = "/images/logo-" + modeType + "-white.jpg";
+            logoPath = "/images/logo-" + getChampionshipModeType(modeType) + "-white.jpg";
             if (System.IO.File.Exists(HttpContext.Current.Server.MapPath(logoPath)))
             { realPathModeLogo = logoPath; }
             else { realPathModeLogo = String.Empty; }
+        }
+
+        private static string getChampionshipModeType(string championshipType)
+        {
+            string getRreturn = string.Empty;
+
+            if (championshipType.Length==3) { getRreturn = championshipType; }
+            else if (championshipType.Length > 3)
+            {
+                if (championshipType.IndexOf("PRO") > -1) { getRreturn = "PRO"; }
+                else if (championshipType.IndexOf("FUT") > -1) { getRreturn = "FUT"; }
+                else { getRreturn = "H2H"; }
+            }
+
+            return getRreturn;
         }
 
         public static void getLists(ref List<UserDetailsModel> listUsers, ref List<StandardDetailsModel> listTypes, HttpResponseMessage response)

@@ -78,6 +78,7 @@
                     <input type="hidden" id="onlyOnePlayOffGame" name="onlyOnePlayOffGame" value="@onlyOnePlayOffGame" />
                     <input type="hidden" id="forGroup" name="forGroup" value="@forGroup" />
                     <input type="hidden" id="groupID" name="groupID" value="1" />
+                    <input type="hidden" id="totalGroups" name="totalGroups" value="@Model.totalGroup" />
                     <center>
                         <img src="@Model.pathLogoChampionship" width="90" />
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -550,20 +551,25 @@
         if ('@TempData["actionSuccessfully"]' != '')
             toastr.success('@TempData["actionSuccessfully"].');
 
-        if (detectMobileDevice() == 0)
-            activeSidebarMenu(window.location.pathname.replace("Details", ""));
+        if (detectMobileDevice() == 0) {
+            if (window.location.pathname.indexOf("Details")>-1)
+                activeSidebarMenu(window.location.pathname.replace("Details", ""));
+            else
+                activeSidebarMenu(window.location.pathname.replace("Simple", ""));
+        }
 
         activateRegistrationForm("LaunchResultDetails", '@Model.actionUser');
 
         setVariablesDataTable(@Model.totalQualify, @indexRelegate, @stageIDInitial, @roundInitial, @totalListOfStages, @totalListOfGroups, @teamsForGroup);
 
         $('.dataTables_paginate').on('click', function () {
-            if ('@forGroup' == '0') {
+            if ('@forGroup' == '0' || $(this).attr("id").indexOf("stage1") == -1) {
                 showRoundDetails($(this));
-                setSourceImgTeamLogo();
+                if ('@forGroup' == '0') { setSourceImgTeamLogo(); }
+                else { setSourceImgTeamLogoForGroup(); }
             }
             else {
-                showRoundDetailsForGroup(parseInt($("#groupID").val())-1);
+                showRoundDetailsForGroup(parseInt($("#groupID").val()) - 1);
                 setSourceImgTeamLogoForGroup();
             }
             deleteOnClick();

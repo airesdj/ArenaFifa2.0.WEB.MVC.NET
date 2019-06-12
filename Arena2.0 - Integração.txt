@@ -19,12 +19,12 @@ Hi Guys, voltando o assunto do Arena 2.0, a integraçãojá foi iniciada e está
 - Lista da Lista Negra da Atual Temporada
 - Detalhes Por Usuário da Lista Negra da Atual Temporada
 - TODO Dashboard do Hall da Fama
-- TODO Dashboard do Ranking do Arena (*_NOVO_*)
+- TODO Dashboard do Ranking do Arena
 
 
 *_Funcionalidade que está EM ANDAMENTO:_*
-- Todo Dashboard do Menu Moderador (*_13/14_*) ==> Gerar Fase está *EM ANDAMENTO*
-		. Faltam: Gerar Fase e Sorteio
+- Todo Dashboard do Menu Moderador (*_14/14_*) ==> Sorteio Automático está *EM ANDAMENTO* ==> ULTIMA FUNCIONALIDADE
+		. Atenção: Gerar Fase foi feito mas só 50% foi testado.
 
 
 *_Funcionalidades que AINDA NÃO começaram o processo de integração:_*

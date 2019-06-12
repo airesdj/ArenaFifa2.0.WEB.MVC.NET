@@ -18,6 +18,8 @@
         @Html.AntiForgeryToken()
         <input type="hidden" id="actionForm" name="actionForm" />
         <input type="hidden" id="selectedID" name="selectedID" />
+        <input type="hidden" id="championshipName" name="championshipName" />
+        <input type="hidden" id="championshipType" name="championshipType" />
         <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
             <div class="gentelella-x_panel">
                 <div class="gentelella-x_content">
@@ -51,18 +53,19 @@
                                     <tbody>
                                         @foreach (var item in Model.listOfChampionship)
                                         {
-                                        <tr>
-                                            <td style="display:none">@item.id</td>
-                                            <td>@item.name</td>
-                                            <td class="gentelella-a-center">@item.seasonName.Substring(0, 3)</td>
-                                            <td class="gentelella-a-center">@item.type</td>
-                                            <td class="gentelella-a-center">@item.totalTeam.ToString("00")</td>
-                                            <td class="gentelella-a-center">@item.startDate.ToString("dd/MM/yyyy")</td>
-                                            <td class="gentelella-a-center">@item.drawDate.ToString("dd/MM/yyyy")</td>
-                                            <td class="gentelella-a-center">
-                                                <a href="JAVASCRIPT: submeteModerator('GenerateStageDetails', 'EDIT', '@item.id');" title="Alterar dados do item de cadastro." class="gentelella-btn gentelella-btn-info gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-edit gentelella-fa-1-2x"></i></a>
-                                            </td>
-                                        </tr>
+
+                                            <tr>
+                                                <td style="display:none">@item.id</td>
+                                                <td>@item.name</td>
+                                                <td class="gentelella-a-center">@item.seasonName.Substring(0, 3)</td>
+                                                <td class="gentelella-a-center">@item.type</td>
+                                                <td class="gentelella-a-center">@item.totalTeam.ToString("00")</td>
+                                                <td class="gentelella-a-center">@item.startDate.ToString("dd/MM/yyyy")</td>
+                                                <td class="gentelella-a-center">@item.drawDate.ToString("dd/MM/yyyy")</td>
+                                                <td class="gentelella-a-center">
+                                                    <a href="JAVASCRIPT: $('#championshipType').val('@item.type');$('#championshipName').val('@item.name');submeteModerator('GenerateStageDetails', 'EDIT', '@item.id');" title="Alterar dados do item de cadastro." class="gentelella-btn gentelella-btn-info gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-edit gentelella-fa-1-2x"></i></a>
+                                                </td>
+                                            </tr>
                                         }
                                     </tbody>
                                 </table>

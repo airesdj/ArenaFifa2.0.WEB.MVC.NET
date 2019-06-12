@@ -2979,7 +2979,7 @@ namespace ArenaFifa20.NET.Controllers
 
                                         modelReturnJSON.pathLogoChampionship = pathChampionshipLogo;
                                         modelReturnJSON.pathLogoType = pathTypeLogo.Replace("white", "beige");
-                                        modelReturnJSON.pathLogoTeamHome = ArenaFifa20.NET.GlobalFunctions.getPathLogoTeam(modelReturnJSON.teamNameHome);
+                                        modelReturnJSON.pathLogoTeamHome = GlobalFunctions.getPathLogoTeam(modelReturnJSON.teamNameHome);
                                         modelReturnJSON.pathLogoTeamAway = GlobalFunctions.getPathLogoTeam(modelReturnJSON.teamNameAway);
                                     }
 
@@ -3079,6 +3079,123 @@ namespace ArenaFifa20.NET.Controllers
             catch (Exception ex)
             {
                 modelReturnJSON.listOfChampionship = new List<ChampionshipDetailsModel>();
+                TempData["returnMessage"] = "Erro interno - Exibindo Menu Moderador - Gerar Fase: (" + ex.InnerException.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(modelReturnJSON);
+
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+                ModeratorMenuMode = null;
+            }
+        }
+
+
+        // GET: Moderator/GenerateStageDetails
+        [UserModerator]
+        public ActionResult GenerateStageDetails(FormCollection formHTML)
+        {
+
+            HttpResponseMessage response = new HttpResponseMessage();
+            ChampionshipStageListViewModel modelReturnJSON = new ChampionshipStageListViewModel();
+            ChampionshipStageListViewModel ModeratorMenuMode = new ChampionshipStageListViewModel();
+
+            string actionForm = formHTML["actionForm"].ToLower();
+
+            setViewBagVariables();
+
+            try
+            {
+                if (actionForm != "edit")
+                {
+                    modelReturnJSON = (ChampionshipStageListViewModel)TempData["FullModel"];
+                }
+
+                if (actionForm == "generate_stage")
+                {
+                    string previousStageID = formHTML["previousStageID"];
+                    string stageID = formHTML["stageID"];
+                    string championshipID = formHTML["selectedID"];
+                    string startStageDate = formHTML["startStageDate"];
+
+                    if (previousStageID == GlobalVariables.STAGE_TEAM_TABLE)
+                    {
+                        ModeratorMenuMode.championshipID = Convert.ToInt16(championshipID);
+                        ModeratorMenuMode.stageID = Convert.ToInt16(stageID);
+                        ModeratorMenuMode.startStageDate = Convert.ToDateTime(startStageDate);
+                        ModeratorMenuMode.actionUser = "generate_stage_playoff_stage0";
+                    }
+                    else if (previousStageID != GlobalVariables.STAGE_QUALIFY1 && previousStageID != GlobalVariables.STAGE_QUALIFY2)
+                    {
+                        ModeratorMenuMode.championshipID = Convert.ToInt16(championshipID);
+                        ModeratorMenuMode.stageID = Convert.ToInt16(stageID);
+                        ModeratorMenuMode.previousStageID = Convert.ToInt16(previousStageID);
+                        ModeratorMenuMode.startStageDate = Convert.ToDateTime(startStageDate);
+                        ModeratorMenuMode.actionUser = "generate_stage_playoff_from_playoff";
+                    }
+                    else if (previousStageID == GlobalVariables.STAGE_QUALIFY1)
+                    {
+                        ModeratorMenuMode.championshipID = Convert.ToInt16(championshipID);
+                        ModeratorMenuMode.stageID = Convert.ToInt16(stageID);
+                        ModeratorMenuMode.startStageDate = Convert.ToDateTime(startStageDate);
+                        ModeratorMenuMode.actionUser = "generate_stage_playoff_from_qualify1";
+                    }
+
+                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("ChampionshipStage", ModeratorMenuMode).Result;
+                    modelReturnJSON = response.Content.ReadAsAsync<ChampionshipStageListViewModel>().Result;
+
+                    if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                        TempData["actionSuccessfully"] = "Nova Fase foi gerada com sucesso.";
+                }
+                else
+                {
+                    modelReturnJSON.returnMessage = "ModeratorSuccessfully";
+                    modelReturnJSON.actionUser = actionForm.ToUpper();
+                    response.StatusCode = HttpStatusCode.Created;
+                }
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                        {
+                            if (actionForm == "generate_stage")
+                            {
+
+                            }
+
+                            response = GlobalVariables.WebApiClient.GetAsync("ChampionshipStage/" + formHTML["selectedID"]).Result;
+                            modelReturnJSON = response.Content.ReadAsAsync<ChampionshipStageListViewModel>().Result;
+
+                            string pathChampionshipLogo = String.Empty;
+                            string pathTypeLogo = String.Empty;
+
+                            GlobalFunctions.getPathLogoChampionship(formHTML["championshipName"], formHTML["championshipType"], ref pathChampionshipLogo, ref pathTypeLogo);
+
+                            modelReturnJSON.pathLogoChampionship = pathChampionshipLogo;
+                            modelReturnJSON.pathLogoType = pathTypeLogo;
+                            modelReturnJSON.championshipID = Convert.ToInt16(formHTML["selectedID"]);
+                            modelReturnJSON.championshipName = formHTML["championshipName"];
+                            modelReturnJSON.championshipType = formHTML["championshipType"];
+
+                            return View(modelReturnJSON);
+                        }
+                        else
+                        {
+                            TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Gerar Fase. (" + modelReturnJSON.returnMessage + ")";
+                            return View(modelReturnJSON);
+                        }
+                    default:
+                        TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Gerar Fase. (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View(modelReturnJSON);
+                }
+
+            }
+            catch (Exception ex)
+            {
                 TempData["returnMessage"] = "Erro interno - Exibindo Menu Moderador - Gerar Fase: (" + ex.InnerException.Message + ")";
                 ModelState.AddModelError("", "application error.");
                 return View(modelReturnJSON);

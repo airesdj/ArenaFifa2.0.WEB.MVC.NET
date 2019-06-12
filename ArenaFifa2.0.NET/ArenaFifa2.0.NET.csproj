@@ -2675,6 +2675,7 @@
     <Content Include="Views\Moderator\LaunchSimpleResult.cshtml" />
     <Content Include="Views\Moderator\DecreeResult.cshtml" />
     <Content Include="Views\Moderator\CommentMatch.cshtml" />
+    <Content Include="Views\Moderator\GenerateStageDetails.cshtml" />
     <None Include="Views\Moderator\_MessageValidate.cshtml" />
     <None Include="Views\Moderator\_QuestionModal.cshtml" />
     <None Include="Views\Moderator\_QuestionModalv2.cshtml" />
