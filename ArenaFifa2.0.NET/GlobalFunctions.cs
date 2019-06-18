@@ -191,24 +191,33 @@ namespace ArenaFifa20.NET
                         {
                             for (int i = 0; i < modelReturnJSON.listOfTeamTable.Count; i++)
                             {
-                                modelReturnJSON.listOfTeamTable[i].pathTeamLogo = GlobalFunctions.getPathLogoTeam(modelReturnJSON.listOfTeamTable[i].teamName);
+                                modelReturnJSON.listOfTeamTable[i].pathTeamLogo = getPathLogoTeam(modelReturnJSON.listOfTeamTable[i].teamName);
                             }
+                            if (modelReturnJSON.listOfTeamTable[0].groupID > 0)
+                                modelReturnJSON.drawDoneTeamTableGroup = 1;
+                            else
+                                modelReturnJSON.drawDoneTeamTableGroup = 0;
                         }
                         else if (modelReturnJSON.returnMessage == "ModeratorSuccessfully" && modelReturnJSON.listOfTeam.Count > 0)
                         {
                             for (int i = 0; i < modelReturnJSON.listOfTeam.Count; i++)
                             {
-                                modelReturnJSON.listOfTeam[i].pathImg = GlobalFunctions.getPathLogoTeam(modelReturnJSON.listOfTeam[i].name);
+                                modelReturnJSON.listOfTeam[i].pathImg = getPathLogoTeam(modelReturnJSON.listOfTeam[i].name);
                             }
                         }
 
                     }
 
                 }
-                GlobalFunctions.getPathLogoChampionship(modelReturnJSON.name, modelReturnJSON.modeType, ref pathChampionshipLogo, ref pathTypeLogo);
+                getPathLogoChampionship(modelReturnJSON.name, modelReturnJSON.modeType, ref pathChampionshipLogo, ref pathTypeLogo);
 
                 modelReturnJSON.pathLogoChampionship = pathChampionshipLogo;
                 modelReturnJSON.pathLogoType = pathTypeLogo;
+
+                if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                {
+                    if (modelReturnJSON.listOfMatch.Count > 0) { modelReturnJSON.drawDoneMatchTable = 1; } else { modelReturnJSON.drawDoneMatchTable = 0; }
+                }
 
                 listOfTeamTable = null;
                 listOfMatchTable = null;
@@ -256,7 +265,7 @@ namespace ArenaFifa20.NET
                     {
                         if (commentMatchMode.userID != modelReturnJSON3.listOfUsersCommentMatch[i].userID)
                         {
-                            objEmail.SendEmail(GlobalFunctions.getBodyHtmlSendComment(modelReturnJSON, comment, dsMatch),
+                            objEmail.SendEmail(getBodyHtmlSendComment(modelReturnJSON, comment, dsMatch),
                                                modelReturnJSON3.listOfUsersCommentMatch[i].email, "CONTACT-US", "Comentario da Fase - " + dsMatch);
                         }
                     }

@@ -200,6 +200,7 @@
     <Compile Include="GlobalFunctions.cs" />
     <Compile Include="GlobalVariables.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\SpoolerViewModels.cs" />
     <Compile Include="Models\ModeratorViewModels.cs" />
     <Compile Include="Models\RankingViewModels.cs" />
     <Compile Include="Models\HallOfFameViewModels.cs" />
@@ -2676,6 +2677,7 @@
     <Content Include="Views\Moderator\DecreeResult.cshtml" />
     <Content Include="Views\Moderator\CommentMatch.cshtml" />
     <Content Include="Views\Moderator\GenerateStageDetails.cshtml" />
+    <Content Include="Views\Moderator\DrawDetails.cshtml" />
     <None Include="Views\Moderator\_MessageValidate.cshtml" />
     <None Include="Views\Moderator\_QuestionModal.cshtml" />
     <None Include="Views\Moderator\_QuestionModalv2.cshtml" />

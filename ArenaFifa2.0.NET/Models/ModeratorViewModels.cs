@@ -21,19 +21,6 @@ namespace ArenaFifa20.NET.Models
         public string returnMessage { get; set; }
     }
 
-    public class SpoolerViewModel
-    {
-        public string nextTimeProcessSpooler { get; set; }
-
-        public List<SpoolerTypeModel> listSpoolerInProgress { get; set; }
-        public List<SpoolerTypeModel> listSpoolerWaiting { get; set; }
-        public List<SpoolerTypeModel> listSpoolerFinished { get; set; }
-        public List<SpoolerTypeModel> listSpoolerAdmin { get; set; }
-
-        public string actionUser { get; set; }
-        public string returnMessage { get; set; }
-    }
-
     public class StandardDetailsModel_v2
     {
         public string id { get; set; }
@@ -48,34 +35,6 @@ namespace ArenaFifa20.NET.Models
         public string name { get; set; }
         public string type { get; set; }
         public string pathImg { get; set; }
-    }
-
-    public class SpoolerTypeModel
-    {
-        public int id { get; set; }
-        public string description { get; set; }
-        public string initials { get; set; }
-        public DateTime dt_create { get; set; }
-        public string hr_create { get; set; }
-        public int totalEmails { get; set; }
-        public int totalEmailsSent { get; set; }
-        public int totalEmailsMissingSend { get; set; }
-        public DateTime dt_last_sent { get; set; }
-        public string hr_last_sent { get; set; }
-        public DateTime dt_end_process { get; set; }
-        public string hr_end_process { get; set; }
-        public string psnID { get; set; }
-        public int seasonID { get; set; }
-        public int championshipID { get; set; }
-        public int matchID { get; set; }
-        public int stageID { get; set; }
-        public int roundID { get; set; }
-        public string championshipName { get; set; }
-        public string frequency { get; set; }
-        public string timeProcess { get; set; }
-        public Boolean activeProcess { get; set; }
-        public string dateFormattedLastProcessing { get; set; }
-        public Boolean processedToday { get; set; }
     }
 
     public class SeasonListModesViewModel
@@ -381,11 +340,16 @@ namespace ArenaFifa20.NET.Models
         public string pathLogoChampionship { get; set; }
         public string pathLogoType { get; set; }
 
-        //launch result
+        //draw
+        public int drawDoneMatchTable { get; set; }
+        public int totalMatchesPerRound { get; set; }
         public List<ChampionshipMatchTableDetailsModel> listOfMatch { get; set; }
         public List<StandardDetailsModel> listOfGroup { get; set; }
+        public int drawDoneTeamTableGroup { get; set; }
         public List<ChampionshipTeamTableDetailsModel> listOfTeamTable { get; set; }
 
+        public int drawDoneUserTeam { get; set; }
+        public List<UserTeamDetailsModel> listOfUserTeam { get; set; }
 
         public string stageID_Round { get; set; }
         public string psnOperation { get; set; }
@@ -632,6 +596,35 @@ namespace ArenaFifa20.NET.Models
         public string userName { get; set; }
         public string psnID { get; set; }
         public string email { get; set; }
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
+    }
+
+    public class UserTeamViewModel
+    {
+        public int championshipID { get; set; }
+        public int userID { get; set; }
+        public int teamID { get; set; }
+        public int drawDone { get; set; }
+        public List<UserTeamDetailsModel> listOfUserTeam { get; set; }
+        public string actionUser { get; set; }
+        public string returnMessage { get; set; }
+    }
+
+    public class UserTeamDetailsModel
+    {
+        public int championshipID { get; set; }
+        public int userID { get; set; }
+        public int teamID { get; set; }
+        public string userName { get; set; }
+        public string psnID { get; set; }
+        public string teamName { get; set; }
+        public string teamType { get; set; }
+    }
+
+    public class DrawViewModel
+    {
+        public int championshipID { get; set; }
         public string actionUser { get; set; }
         public string returnMessage { get; set; }
     }

@@ -23,6 +23,11 @@ namespace ArenaFifa20.NET.Controllers
             ViewBag.inUsingAjaxRazor = "0";
             ViewBag.inCalculateScore = "0";
             ViewBag.inScorerDetails = "0";
+            ViewBag.inSmartWizardMenu = "0";
+            ViewBag.inDrawTeamsUsersJustHasBeenDone = "0";
+            ViewBag.inDrawGroupsJustHasBeenDone = "0";
+            ViewBag.justDidDrawGroups = "0";
+            ViewBag.justDidDrawMatchTable = "0";
         }
 
         // GET: Moderator/Summary
@@ -899,7 +904,7 @@ namespace ArenaFifa20.NET.Controllers
 
                     modelReturnJSON2.actionUser = "dellCrud";
                     modelReturnJSON2.id = Convert.ToUInt16(formHTML["selectedID"]);
-                    modelReturnJSON2.idOperator = Convert.ToUInt16(Session["user.id"].ToString());
+                    modelReturnJSON2.idOperator = Convert.ToInt32(Session["user.id"].ToString());
                     modelReturnJSON2.psnIDOperator = Session["user.psnID"].ToString();
 
                     response = GlobalVariables.WebApiClient.PostAsJsonAsync("User", modelReturnJSON2).Result;
@@ -2183,11 +2188,19 @@ namespace ArenaFifa20.NET.Controllers
                                 {
                                     modelReturnJSON = GlobalFunctions.ShowChampionshipDetails(formHTML["selectedID"]);
                                 }
-                                modelReturnJSON.actionUser = actionForm.ToUpper();
-                                if (!String.IsNullOrEmpty(modelReturnJSON.returnMessage) && modelReturnJSON.returnMessage != "ModeratorSuccessfully")
+                                 modelReturnJSON.actionUser = actionForm.ToUpper();
+                                if ((!String.IsNullOrEmpty(modelReturnJSON.returnMessage) && modelReturnJSON.returnMessage != "ModeratorSuccessfully"))
+                                {
                                     TempData["returnMessage"] = modelReturnJSON.returnMessage + " - " + actionForm + ". (" + modelReturnJSON.returnMessage + ")";
-
-                                return View(modelReturnJSON);
+                                    return View(modelReturnJSON);
+                                }
+                                else if (modelReturnJSON.drawDoneMatchTable == 0)
+                                {
+                                    TempData["returnMessage"] = "A Funcionalidade não está disponível. O Sorteio, deste campeonato, ainda não foi gerado.";
+                                    return View("LaunchResult", (ChampionshipListViewModel)TempData["FullModel"]);
+                                }
+                                else
+                                    return View(modelReturnJSON);
                             }
                         }
                         else
@@ -3184,11 +3197,11 @@ namespace ArenaFifa20.NET.Controllers
                         }
                         else
                         {
-                            TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Gerar Fase. (" + modelReturnJSON.returnMessage + ")";
+                            TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Gerar Fase Details. (" + modelReturnJSON.returnMessage + ")";
                             return View(modelReturnJSON);
                         }
                     default:
-                        TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Gerar Fase. (" + response.StatusCode + ")";
+                        TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Gerar Fase Details. (" + response.StatusCode + ")";
                         ModelState.AddModelError("", "application error.");
                         return View(modelReturnJSON);
                 }
@@ -3196,7 +3209,7 @@ namespace ArenaFifa20.NET.Controllers
             }
             catch (Exception ex)
             {
-                TempData["returnMessage"] = "Erro interno - Exibindo Menu Moderador - Gerar Fase: (" + ex.InnerException.Message + ")";
+                TempData["returnMessage"] = "Erro interno - Exibindo Menu Moderador - Gerar Fase Details: (" + ex.InnerException.Message + ")";
                 ModelState.AddModelError("", "application error.");
                 return View(modelReturnJSON);
 
@@ -3213,7 +3226,7 @@ namespace ArenaFifa20.NET.Controllers
 
         // GET: Moderator/Draw
         [UserModerator]
-        public ActionResult Draw()
+        public ActionResult Draw(FormCollection formHTML)
         {
 
             HttpResponseMessage response = null;
@@ -3266,6 +3279,276 @@ namespace ArenaFifa20.NET.Controllers
                 ModeratorMenuMode = null;
             }
         }
+
+
+        // GET: Moderator/DrawDetails
+        [UserModerator]
+        public ActionResult DrawDetails(FormCollection formHTML)
+        {
+
+            HttpResponseMessage response = new HttpResponseMessage();
+            ChampionshipDetailsModel modelReturnJSON = new ChampionshipDetailsModel();
+            ChampionshipDetailsModel ModeratorMenuMode = new ChampionshipDetailsModel();
+
+            UserTeamViewModel modelReturnJSONUserTeam = new UserTeamViewModel();
+            UserTeamViewModel ModeratorUserTeam = new UserTeamViewModel();
+
+            ChampionshipListViewModel modelReturnJSONChampionship = new ChampionshipListViewModel();
+            SpoolerViewModel modelReturnJSONSpooler = new SpoolerViewModel();
+            SpoolerViewModel ModeratorSpooler = new SpoolerViewModel();
+
+            string actionForm = formHTML["actionForm"].ToLower();
+
+            setViewBagVariables();
+            ViewBag.inLaunchResult = "1";
+            ViewBag.inSmartWizardMenu = "1";
+
+            try
+            {
+                if (actionForm != "show_draw_details" && actionForm != "add_spooler_warning_of_draw")
+                    modelReturnJSON = (ChampionshipDetailsModel)TempData["FullModel"];
+
+                if (actionForm == "draw_automatic_user_team")
+                {
+                    ModeratorUserTeam.actionUser = "draw_automatic_user_team";
+                    ModeratorUserTeam.championshipID = Convert.ToInt16(formHTML["selectedID"]);
+                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("Draw", ModeratorUserTeam).Result;
+                    modelReturnJSONUserTeam = response.Content.ReadAsAsync<UserTeamViewModel>().Result;
+                    modelReturnJSON.returnMessage = modelReturnJSONUserTeam.returnMessage;
+                    if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                    {
+                        ViewBag.inDrawTeamsUsersJustHasBeenDone = "1";
+                        TempData["actionSuccessfully"] = "O Sorteio Automático de Técnico & Times foi realizado com sucesso.";
+                    }
+                }
+                else if (actionForm == "cancel_draw_user_team")
+                {
+                    ModeratorUserTeam.actionUser = "cancel_draw_user_team";
+                    ModeratorUserTeam.championshipID = Convert.ToInt16(formHTML["selectedID"]);
+                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("Draw", ModeratorUserTeam).Result;
+                    modelReturnJSONUserTeam = response.Content.ReadAsAsync<UserTeamViewModel>().Result;
+                    modelReturnJSON.returnMessage = modelReturnJSONUserTeam.returnMessage;
+                    if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                        TempData["actionSuccessfully"] = "O Cancelamento do Sorteio de Técnico & Times foi realizado com sucesso.";
+                }
+                else if (actionForm == "assume_draw_user_team")
+                {
+                    ModeratorUserTeam.actionUser = "assume_draw_user_team";
+                    ModeratorUserTeam.championshipID = Convert.ToInt16(formHTML["selectedID"]);
+                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("Draw", ModeratorUserTeam).Result;
+                    modelReturnJSONUserTeam = response.Content.ReadAsAsync<UserTeamViewModel>().Result;
+                    modelReturnJSON.returnMessage = modelReturnJSONUserTeam.returnMessage;
+                    if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                        TempData["actionSuccessfully"] = "A Ação de Assumir Técnico & Times das Ligas foi realizado com sucesso.";
+                }
+                else if (actionForm == "draw_automatic_match_table")
+                {
+                    ModeratorUserTeam.actionUser = "draw_automatic_match_table";
+                    ModeratorUserTeam.championshipID = Convert.ToInt16(formHTML["selectedID"]);
+                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("Draw", ModeratorUserTeam).Result;
+                    modelReturnJSONUserTeam = response.Content.ReadAsAsync<UserTeamViewModel>().Result;
+                    modelReturnJSON.returnMessage = modelReturnJSONUserTeam.returnMessage;
+                    ViewBag.justDidDrawMatchTable = "1";
+                    if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                        TempData["actionSuccessfully"] = "O Sorteio Automático da Tabela de Jogos foi realizado com sucesso.";
+                }
+                else if (actionForm == "cancel_draw_match_table")
+                {
+                    ModeratorUserTeam.actionUser = "cancel_draw_match_table";
+                    ModeratorUserTeam.championshipID = Convert.ToInt16(formHTML["selectedID"]);
+                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("Draw", ModeratorUserTeam).Result;
+                    modelReturnJSONUserTeam = response.Content.ReadAsAsync<UserTeamViewModel>().Result;
+                    modelReturnJSON.returnMessage = modelReturnJSONUserTeam.returnMessage;
+                    ViewBag.justDidDrawMatchTable = "1";
+                    if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                        TempData["actionSuccessfully"] = "O Cancelamento do Sorteio da Tabela de Jogos foi realizado com sucesso.";
+                }
+                else if (actionForm == "draw_automatic_group_table")
+                {
+                    ModeratorUserTeam.actionUser = "draw_automatic_group_table";
+                    ModeratorUserTeam.championshipID = Convert.ToInt16(formHTML["selectedID"]);
+                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("Draw", ModeratorUserTeam).Result;
+                    modelReturnJSONUserTeam = response.Content.ReadAsAsync<UserTeamViewModel>().Result;
+                    modelReturnJSON.returnMessage = modelReturnJSONUserTeam.returnMessage;
+                    if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                    {
+                        ViewBag.justDidDrawGroups = "1";
+                        ViewBag.inDrawGroupsJustHasBeenDone = "1";
+                        TempData["actionSuccessfully"] = "O Sorteio Automático dos Grupos foi realizado com sucesso.";
+                    }
+                }
+                else if (actionForm == "cancel_draw_group_table")
+                {
+                    ModeratorUserTeam.actionUser = "cancel_draw_group_table";
+                    ModeratorUserTeam.championshipID = Convert.ToInt16(formHTML["selectedID"]);
+                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("Draw", ModeratorUserTeam).Result;
+                    modelReturnJSONUserTeam = response.Content.ReadAsAsync<UserTeamViewModel>().Result;
+                    modelReturnJSON.returnMessage = modelReturnJSONUserTeam.returnMessage;
+                    ViewBag.justDidDrawGroups = "1";
+                    if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                        TempData["actionSuccessfully"] = "O Cancelamento do Sorteio dos Grupos foi realizado com sucesso.";
+                }
+                else if (actionForm == "add_spooler_warning_of_draw")
+                {
+
+                    ModeratorSpooler.actionUser = "add_spooler_draw_warning";
+                    ModeratorSpooler.championshipID = Convert.ToInt16(formHTML["selectedID"]);
+                    ModeratorSpooler.descriptionProcess = "Alerta para realização do sorteio: ";
+                    ModeratorSpooler.typeProcess = GlobalVariables.SPOOLER_EMAIL_DRAW_WARNING;
+                    ModeratorSpooler.userIDResponsible = Convert.ToInt32(Session["user.id"].ToString());
+
+                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("Spooler", ModeratorSpooler).Result;
+                    modelReturnJSONSpooler = response.Content.ReadAsAsync<SpoolerViewModel>().Result;
+                    modelReturnJSON.returnMessage = modelReturnJSONSpooler.returnMessage;
+
+                    modelReturnJSONChampionship = (ChampionshipListViewModel)TempData["FullModel"];
+
+                    if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                        TempData["actionSuccessfully"] = "Spooler de Alerta para o Sorteio do Campeonato foi efetuado. Serão enviados " + modelReturnJSONSpooler.totalSentEmails.ToString() + " e-mails para este processo.";
+                }
+                else if (actionForm == "add_spooler_draw_done")
+                {
+                    ModeratorSpooler.actionUser = "add_spooler_draw_done";
+                    ModeratorSpooler.championshipID = Convert.ToInt16(formHTML["selectedID"]);
+                    ModeratorSpooler.descriptionProcess = "Sorteio Realizado: ";
+                    ModeratorSpooler.typeProcess = GlobalVariables.SPOOLER_EMAIL_DRAW_DONE;
+                    ModeratorSpooler.userIDResponsible = Convert.ToInt32(Session["user.id"].ToString());
+
+                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("Spooler", ModeratorSpooler).Result;
+                    modelReturnJSONSpooler = response.Content.ReadAsAsync<SpoolerViewModel>().Result;
+                    modelReturnJSON.returnMessage = modelReturnJSONSpooler.returnMessage;
+
+                    if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                        TempData["actionSuccessfully"] = "Spooler de Realização do Sorteio do Campeonato foi efetuado. Serão enviados " + modelReturnJSONSpooler.totalSentEmails.ToString() + " e-mails para este processo.";
+                }
+                else
+                {
+                    modelReturnJSON.returnMessage = "ModeratorSuccessfully";
+                    modelReturnJSON.actionUser = actionForm.ToUpper();
+                    response.StatusCode = HttpStatusCode.Created;
+                }
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                        {
+
+                            if (actionForm == "add_spooler_warning_of_draw")
+                            {
+                                return View("Draw", modelReturnJSONChampionship);
+                            }
+                            else
+                            {
+                                if (actionForm == "show_draw_details")
+                                {
+                                    modelReturnJSON = GlobalFunctions.ShowChampionshipDetails(formHTML["selectedID"]);
+                                }
+
+                                modelReturnJSON.actionUser = actionForm.ToUpper();
+                                if ((!String.IsNullOrEmpty(modelReturnJSON.returnMessage) && modelReturnJSON.returnMessage != "ModeratorSuccessfully"))
+                                    TempData["returnMessage"] = modelReturnJSON.returnMessage + " - " + actionForm + ". (" + modelReturnJSON.returnMessage + ")";
+                                else
+                                {
+                                    if (actionForm == "draw_automatic_user_team" || actionForm == "cancel_draw_user_team" || actionForm == "assume_draw_user_team" || actionForm == "show_draw_details")
+                                    {
+                                        response = GlobalVariables.WebApiClient.GetAsync("UserTeam/" + formHTML["selectedID"]).Result;
+                                        modelReturnJSONUserTeam = response.Content.ReadAsAsync<UserTeamViewModel>().Result;
+
+                                        modelReturnJSON.returnMessage = modelReturnJSONUserTeam.returnMessage;
+
+                                        if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                                        {
+                                            modelReturnJSON.drawDoneUserTeam = modelReturnJSONUserTeam.drawDone;
+                                            modelReturnJSON.listOfUserTeam = modelReturnJSONUserTeam.listOfUserTeam;
+                                        }
+                                    }
+
+                                    if (actionForm == "draw_automatic_match_table" || actionForm == "cancel_draw_match_table" || actionForm == "cancel_draw_group_table" || actionForm == "cancel_draw_user_team")
+                                    {
+                                        ChampionshipMatchTableViewModel listOfMatchTable = new ChampionshipMatchTableViewModel();
+
+                                        response = GlobalVariables.WebApiClient.GetAsync("ChampionshipMatchTable/" + formHTML["selectedID"]).Result;
+                                        listOfMatchTable = response.Content.ReadAsAsync<ChampionshipMatchTableViewModel>().Result;
+                                        modelReturnJSON.listOfMatch = listOfMatchTable.listOfMatch;
+                                        modelReturnJSON.drawDoneMatchTable = 0;
+                                        modelReturnJSON.returnMessage = listOfMatchTable.returnMessage;
+                                        if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                                            if (modelReturnJSON.listOfMatch.Count > 0) { modelReturnJSON.drawDoneMatchTable = 1; }
+                                        listOfMatchTable = null;
+                                    }
+
+                                     if (actionForm == "draw_automatic_group_table" || actionForm == "cancel_draw_group_table" || actionForm == "cancel_draw_user_team")
+                                    {
+                                        ChampionshipTeamTableListViewModel listOfTeamTable = new ChampionshipTeamTableListViewModel();
+
+                                        response = GlobalVariables.WebApiClient.GetAsync("ChampionshipTeamTable/" + formHTML["selectedID"]).Result;
+                                        listOfTeamTable = response.Content.ReadAsAsync<ChampionshipTeamTableListViewModel>().Result;
+                                        modelReturnJSON.listOfTeamTable = listOfTeamTable.listOfTeamTable;
+                                        modelReturnJSON.returnMessage = listOfTeamTable.returnMessage;
+
+                                        modelReturnJSON.drawDoneTeamTableGroup = 0;
+                                        if (modelReturnJSON.listOfTeamTable.Count > 0)
+                                        {
+                                            if (modelReturnJSON.listOfTeamTable[0].groupID > 0) { modelReturnJSON.drawDoneTeamTableGroup = 1; }
+                                        }
+
+
+                                        listOfTeamTable = null;
+                                    }
+
+                                    if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                                    {
+                                        if (modelReturnJSON.listOfTeamStage0.Count > 0)
+                                            modelReturnJSON.totalMatchesPerRound = (modelReturnJSON.listOfTeamStage0.Count / 2);
+                                        if (modelReturnJSON.forGroup == false && modelReturnJSON.twoLegs == false && modelReturnJSON.twoTurns == false)
+                                            modelReturnJSON.totalMatchesPerRound = (modelReturnJSON.listOfTeam.Count / 2);
+                                        else if (modelReturnJSON.forGroup == true)
+                                            modelReturnJSON.totalMatchesPerRound = (modelReturnJSON.listOfTeam.Count / 2);
+                                    }
+                                }
+                                return View(modelReturnJSON);
+                            }
+                        }
+                        else
+                        {
+                            //modelReturnJSON.listOfChampionship = new List<ChampionshipDetailsModel>();
+                            TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Sorteio Automático. (" + modelReturnJSON.returnMessage + ")";
+                            return View(modelReturnJSON);
+                        }
+                    default:
+                        //modelReturnJSON.listOfChampionship = new List<ChampionshipDetailsModel>();
+                        TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Sorteio Automático. (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View(modelReturnJSON);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                modelReturnJSON.listOfGroup = new List<StandardDetailsModel>();
+                modelReturnJSON.listOfMatch = new List<ChampionshipMatchTableDetailsModel>();
+                modelReturnJSON.listOfTeamTable = new List<ChampionshipTeamTableDetailsModel>();
+                TempData["returnMessage"] = "Erro interno - Exibindo Menu Moderador - Sorteio Automático: (" + ex.InnerException.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(modelReturnJSON);
+
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+                ModeratorMenuMode = null;
+                modelReturnJSONUserTeam = null;
+                ModeratorUserTeam = null;
+                modelReturnJSONSpooler = null;
+                ModeratorSpooler = null;
+                modelReturnJSONChampionship = null;
+            }
+        }
+
+
+
 
         private string getChampionshipNameNewSeason(int championshipID)
         {

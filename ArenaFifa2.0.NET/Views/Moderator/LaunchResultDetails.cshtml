@@ -527,22 +527,22 @@
         });
     }
 
-        function decreeOnClick() {
-            $("span.gentelella-btn-warning").on("click", function () {
-                var closestTR = $(this).closest("tr");
-                $("#matchID").val(closestTR.attr("matchID"));
-                submeteModerator('DecreeResult', 'SHOW_CHAMPIONSHIPMATCHTABLE_DETAILS', '');
-            });
-        }
+    function decreeOnClick() {
+        $("span.gentelella-btn-warning").on("click", function () {
+            var closestTR = $(this).closest("tr");
+            $("#matchID").val(closestTR.attr("matchID"));
+            submeteModerator('DecreeResult', 'SHOW_CHAMPIONSHIPMATCHTABLE_DETAILS', '');
+        });
+    }
 
-        function commentOnClick() {
-            $("span.gentelella-btn-primary").on("click", function () {
-                var closestTR = $(this).closest("tr");
-                $("#matchID").val(closestTR.attr("matchID"));
-                submeteModerator('CommentMatch', 'SHOW_CHAMPIONSHIPMATCHTABLE_DETAILS', '');
+    function commentOnClick() {
+        $("span.gentelella-btn-primary").on("click", function () {
+            var closestTR = $(this).closest("tr");
+            $("#matchID").val(closestTR.attr("matchID"));
+            submeteModerator('CommentMatch', 'SHOW_CHAMPIONSHIPMATCHTABLE_DETAILS', '');
 
-            });
-        }
+        });
+    }
 
     $(document).ready(function () {
         if ('@TempData["returnMessage"]' != '')

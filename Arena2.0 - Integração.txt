@@ -20,15 +20,14 @@ Hi Guys, voltando o assunto do Arena 2.0, a integraçãojá foi iniciada e está
 - Detalhes Por Usuário da Lista Negra da Atual Temporada
 - TODO Dashboard do Hall da Fama
 - TODO Dashboard do Ranking do Arena
+- TODO Dashboard do Menu Moderador (*_NOVO_*)
 
 
 *_Funcionalidade que está EM ANDAMENTO:_*
-- Todo Dashboard do Menu Moderador (*_14/14_*) ==> Sorteio Automático está *EM ANDAMENTO* ==> ULTIMA FUNCIONALIDADE
-		. Atenção: Gerar Fase foi feito mas só 50% foi testado.
+- Todo Dashboard das Tela de Meus Jogos (*_0/11_*) ==> AINDA NÃO INICIALIZADO
 
 
 *_Funcionalidades que AINDA NÃO começaram o processo de integração:_*
-- Todo Dashboard das Tela de Meus Jogos
 - Todo Dashboard das Tela de Campeonatos
 - Todos Processos Liberação da Renovação
 - Todos Processos Geração da Nova Temporada

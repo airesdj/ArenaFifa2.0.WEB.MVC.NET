@@ -37,10 +37,9 @@
                                 </div>
                                 <br><br>
 
-                                <table id="datatable-responsive" class="gentelella-table gentelella-table-striped gentelella-table-bordered gentelella-dt-responsive gentelella-nowrap" cellspacing="0" width="100%">
+                                <table id="datatable-responsive-no-paginate" class="gentelella-table gentelella-table-striped gentelella-table-bordered gentelella-dt-responsive gentelella-nowrap" cellspacing="0" width="100%">
                                     <thead style="background-color:#2C3E4F;color:white">
                                         <tr>
-                                            <th style="display:none">id</th>
                                             <th width="45%">Campeonato</th>
                                             <th width="10%" class="gentelella-a-center">Temporada</th>
                                             <th width="5%" class="gentelella-a-center">Tipo</th>
@@ -55,7 +54,6 @@
                                         {
 
                                             <tr>
-                                                <td style="display:none">@item.id</td>
                                                 <td>@item.name</td>
                                                 <td class="gentelella-a-center">@item.seasonName.Substring(0, 3)</td>
                                                 <td class="gentelella-a-center">@item.type</td>

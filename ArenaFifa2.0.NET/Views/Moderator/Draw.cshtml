@@ -16,6 +16,7 @@
     @using (Html.BeginForm("Details", "Moderator", FormMethod.Post, new { @class = "form-horizontal", id = "registration-form", role = "form" }))
     {
         @Html.AntiForgeryToken()
+        TempData["FullModel"] = Model;
         <input type="hidden" id="actionForm" name="actionForm" />
         <input type="hidden" id="selectedID" name="selectedID" />
         <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
@@ -35,10 +36,9 @@
                                 </div>
                                 <br><br>
 
-                                <table id="datatable-responsive" class="gentelella-table gentelella-table-striped gentelella-table-bordered gentelella-dt-responsive gentelella-nowrap" cellspacing="0" width="100%">
+                                <table id="datatable-responsive-no-paginate" class="gentelella-table gentelella-table-striped gentelella-table-bordered gentelella-dt-responsive gentelella-nowrap" cellspacing="0" width="100%">
                                     <thead style="background-color:#2C3E4F;color:white">
                                         <tr>
-                                            <th style="display:none">id</th>
                                             <th width="45%">Campeonato</th>
                                             <th width="10%" class="gentelella-a-center">Temporada</th>
                                             <th width="5%" class="gentelella-a-center">Tipo</th>
@@ -51,18 +51,19 @@
                                     <tbody>
                                         @foreach (var item in Model.listOfChampionship)
                                         {
-                                        <tr>
-                                            <td style="display:none">@item.id</td>
-                                            <td>@item.name</td>
-                                            <td class="gentelella-a-center">@item.seasonName.Substring(0, 3)</td>
-                                            <td class="gentelella-a-center">@item.type</td>
-                                            <td class="gentelella-a-center">@item.totalTeam.ToString("00")</td>
-                                            <td class="gentelella-a-center">@item.startDate.ToString("dd/MM/yyyy")</td>
-                                            <td class="gentelella-a-center">@item.drawDate.ToString("dd/MM/yyyy")</td>
-                                            <td class="gentelella-a-center">
-                                                <a href="JAVASCRIPT: submeteModerator('DrawDetails', 'EDIT', '@item.id');" title="Alterar dados do item de cadastro." class="gentelella-btn gentelella-btn-info gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-edit gentelella-fa-1-2x"></i></a>
-                                            </td>
-                                        </tr>
+                                            <tr>
+                                                <td>@item.name</td>
+                                                <td class="gentelella-a-center">@item.seasonName.Substring(0, 3)</td>
+                                                <td class="gentelella-a-center">@item.type</td>
+                                                <td class="gentelella-a-center">@item.totalTeam.ToString("00")</td>
+                                                <td class="gentelella-a-center">@item.startDate.ToString("dd/MM/yyyy")</td>
+                                                <td class="gentelella-a-center">@item.drawDate.ToString("dd/MM/yyyy")</td>
+                                                <td class=" " style="padding-left:20px">
+                                                    <a href="JAVASCRIPT: submeteModerator('DrawDetails', 'SHOW_DRAW_DETAILS', '@item.id');" title="Alterar dados do item de cadastro." class="gentelella-btn gentelella-btn-info gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-edit gentelella-fa-1-2x"></i></a>
+                                                    @if (item.type.IndexOf("DIV") > -1 || item.type == "CPDM" || item.type == "ERCP" || item.type == "FUT1" || item.type == "FUT2" || item.type == "PRO1" || item.type == "PRO2")
+                                                    {<span championshipID="@item.id" championshipName="@item.name" title="Gerar Spooler de E-mail,&#13;para enviar aviso de&#13;sorteio do campeonato." class="gentelella-btn gentelella-btn-default gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-envelope-o gentelella-fa-1-2x"></i></span>}
+                                                </td>
+                                            </tr>
                                         }
                                     </tbody>
                                 </table>
@@ -80,7 +81,7 @@
 </div>
 <!-- /page content -->
 
-
+@Html.Partial("_QuestionModalv2")
 @section Scripts {
     <script>
         $(function () {
@@ -91,6 +92,12 @@
             }
         });
 
+        function includeFileScreenModalGeneralQuestionEmail() {
+            $("#modalScreeenMsgTitle").html("");
+            $("#modalScreeenMsgSubTitle").html("");
+            $("#modalScreeenMsgQuestion").html("");
+        }
+
         $(document).ready(function () {
             if ('@TempData["returnMessage"]' != '')
                 toastr.error('Aviso: @TempData["returnMessage"].');
@@ -99,9 +106,26 @@
                 toastr.success('@TempData["actionSuccessfully"].');
 
             if (detectMobileDevice() == 0)
-                activeSidebarMenu(window.location.pathname);
+                activeSidebarMenu(window.location.pathname.replace("Details", ""));
 
             $("#waiting").hide();
+
+            includeFileScreenModalGeneralQuestionEmail();
+            $("span.gentelella-btn-default").on("click", function () {
+                $(this).attr("data-toggle", "modal");
+                $(this).attr("data-target", "#bs-message-general-modal-sm");
+
+                var championshipID = $(this).attr("championshipID");
+
+                $("#modalScreeenMsgTitle").html("ENVIAR EMAILS ALERTA SORTEIO");
+                $("#modalScreeenMsgButton").on("click", function () { submeteModerator('DrawDetails', 'ADD_SPOOLER_WARNING_OF_DRAW', championshipID); });
+                $("#modalScreeenMsgQuestion").html("Deseja realizar a geração do spooler de e-mail de alerta do sorteio para todos os participantes do campeonato:<b>" + $(this).attr("championshipName") + "</b>?");
+
+                $('#bs-message-general-modal-sm').modal('show');
+                $(this).attr("data-toggle", "");
+                $(this).attr("data-target", "");
+            });
+
         });
 
     </script>

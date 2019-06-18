@@ -1,0 +1,579 @@
+﻿@using ArenaFifa20.NET.Models
+@model ChampionshipDetailsModel
+@{
+    ViewBag.Title = "Moderator Menu - Draw";
+    int countAux = 0;
+}
+
+
+<!-- page content -->
+<div class="gentelella-right_col" role="main" style="padding-left:20px">
+    <div class="gentelella-page-title">
+        <div class="gentelella-col-md-9 gentelella-col-sm-9 gentelella-col-xs-12">
+            <h3>SORTEIO DO CAMPEONATO: @Model.name.ToUpper() - DETAILS</h3>
+        </div>
+    </div>
+    <br>
+
+
+    <div class="gentelella-col-md-14 gentelella-col-sm-14 gentelella-col-xs-14" style="background-color:#F7F7F7">
+        <div class="gentelella-x_panel">
+            <div class="gentelella-x_content">
+
+                <form id="comeback-form" action=""></form>
+
+                <form action="/Moderator/GenerateStageDetails" class="form-horizontal" id="registration-form" method="post" role="form">
+
+                    <center>
+                        <img src="@Model.pathLogoChampionship" width="120" />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <img title="COMPETIÇÕES DA MODALIDADE" src="@Model.pathLogoType" width="150" />
+                    </center>
+
+                    @Html.AntiForgeryToken()
+                    @{ TempData["FullModel"] = Model; }
+                    <input type="hidden" id="actionForm" name="actionForm" value="GENERATE_STAGE" />
+                    <input type="hidden" id="selectedID" name="selectedID" value="@Model.id" />
+                    <input type="hidden" id="championshipName" name="championshipName" value="@Model.name" />
+
+                    <!-- Smart Wizard -->
+                    <div id="wizard" class="gentelella-form_wizard gentelella-wizard_horizontal">
+                        <ul class="gentelella-wizard_steps">
+                            <li id="stepName1">
+                                <a href="#step-1">
+                                    <span class="gentelella-step_no">1</span>
+                                    <span class="gentelella-step_descr" style="font-weight:bold">
+                                        Passo 1 - Técnicos/Times<br />
+                                        <small>Sorteio Automatico <br>(Técnios vs Times)</small>
+                                    </span>
+                                </a>
+                            </li>
+                            @if (Model.totalGroup > 0)
+                            {
+                                <li id="stepName2">
+                                    <a href="#step-2">
+                                        <span class="gentelella-step_no">2</span>
+                                        <span class="gentelella-step_descr" style="font-weight:bold">
+                                            Passo 2 - Grupos<br />
+                                            <small>Soteio Automático<br>(Grupos vs Potes)</small>
+                                        </span>
+                                    </a>
+                                </li>
+                            }
+                            <li id="stepName3">
+                                <a href="#step-3">
+                                    <span class="gentelella-step_no">3</span>
+                                    <span class="gentelella-step_descr" style="font-weight:bold">
+                                        <text>Passo 3</text> - Tabela de Jogos<br />
+                                        <small>Sorteio Automático de todos<br> os jogos do campeonato</small>
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div id="step-1" style="overflow-y: hidden;overflow-x: hidden">
+
+                            <div class="gentelella-form-group">
+                                <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                                    <div class="gentelella-col-md-10 gentelella-col-sm-10 gentelella-col-xs-12">
+                                        <br>
+                                        @if (Model.drawDoneUserTeam == 1)
+                                        {
+                                            <span class="gentelella-btn gentelella-btn-danger cancel-draw-user-team">Cancelar Sorteio</span>
+                                        }
+                                        else
+                                        {
+                                            if (Model.type.IndexOf("DIV") > -1 || Model.type == "CPDM" || Model.type == "ERCP")
+                                            {
+                                                <span class="gentelella-buttonNext automatic-draw-user-team">Realizar Sorteio Automático</span>
+                                            }
+                                            if (Model.type == "CPGL" || Model.type == "CPSA" || Model.type == "MDCL")
+                                            {
+                                                <span class="gentelella-buttonNext assume-draw-user-team">Quando Sorteio das Séries for Realizado - Assumir Times Automaticamente</span>
+                                            }
+                                        }
+                                    </div>
+                                    <div class="gentelella-col-md-2 gentelella-col-sm-2 gentelella-col-xs-12 gentelella-a-center">
+                                        <span id="waitingUserTeam">
+                                            Aguarde o processamento...<br />
+                                            <img width="70" heigh="70" src="/images/aguarde.gif" />
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                                    <div class="gentelella-ln_solid"></div>
+                                </div>
+                            </div>
+                            <div class="gentelella-row">
+                                @if (Model.drawDoneUserTeam == 1)
+                                {
+                                    <div class="gentelella-col-md-4 gentelella-col-sm-4 gentelella-col-xs-12">
+                                        <label for="ativo">Lista de Técnicos para o Sorteio:</label><br>
+                                        <select class="gentelella-select2_multiple gentelella-form-control" size="10" multiple="multiple">
+                                            <optgroup label="Sorteio já foi realizado...">
+                                                <option value=""></option>
+                                            </optgroup>
+                                        </select><br><br>
+                                        <label for="ativo">Lista de Times para o Sorteio:</label><br>
+                                        <select class="gentelella-select2_multiple gentelella-form-control" size="10" multiple="multiple">
+                                            <optgroup label="Sorteio já foi realizado...">
+                                                <option value=""></option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+
+                                }
+                                else
+                                {
+                                    <div class="gentelella-col-md-4 gentelella-col-sm-4 gentelella-col-xs-12">
+                                        <label for="ativo">Lista de Técnicos para o Sorteio:</label><br>
+                                        <select class="gentelella-select2_multiple gentelella-form-control" size="10" multiple="multiple">
+                                            @foreach (var item in Model.listOfUser)
+                                            {
+                                                <option value="@item.id">@(item.name + " (" + item.psnID + ")")</option>
+                                            }
+                                        </select><br><br>
+                                        <label for="ativo">Lista de Times para o Sorteio:</label><br>
+                                        <select class="gentelella-select2_multiple gentelella-form-control" size="10" multiple="multiple">
+                                            @foreach (var item in Model.listOfTeam)
+                                            {
+                                                <option value="@item.id">@(item.name + "-" + item.type)</option>
+                                            }
+                                        </select>
+                                    </div>
+                                }
+                                <div class="gentelella-col-md-8 gentelella-col-sm-8 gentelella-col-xs-12">
+                                    <table class="gentelella-table gentelella-table-striped gentelella-jambo_table bulk_action">
+                                        <thead style="background-color:#2C3E4F">
+                                            <tr class="gentelella-headings">
+                                                <th class="gentelella-column-title gentelella-a-center" width="40%">Time </th>
+                                                <th class="gentelella-column-title gentelella-a-center" width="60%">Técnico </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="drawAutomaticUserTeam">
+                                            @foreach (var item in Model.listOfUserTeam)
+                                            {
+                                                <tr class="gentelella-even gentelella-pointer gentelella-a-center" style="font-weight:bolder">
+                                                    @if (ViewBag.inDrawTeamsUsersJustHasBeenDone == "0")
+                                                    {
+                                                        <td class=" "><img width="40" height="40" src="/images/team-logo/@(item.teamName).jpg" onerror="this.src='/images/notfound.png';"><br />@(item.teamName + "-" + item.teamType)</td>
+                                                        <td class=" "><img width="40" height="40" src="/images/coach-avatar/@(item.userID).jpg" onerror="this.src='/images/user.png';"><br />@(item.userName + " (" + item.psnID + ")")</td>
+                                                    }
+                                                    else if (ViewBag.inDrawTeamsUsersJustHasBeenDone == "1")
+                                                    {
+                                                        <td class="teamDrawID" teamID="@item.teamID" style="cursor:pointer"><img width="40" height="40" src="/images/interrogacao2.jpg"></td>
+                                                        <td class=" " id="@("teamID-" + item.teamID.ToString())" style="display:none"><img width="40" height="40" src="/images/team-logo/@(item.teamName).jpg" onerror="this.src='/images/notfound.png';"><br />@(item.teamName + "-" + item.teamType)</td>
+                                                        <td class="userDrawID" userID="@item.userID" style="cursor:pointer"><img width="40" height="40" src="/images/interrogacao8.jpg"></td>
+                                                        <td class=" " id="@("userID-" + item.userID.ToString())" style="display:none"><img width="40" height="40" src="/images/coach-avatar/@(item.userID).jpg" onerror="this.src='/images/user.png';"><br />@(item.userName + " (" + item.psnID + ")")</td>
+                                                    }
+                                                </tr>
+                                            }
+                                            @if (Model.listOfUserTeam.Count == 0)
+                                            {
+                                                <tr class="gentelella-even gentelella-pointer" style="font-weight:bolder">
+                                                    <td class=" " colspan="2">Sorteio ainda não realizado.</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+                        @if (Model.totalGroup > 0)
+                        {
+                            <div id="step-2" style="overflow-y: hidden;overflow-x: hidden;height:450px;">
+                                <div class="gentelella-form-group">
+                                    <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                                        <div class="gentelella-col-md-10 gentelella-col-sm-10 gentelella-col-xs-12">
+                                            <br />
+                                            @if (Model.drawDoneTeamTableGroup == 1)
+                                            {
+                                                <span class="gentelella-btn gentelella-btn-danger cancel-draw-group-table">Cancelar Sorteio dos Grupos</span>
+                                            }
+                                            else
+                                            {
+                                                if (Model.drawDoneUserTeam == 1)
+                                                {
+                                                    <span class="gentelella-buttonNext draw-automatic-group-table">Realizar Sorteio Automático Por Potes</span>
+                                                }
+                                            }
+                                        </div>
+                                        <div class="gentelella-col-md-2 gentelella-col-sm-2 gentelella-col-xs-12 gentelella-a-center">
+                                            <span id="waitingGroup">
+                                                Aguarde o processamento...<br />
+                                                <img width="70" heigh="70" src="/images/aguarde.gif" />
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                                        <div class="gentelella-ln_solid"></div>
+                                    </div>
+                                </div>
+                                <div class="gentelella-row" id="drawAutomaticOfGroups" style="text-align:left">
+                                    @{countAux = 1; }
+                                    @foreach (var item in Model.listOfGroup)
+                                    {
+                                        <div class="gentelella-col-md-3 gentelella-col-sm-3 gentelella-col-xs-12">
+
+                                            <div class="gentelella-a-center" style="background-color:#2C3E4F;color:#fff;width:100%;height:100%">Grupo @item.id.ToString()</div>
+                                            <fieldset class="gentelella-a-center" style="border:1px solid #2C3E4F;padding-left:10px">
+                                                <br />
+                                                @if (ViewBag.inDrawGroupsJustHasBeenDone == "0")
+                                                {
+                                                    foreach (var team in Model.listOfTeamTable.Where(s => s.groupID == item.id))
+                                                    {
+                                                        <span style="font-weight:bold">@team.teamName</span><br />
+                                                    }
+                                                }
+                                                else if (ViewBag.inDrawGroupsJustHasBeenDone == "1")
+                                                {
+                                                    <span id="@("groupID-" + item.id.ToString())" style="display:none">
+                                                        @foreach (var team in Model.listOfTeamTable.Where(s => s.groupID == item.id))
+                                                        {
+                                                            <span style="font-weight:bold">@team.teamName</span><br />
+                                                        }
+                                                    </span>
+                                                    <img width="90" height="90" src="/images/interrogacao3.jpg" class="groupDrawID" groupID="@item.id" style="cursor:pointer" />
+                                                }
+                                                <br />
+                                            </fieldset>
+                                            @{countAux = countAux + 1;}
+
+                                            @if (countAux == 5 || countAux == 9)
+                                            {
+                                                <br />
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                                <br>
+                                <br />
+                            </div>
+                        }
+                        <div id="step-3" style="overflow-y: no-display;overflow-x: hidden;">
+                            <div class="gentelella-form-group">
+                                <div class="gentelella-col-md-4 gentelella-col-sm-4 gentelella-col-xs-12">
+                                    <br>
+                                    @if (Model.drawDoneMatchTable == 1)
+                                    {
+                                        <span class="gentelella-btn gentelella-btn-danger cancel-draw-match-table">Cancelar Geração de Confrontos</span>
+                                    }
+                                    else
+                                    {
+                                        if ((Model.totalGroup == 0 && Model.drawDoneUserTeam == 1) || (Model.totalGroup > 0 && Model.drawDoneTeamTableGroup == 1))
+                                        {
+                                            <span class="gentelella-buttonNext draw-automatic-match-table">Gerar Confrontos</span>
+                                        }
+                                    }
+                                </div>
+                                <div class="gentelella-col-md-2 gentelella-col-sm-2 gentelella-col-xs-12 gentelella-a-center">
+                                    <span id="waitingMatchTable">
+                                        Aguarde o processamento...<br />
+                                        <img width="70" heigh="70" src="/images/aguarde.gif" />
+                                    </span>
+                                </div>
+                                @if (Model.drawDoneMatchTable == 1 && (Model.type.IndexOf("DIV") > -1 || Model.type == "CPDM" || Model.type == "ERCP" || Model.type == "PRO1" || Model.type == "FUT1"))
+                                {
+                                    <div class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-12 gentelella-a-right">
+                                        <br>
+                                        <span class="gentelella-btn gentelella-btn-danger add-spooler-sorteio-done">Gerar Spooler de E=mail - Sorteio Finalizado</span>
+                                    </div>
+                                }
+                                <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                                    <div class="gentelella-ln_solid"></div>
+                                </div>
+                            </div>
+                            @if (Model.listOfTeamStage0.Count > 0)
+                            {
+                                <div class="gentelella-row">
+                                    <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                                        <div class="gentelella-col-md-4 gentelella-col-sm-4 gentelella-col-xs-12" style="text-align:left">
+                                            <label for="ativo">Lista de Times que entrarão na fase Qualify:</label><br>
+                                            <select class="gentelella-select2_multiple gentelella-form-control" size="10" multiple="multiple">
+                                                @foreach (var item in Model.listOfTeamStage0)
+                                                {
+                                                    <option value="@item.id">@(item.name + "-" + item.type)</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="gentelella-col-md-8 gentelella-col-sm-8 gentelella-col-xs-12" style="text-align:left"></div>
+                                    </div>
+                                    <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                                        <div class="gentelella-ln_solid"></div>
+                                    </div>
+                                </div>
+                                <br />
+                            }
+                            <div class="gentelella-row">
+                                <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+
+                                    <div class="gentelella-x_panel">
+                                        <div class="gentelella-x_content">
+
+                                            <table id="datatable-responsive" class="gentelella-table gentelella-table-striped gentelella-table-bordered gentelella-dt-responsive gentelella-nowrap" cellspacing="0" width="100%">
+                                                <thead style="background-color:#2C3E4F;color:white">
+                                                    <tr>
+                                                        <th width="10%" class="gentelella-a-center">Fase</th>
+                                                        <th width="5%" id="thTableTeamGrupo" class="gentelella-a-center">Grupo</th>
+                                                        <th width="5%" class="gentelella-a-center">Rodada</th>
+                                                        <th width="12%" class="gentelella-a-center">Período</th>
+                                                        <th width="40%" class="gentelella-a-center">Confronto dos Times</th>
+                                                        <th width="28%" class="gentelella-a-center">Confronto dos Técnicos/Managers</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tbodyMatchTable">
+                                                    @foreach (var item in Model.listOfMatch)
+                                                    {
+                                                        <tr>
+                                                            <td class="gentelella-a-center">@item.stageName</td>
+                                                            <td class="gentelella-a-center tdTableTeamGrupo">@item.groupID</td>
+                                                            <td class="gentelella-a-center">@(item.round.ToString("00") + "ª")</td>
+                                                            <td class="gentelella-a-center">@(item.startDate.ToString("dd/MM") + "  à  " + item.endDate.ToString("dd/MM"))</td>
+                                                            <td>
+                                                                <table width="100%">
+                                                                    <tr>
+                                                                        <td class="gentelella-a-right" width="42%" style="padding-right:10px">@item.teamNameHome</td>
+                                                                        <td width="16%"><img src="@item.pathLogoTeamHome" onerror="this.src='/images/notfound.png';" width="20" />&nbsp; vs &nbsp;<img src="@item.pathLogoTeamAway" onerror="this.src='/images/notfound.png';" width="20" /></td>
+                                                                        <td width="42%" style="padding-left:10px">@item.teamNameAway</td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td>
+                                                                <table width="100%">
+                                                                    <tr>
+                                                                        <td class="gentelella-a-right" width="46%" style="padding-right:10px">@item.psnIDHome</td>
+                                                                        <td class="gentelella-a-center" width="8%">vs</td>
+                                                                        <td width="46%" style="padding-left:10px">@item.psnIDAway</td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+
+
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <!-- End SmartWizard Content -->
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+@Html.Partial("_QuestionModalv2")
+@section Scripts {
+    <script>
+        $(function () {
+            if (detectMobileDevice() == 1) {
+                //$("#includedContentMenuMobile").load("/arena20/includes/menu-logged-mobile.html");
+                //$("#includedContentMenuRankingMobile").load("menu-my-matches-mobile.html");
+                hidden_show_ObjectMobile("footerMobile", "block");
+            }
+        });
+
+        function includeFileScreenModalGeneral(actionForm) {
+            $("#modalScreeenMsgTitle").html("");
+            $("#modalScreeenMsgSubTitle").html("");
+            $("#modalScreeenMsgQuestion").html("");
+            $("#modalScreeenMsgButton").on("click", function () { $("#waitingUserTeam").show();$("#waitingGroup").show();$("#waitingMatchTable").show();submeteModerator('DrawDetails', actionForm, ''); });
+        }
+
+        function DrawAutomatic(actionForm, title, msgQuestion) {
+            includeFileScreenModalGeneral(actionForm);
+            $("#modalScreeenMsgTitle").html(title);
+            $("#modalScreeenMsgQuestion").html(msgQuestion);
+            $('#bs-message-general-modal-sm').modal('show');
+        }
+
+        if ($.fn.dataTable.isDataTable('#datatable-responsive')) {
+            table = $('#datatable-responsive').DataTable();
+        }
+        else {
+            table = $('#datatable-responsive').DataTable({
+                "paging": true,
+                "ordering": false,
+                "lengthMenu": [parseInt('@Model.totalMatchesPerRound')],
+                "lengthChange": false,
+                "processing": true,
+                "searching": false
+            });
+        }
+
+        function showTDGrupoMatchTable() {
+            if ('@Model.totalGroup' == '0') {
+                $("#thTableTeamGrupo").hide();
+                $("#tbodyMatchTable").find("td.tdTableTeamGrupo").hide();
+            }
+        }
+
+        $(document).ready(function () {
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+
+            if ('@TempData["actionSuccessfully"]' != '')
+                toastr.success('@TempData["actionSuccessfully"].');
+
+            if (detectMobileDevice() == 0)
+                activeSidebarMenu(window.location.pathname.replace("Details", ""));
+
+            $("#waitingUserTeam").hide();
+            $("#waitingGroup").hide();
+            $("#waitingMatchTable").hide();
+
+            includeFileScreenModalGeneral();
+            $("div.gentelella-actionBar").find("a.gentelella-buttonFinish").on("click", function () {
+                submeteModerator('Draw', 'VOLTAR', '');
+            });
+            $("#step-1").find("a.gentelella-buttonNext").addClass("gentelella-buttonDisabled").attr("disabled", "true");
+
+            if ('@Model.totalGroup' == 0) {
+                $("#stepName3").find("span.gentelella-step_no").html("2");
+                $("#stepName3").find("text").html("Passo 2");
+                $("#stepName3").find("a").attr("href","#step-2");
+                $("#step-3").attr("id", "step-2");
+                $("#step-2").find("a.gentelella-buttonNext").addClass("gentelella-buttonDisabled").attr("disabled", "true");
+            }
+            else {
+                $("#step-2").find("a.gentelella-buttonNext").addClass("gentelella-buttonDisabled").attr("disabled", "true");
+                $("#step-3").find("a.gentelella-buttonNext").addClass("gentelella-buttonDisabled").attr("disabled", "true");
+            }
+
+            $("span.automatic-draw-user-team").on("click", function () {
+                $(this).attr("data-toggle", "modal");
+                $(this).attr("data-target", "#bs-message-general-modal-sm");
+                DrawAutomatic("DRAW_AUTOMATIC_USER_TEAM",
+                                      "Sorteio Autómatico - Técnicos & Times",
+                                      "Deseja realmente EXECUTAR o sorteio automático dos técnicos & times do campeonato:  <i><b>@Model.name</b></i>?");
+                $(this).attr("data-toggle", "");
+                $(this).attr("data-target", "");
+            });
+
+            $("span.cancel-draw-user-team").on("click", function () {
+                $(this).attr("data-toggle", "modal");
+                $(this).attr("data-target", "#bs-message-general-modal-sm");
+                DrawAutomatic("CANCEL_DRAW_USER_TEAM",
+                                      "Cancelamento do Sorteio - Técnicos & Times",
+                                      "Deseja realmente CANCELAR o sorteio dos técnicos & times do campeonato:  <i><b>@Model.name</b></i>?");
+                $(this).attr("data-toggle", "");
+                $(this).attr("data-target", "");
+            });
+
+            $("span.assume-draw-user-team").on("click", function () {
+                $(this).attr("data-toggle", "modal");
+                $(this).attr("data-target", "#bs-message-general-modal-sm");
+                DrawAutomatic("ASSUME_DRAW_USER_TEAM",
+                                      "Assumir Sorteio Já Realizado - Técnicos & Times",
+                                      "Deseja realmente ASSUMIR o sorteio realizado nas ligas dos técnicos & times para o campeonato:  <i><b>@Model.name</b></i>?");
+                $(this).attr("data-toggle", "");
+                $(this).attr("data-target", "");
+            });
+
+            $("span.draw-automatic-match-table").on("click", function () {
+                $(this).attr("data-toggle", "modal");
+                $(this).attr("data-target", "#bs-message-general-modal-sm");
+                DrawAutomatic("DRAW_AUTOMATIC_MATCH_TABLE",
+                                      "Sorteio Automático - Tabela de Jogos",
+                                      "Deseja realmente EXECUTAR o sorteio automático da tabela de jogos do campeonato:  <i><b>@Model.name</b></i>?");
+                $(this).attr("data-toggle", "");
+                $(this).attr("data-target", "");
+            });
+
+
+            $("span.cancel-draw-match-table").on("click", function () {
+                $(this).attr("data-toggle", "modal");
+                $(this).attr("data-target", "#bs-message-general-modal-sm");
+                DrawAutomatic("CANCEL_DRAW_MATCH_TABLE",
+                                      "Cancelamento do Sorteio - Tabela de Jogos",
+                                      "Deseja realmente CANCELAR o sorteio da tabela de jogos do campeonato:  <i><b>@Model.name</b></i>?");
+                $(this).attr("data-toggle", "");
+                $(this).attr("data-target", "");
+            });
+
+            $("span.draw-automatic-group-table").on("click", function () {
+                $(this).attr("data-toggle", "modal");
+                $(this).attr("data-target", "#bs-message-general-modal-sm");
+                DrawAutomatic("DRAW_AUTOMATIC_GROUP_TABLE",
+                                      "Sorteio Automático dos Grupos",
+                                      "Deseja realmente EXECUTAR o sorteio automático dos grupos do campeonato:  <i><b>@Model.name</b></i>?");
+                $(this).attr("data-toggle", "");
+                $(this).attr("data-target", "");
+            });
+
+            $("span.cancel-draw-group-table").on("click", function () {
+                $(this).attr("data-toggle", "modal");
+                $(this).attr("data-target", "#bs-message-general-modal-sm");
+                DrawAutomatic("CANCEL_DRAW_GROUP_TABLE",
+                                      "Cancelamento do Sorteio dos Grupos",
+                                      "Deseja realmente CANCELAR o sorteio dos grupos do campeonato:  <i><b>@Model.name</b></i>?");
+                $(this).attr("data-toggle", "");
+                $(this).attr("data-target", "");
+            });
+
+            $("#drawAutomaticUserTeam").find("td.teamDrawID").on("click", function () {
+                var question = "Confirma sorteio ";
+                if ('@Model.type' == 'CPDM') { question = question + " da seleção "; } else { question = question + " do time "; }
+                if (confirm(question + "?")) {
+                    $(this).hide();
+                    $("#teamID-" + $(this).attr("teamID")).show();
+                }
+            });
+
+            $("#drawAutomaticUserTeam").find("td.userDrawID").on("click", function () {
+                var question = "Confirma sorteio do Técnico";
+                if (confirm(question + "?")) {
+                    $(this).hide();
+                    $("#userID-" + $(this).attr("userID")).show();
+                }
+            });
+
+            $("#drawAutomaticOfGroups").find("img.groupDrawID").on("click", function () {
+                var question = "Confirma sorteio do Grupo";
+                if (confirm(question + "?")) {
+                    $(this).hide();
+                    $("#groupID-" + $(this).attr("groupID")).show();
+                }
+            });
+
+            $('.dataTables_paginate').on('click', function () {
+                showTDGrupoMatchTable();
+            });
+            showTDGrupoMatchTable();
+            if ("@ViewBag.justDidDrawGroups" == "1" || ("@ViewBag.justDidDrawMatchTable" == "1" && "@Model.totalGroup" == "0"))
+                $('#wizard').smartWizard("goToStep", 2);
+            else if ("@ViewBag.justDidDrawMatchTable" == "1" && "@Model.totalGroup" != "0")
+                $('#wizard').smartWizard("goToStep", 3);
+
+
+            $("span.add-spooler-sorteio-done").on("click", function () {
+                $(this).attr("data-toggle", "modal");
+                $(this).attr("data-target", "#bs-message-general-modal-sm");
+
+                includeFileScreenModalGeneral('ADD_SPOOLER_DRAW_DONE');
+                $("#modalScreeenMsgTitle").html("ENVIAR EMAILS SORTEIO FINALIZADO");
+                $("#modalScreeenMsgQuestion").html("Deseja gerar o spooler de e-mail de sorteio finalizado para todos os participantes do campeonato:<b>" + $("#championshipName").val() + "</b>?");
+
+                $('#bs-message-general-modal-sm').modal('show');
+                $(this).attr("data-toggle", "");
+                $(this).attr("data-target", "");
+            });
+
+
+        });
+
+    </script>
+}
+

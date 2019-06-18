@@ -31,6 +31,10 @@
             <link href="/Content/show-score-details.css" rel="stylesheet" />
             <link href="/Content/jplist/jplist.demo-pages.min.css" rel="stylesheet" />
         }
+        if (@ViewBag.inSmartWizardMenu == "1")
+        {
+            <script src="/Content/dashboard-gentelella/smart_wizard_vertical-new.css"></script>
+        }
 
     }
 </head>
@@ -95,6 +99,10 @@ else
             if (@ViewBag.inLaunchResult == "1")
             {
                 <script src="/Scripts/functions-launch-result.js"></script>
+            }
+            if (@ViewBag.inSmartWizardMenu == "1")
+            {
+                <script src="/Scripts/dashboard-gentelella/jquery.smartWizard.js"></script>
             }
         }
 

@@ -21,6 +21,15 @@ namespace ArenaFifa20.NET
         public static string STAGE_SEMI_FINAL = "4";
         public static string STAGE_FINAL = "5";
 
+        public static int TOTAL_EMAIL_PER_HOUR = 80;
+        public static string SPOOLER_EMAIL_BLOG = "SPOOLER_BLOG_NOTICIA";
+        public static string SPOOLER_EMAIL_NEW_SEASON = "SPOOLER_NOVA_TEMPORADA";
+        public static string SPOOLER_EMAIL_DRAW_WARNING = "SPOOLER_ALERTA_SORTEIO";
+        public static string SPOOLER_EMAIL_DRAW_DONE = "SPOOLER_SORTEIO_EFETUADO";
+        public static string SPOOLER_EMAIL_LIVE_BROADCAST = "SPOOLER_TRANSMISSAO_AOVIVO";
+        public static string SPOOLER_EMAIL_NEW_ROUND_RELEASED = "SPOOLER_LIBERA_NOVA_RODADA";
+        public static string SPOOLER_EMAIL_END_CURRENT_ROUND = "SPOOLER_FINALIZA_RODADA_ATUAL";
+
         public static HttpClient WebApiClient = new HttpClient();
 
         static GlobalVariables()
