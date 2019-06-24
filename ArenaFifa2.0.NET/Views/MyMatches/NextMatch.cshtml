@@ -1,0 +1,175 @@
+﻿@using ArenaFifa20.NET.Models
+@model MyNextMatchesViewModel
+@{
+    ViewBag.Title = "My Matches - My Next Matches";
+}
+
+
+<!-- page content -->
+<div class="gentelella-right_col" role="main" style="padding-left:50px">
+    <div class="gentelella-page-title">
+        <div class="gentelella-title_left">
+            <h3>MEUS PRÓXIMOS JOGOS - @Model.typeMode</h3>
+        </div>
+        <div class="gentelella-title_right">
+            <div class="gentelella-col-md-5 gentelella-col-sm-5 gentelella-col-xs-12 gentelella-form-group gentelella-pull-right gentelella-top_search">
+                <div class="gentelella-input-group">
+                    &nbsp;
+                </div>
+            </div>
+        </div>
+    </div>
+    <br><br>
+
+    <div class="gentelella-row gentelella-top_tiles" style="padding-left:10px">
+        <div class="gentelella-animated gentelella-flipInY gentelella-col-lg-3 gentelella-col-md-3 gentelella-col-sm-6 gentelella-col-xs-12" style="width:350px">
+            <div class="gentelella-tile-stats">
+                <div class="gentelella-icon"><i class="gentelella-fa gentelella-fa-check-square-o"></i></div>
+                <div class="gentelella-count">@Model.totalsMyMatches.totalMatchToPlay.ToString("00")</div>
+                <h3>JOGOS PARA FAZER</h3>
+                <p>Total de jogos a serem realizados na atual temporada.</p>
+            </div>
+        </div>
+        <div class="gentelella-animated gentelella-flipInY gentelella-col-lg-3 gentelella-col-md-3 gentelella-col-sm-6 gentelella-col-xs-12" style="width:350px">
+            <div class="gentelella-tile-stats">
+                <div class="gentelella-icon"><i class="gentelella-fa gentelella-fa-check-square-o"></i></div>
+                <div class="gentelella-count">@Model.totalsMyMatches.totalMatchDelayed.ToString("00")</div>
+                <h3>JOGOS ATRASADOS</h3>
+                <p>Total de jogos sem placar e estão em atraso.</p>
+            </div>
+        </div>
+    </div>
+
+    <br><br>
+
+
+    <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+        <div class="gentelella-x_panel">
+            <div class="gentelella-x_title">
+                <center>
+                    <img src="/images/@("logo-" + Model.typeMode + "-white.jpg")" width="150" />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <img src="/images/@(HttpContext.Current.Application["fifa.codImgCurrent"].ToString() + ".jpg")" width="180" />
+                </center>
+                <br><br>
+                @if (Model.typeMode == "H2H")
+                {
+                    <h2>
+                        Relação dos Meus Próximos Jogos&nbsp;&nbsp;&nbsp;
+                        <span class="fables-iconarrow-light"></span>&nbsp;&nbsp;
+                        <img src="/images/team-logo/@(Model.totalsMyMatches.teamNameH2H + ".jpg")" width="30">
+                        &nbsp;@Model.totalsMyMatches.teamNameH2H
+                        @if (!String.IsNullOrEmpty(Model.totalsMyMatches.nationalTeamNameCPDM))
+                        {
+                            @("   &   ")
+                            <img src="/images/team-logo/@(Model.totalsMyMatches.nationalTeamNameCPDM + ".jpg")" width="30">
+                            @("   " + Model.totalsMyMatches.nationalTeamNameCPDM)
+                        }
+                    </h2>
+                }
+                else if (Model.typeMode == "FUT")
+                {
+                    <h2>Relação dos Meus Próximos Jogos&nbsp;&nbsp;&nbsp; <span class="fables-iconarrow-light"></span>&nbsp;&nbsp;<img src="/images/team-logo/@(Model.totalsMyMatches.teamNameFUT + ".jpg")" onerror="this.src='/images/notfound.png';" width="30">&nbsp;@Model.totalsMyMatches.teamNameFUT</h2>
+                }
+                else
+                {
+                    <h2>Relação dos Meus Próximos Jogos&nbsp;&nbsp;&nbsp; <span class="fables-iconarrow-light"></span>&nbsp;&nbsp;<img src="/images/team-logo/@(Model.totalsMyMatches.teamNamePRO + ".jpg")" onerror="this.src='/images/notfound.png';" width="30">&nbsp;@Model.totalsMyMatches.teamNamePRO</h2>
+                }
+                <ul class="gentelella-nav navbar-right gentelella-panel_toolbox">
+                    <li>
+                        <a class="gentelella-collapse-link"><i class="gentelella-fa gentelella-fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="gentelella-clearfix"></div>
+            </div>
+            <div class="gentelella-x_content">
+
+                <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                    <div class="gentelella-x_panel">
+                        <div class="gentelella-x_content">
+
+                            <table id="datatable-responsive" class="gentelella-table gentelella-table-striped gentelella-table-bordered gentelella-dt-responsive gentelella-nowrap" cellspacing="0" width="100%">
+                                <thead style="background-color:#2C3E4F;color:white">
+                                    <tr>
+                                        <th width="20%" class="gentelella-a-center">Competição</th>
+                                        <th width="15%" class="gentelella-a-center">Fase</th>
+                                        <th width="5%" class="gentelella-a-center">Rodada</th>
+                                        <th width="12%" class="gentelella-a-center">Período</th>
+                                        <th width="40%" class="gentelella-a-center">Jogo</th>
+                                        <th width="8%" class="gentelella-a-center">Ação</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var match in Model.listOfMatch)
+                                    {
+                                        <tr>
+                                            <td class="gentelella-a-center" style="vertical-align:middle">@match.championshipName</td>
+                                            <td class="gentelella-a-center" style="vertical-align:middle">@match.stageName</td>
+                                            <td class="gentelella-a-center" style="vertical-align:middle">@(match.round.ToString("00") + "ª")</td>
+                                            <td class="gentelella-a-center" style="vertical-align:middle">@match.startDate.ToString("dd/MM")&nbsp;&nbsp;à&nbsp;&nbsp;@match.endDate.ToString("dd/MM")</td>
+                                            <td style="vertical-align:middle">
+                                                <table width="100%">
+                                                    <tr class="show-match" userIDHome="@match.userHomeID" userIDAway="@match.userAwayID" goalsHome="@match.totalGoalsHome" goalsAway="@match.totalGoalsAway">
+                                                        <td class="gentelella-a-right" width="39%" style="padding-right:10px">@match.teamNameHome</td>
+                                                        <td width="22%" style="font-weight:bold"><img src="/images/team-logo/@(match.teamNameHome + ".jpg")" onerror="this.src='/images/notfound.png';" width="20">&nbsp;&nbsp;<span style="cursor:pointer;text-decoration:underline" title="Treinadores/Managers responsáveis pela partida:&#013; @(match.psnIDHome + " x " + match.psnIDAway)">x</span>&nbsp;&nbsp;<img src="/images/team-logo/@(match.teamNameAway + ".jpg")" onerror="this.src='/images/notfound.png';" width="20"></td>
+                                                        <td width="39%">@match.teamNameAway</td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                            <td class="gentelella-a-center" style="cursor:pointer;vertical-align:middle">
+                                                <span title="Click para marcar o jogo com seu adversário&#013; ou realizar qualquer outro comentário." class="gentelella-btn gentelella-btn-primary gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-commenting-o gentelella-fa-1-2x"></i></span>
+                                                @if (DateTime.Compare(match.startDate, DateTime.Now.Date) <= 0)
+                                                {
+                                                    <span title="Click para lançar resultado da patida." class="gentelella-fa gentelella-fa-soccer-ball-o gentelella-fa-1-2x"></span>
+
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /page content -->
+
+
+@section Scripts {
+    <script>
+        $(function () {
+            if (detectMobileDevice() == 1) {
+                //$("#includedContentMenuMobile").load("/arena20/includes/menu-logged-mobile.html");
+                //$("#includedContentMenuRankingMobile").load("menu-my-matches-mobile.html");
+                hidden_show_ObjectMobile("footerMobile", "block");
+            }
+        });
+        if ($.fn.dataTable.isDataTable('#datatable-responsive')) {
+            table = $('#datatable-responsive').DataTable();
+        }
+        else {
+            table = $('#datatable-responsive').DataTable({
+                "searching": false,
+                "ordering": false
+            });
+        }
+        $(document).ready(function () {
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+
+            if (detectMobileDevice() == 0) {
+                activeSidebarMenu(window.location.pathname);
+            }
+        });
+
+    </script>
+}
+

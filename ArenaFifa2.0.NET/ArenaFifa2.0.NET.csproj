@@ -189,6 +189,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\MyMatchesController.cs" />
     <Compile Include="Controllers\ModeratorController.cs" />
     <Compile Include="Controllers\RankingController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -200,6 +201,7 @@
     <Compile Include="GlobalFunctions.cs" />
     <Compile Include="GlobalVariables.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\MyMatchesViewModels.cs" />
     <Compile Include="Models\SpoolerViewModels.cs" />
     <Compile Include="Models\ModeratorViewModels.cs" />
     <Compile Include="Models\RankingViewModels.cs" />
@@ -2678,10 +2680,6 @@
     <Content Include="Views\Moderator\CommentMatch.cshtml" />
     <Content Include="Views\Moderator\GenerateStageDetails.cshtml" />
     <Content Include="Views\Moderator\DrawDetails.cshtml" />
-    <None Include="Views\Moderator\_MessageValidate.cshtml" />
-    <None Include="Views\Moderator\_QuestionModal.cshtml" />
-    <None Include="Views\Moderator\_QuestionModalv2.cshtml" />
-    <None Include="Views\Moderator\_ResultModal.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -2756,6 +2754,17 @@
     <Content Include="Views\Moderator\Seasons.cshtml" />
     <Content Include="Views\Moderator\Bench.cshtml" />
     <Content Include="Views\Moderator\BenchDetails.cshtml" />
+    <Content Include="Views\Shared\_MenuSideBarMyMatches.cshtml" />
+    <Content Include="Views\MyMatches\Summary.cshtml" />
+    <Content Include="Views\MyMatches\NextMatch.cshtml" />
+    <Content Include="Views\MyMatches\MatchPlayed.cshtml" />
+    <Content Include="Views\MyMatches\Scorer.cshtml" />
+    <Content Include="Views\MyMatches\UploadLogoTeamFUT.cshtml" />
+    <Content Include="Views\Shared\_MessageValidate.cshtml" />
+    <Content Include="Views\MyMatches\UploadLogoTeamPRO.cshtml" />
+    <Content Include="Views\Shared\_QuestionModal.cshtml" />
+    <Content Include="Views\Shared\_QuestionModalv2.cshtml" />
+    <Content Include="Views\Shared\_ResultModal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

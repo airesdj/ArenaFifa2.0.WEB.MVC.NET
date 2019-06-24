@@ -167,7 +167,7 @@ namespace ArenaFifa20.NET.Models
 
     public class RenewalPROCLUBSquadViewModel
     {
-        public List<RenewalSquadModel> listOfSquad { get; set; }
+        public List<squadListModel> listOfSquad { get; set; }
         public int managerID { get; set; }
         public string mangerName { get; set; }
         public string psnID { get; set; }
@@ -180,8 +180,9 @@ namespace ArenaFifa20.NET.Models
         public string returnMessage { get; set; }
 }
 
-public class RenewalSquadModel
+public class squadListModel
     {
+        public int playerID { get; set; }
         public int userID { get; set; }
         public string userName { get; set; }
         public string psnID { get; set; }

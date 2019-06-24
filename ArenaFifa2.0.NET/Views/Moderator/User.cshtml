@@ -66,11 +66,14 @@
                                                 else
                                                 {
                                                     <td class="gentelella-a-center">Não</td>}
-                                                <td class="gentelella-a-center">
-                                                    <a href="JAVASCRIPT: submeteModerator('UserDetails', 'VIEW', '@item.id');" title="Visualizar dados do item de cadastro." class="gentelella-btn gentelella-btn-primary gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-folder gentelella-fa-1-2x"></i></a>
-                                                    <a href="JAVASCRIPT: submeteModerator('UserDetails', 'EDIT', '@item.id');" title="Alterar dados do item de cadastro." class="gentelella-btn gentelella-btn-info gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-edit gentelella-fa-1-2x"></i></a>
-                                                    <a onClick="JAVASCRIPT: changeQuestionDescriptionInativate('@item.id');" href="" data-toggle="modal" data-target="#bs-delete-modal-sm" title="Excluir item do cadastro." class="gentelella-btn gentelella-btn-danger gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-trash gentelella-fa-1-2x"></i></a>
-                                                </td>
+                                                    <td class="gentelella-a-center">
+                                                        @if (item.id > 1)
+                                                        {
+                                                            <a href="JAVASCRIPT: submeteModerator('UserDetails', 'VIEW', '@item.id');" title="Visualizar dados do item de cadastro." class="gentelella-btn gentelella-btn-primary gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-folder gentelella-fa-1-2x"></i></a>
+                                                            <a href="JAVASCRIPT: submeteModerator('UserDetails', 'EDIT', '@item.id');" title="Alterar dados do item de cadastro." class="gentelella-btn gentelella-btn-info gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-edit gentelella-fa-1-2x"></i></a>
+                                                            <a onClick="JAVASCRIPT: changeQuestionDescriptionInativate('@item.id');" href="" data-toggle="modal" data-target="#bs-delete-modal-sm" title="Excluir item do cadastro." class="gentelella-btn gentelella-btn-danger gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-trash gentelella-fa-1-2x"></i></a>
+                                                        }
+                                                    </td>
                                             </tr>
                                         }
                                     </tbody>

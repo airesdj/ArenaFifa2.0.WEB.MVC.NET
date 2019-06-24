@@ -43,8 +43,6 @@ namespace ArenaFifa20.NET
             bundles.Add(new ScriptBundle("~/bundles/gentelella-script").Include(
                       "~/Scripts/dashboard-gentelella/jquery.min.js",
                       "~/Scripts/dashboard-gentelella/bootstrap.min.js",
-                      "~/Scripts/dashboard-gentelella/fastclick.js",
-                      "~/Scripts/dashboard-gentelella/nprogress.js",
                       "~/Scripts/dashboard-gentelella/custom.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/gentelella-form-script").Include(

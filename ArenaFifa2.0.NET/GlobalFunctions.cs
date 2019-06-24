@@ -285,5 +285,29 @@ namespace ArenaFifa20.NET
             }
         }
 
+
+        public static string stripCodeMobileFullNumber(string mobilieFullNumber)
+        {
+            string codeMobileNumber = String.Empty;
+
+            if (mobilieFullNumber.IndexOf("(") > -1 && mobilieFullNumber.IndexOf(")") > -1)
+            {
+                codeMobileNumber = mobilieFullNumber.Substring(mobilieFullNumber.IndexOf("(")+1, 2);
+            }
+
+            return codeMobileNumber;
+        }
+
+        public static string stripNumberMobileFullNumber(string mobilieFullNumber)
+        {
+            string codeMobileNumber = String.Empty;
+
+            if (mobilieFullNumber.IndexOf(")") > -1)
+            {
+                codeMobileNumber = mobilieFullNumber.Split(Convert.ToChar(")"))[1];
+            }
+
+            return codeMobileNumber;
+        }
     }
 }

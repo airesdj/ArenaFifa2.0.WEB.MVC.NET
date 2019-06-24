@@ -24,7 +24,10 @@ Hi Guys, voltando o assunto do Arena 2.0, a integraçãojá foi iniciada e está
 
 
 *_Funcionalidade que está EM ANDAMENTO:_*
-- Todo Dashboard das Tela de Meus Jogos (*_0/11_*) ==> AINDA NÃO INICIALIZADO
+- Todo Dashboard das Tela de Meus Jogos (*_9/13_*) ==> *Em Desenvolvimento a tela de Upload Escudo FUT*
+      . Restam: = Upload Escudo PRO
+				= Tela de Comentários
+				= Tela de Lançar resultado
 
 
 *_Funcionalidades que AINDA NÃO começaram o processo de integração:_*

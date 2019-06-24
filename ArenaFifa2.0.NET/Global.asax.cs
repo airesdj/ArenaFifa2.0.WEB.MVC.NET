@@ -39,6 +39,9 @@ namespace ArenaFifa20.NET
             Session["user.totalTitlesWon"] = "0";
 
             Session["app.totalVices"] = "0";
+            Session["user.teamNameH2H"] = String.Empty;
+            Session["user.teamNameFUT"] = String.Empty;
+            Session["user.teamNamePRO"] = String.Empty;
         }
     }
 }

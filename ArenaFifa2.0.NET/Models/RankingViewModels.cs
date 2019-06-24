@@ -26,7 +26,10 @@ namespace ArenaFifa20.NET.Models
     public class listScorers
     {
         public int totalGoals { get; set; }
+        public int playerID { get; set; }
         public string playerName { get; set; }
+        public string playerFullName { get; set; }
+        public DateTime inputDate { get; set; }
         public string psnID { get; set; }
         public string teamName { get; set; }
     }

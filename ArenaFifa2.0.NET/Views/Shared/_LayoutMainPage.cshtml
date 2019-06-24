@@ -25,6 +25,10 @@
             <link href="/Content/dashboard-gentelella/bootstrap.min-checkbox.css" rel="stylesheet" />
             <link href="/Content/dashboard-gentelella/docs.min-2.css" rel="stylesheet" />
         }
+        else if (ViewBag.inDataTables == "1")
+        {
+            @Styles.Render("~/Content/gentelella-datatable-css")
+        }
 
         if (ViewBag.inScorerDetails == "1")
         {
@@ -59,11 +63,16 @@ else
             <div class="gentelella-main_container" style="background-color:#2C3E4F">
                 <!-- /sidebar menu -->
                 @if (ViewBag.inHallOfFame == "1")
-                    { @Html.Partial("_MenuSideBarHallOfFame"); }
-                else if (ViewBag.inRanking == "1")
-                    { @Html.Partial("_MenuSideBarRanking"); }
-                else if (ViewBag.inModeratorMenu == "1")
-                    { @Html.Partial("_MenuSideBarModerator"); }
+                {@Html.Partial("_MenuSideBarHallOfFame");
+            }
+            else if (ViewBag.inRanking == "1")
+            { @Html.Partial("_MenuSideBarRanking");
+        }
+        else if (ViewBag.inModeratorMenu == "1" && ViewBag.inModeratorMyMatches != "1")
+        { @Html.Partial("_MenuSideBarModerator");
+    }
+    else if (ViewBag.inModeratorMyMatches == "1")
+    { @Html.Partial("_MenuSideBarMyMatches");}
                 <!-- /sidebar menu -->
 
                 <div id="includedContentMenuMobile"></div>
@@ -84,8 +93,11 @@ else
         @Scripts.Render("~/bundles/jqueryaux")
         @Scripts.Render("~/bundles/carousel-portfolio-script")
 
-       @if (@ViewBag.inUsingAjaxRazor == "1") { @Scripts.Render("~/bundles/jqueryajax"); }
-       @if (@ViewBag.inCalculateScore == "1") { <script src="/Scripts/calculate-score.js"></script> }
+        @if (@ViewBag.inUsingAjaxRazor == "1")
+        {@Scripts.Render("~/bundles/jqueryajax");}
+        @if (@ViewBag.inCalculateScore == "1")
+        {
+            <script src="/Scripts/calculate-score.js"></script>}
 
         @if (@ViewBag.inModeratorMenu == "1")
         {
@@ -104,6 +116,10 @@ else
             {
                 <script src="/Scripts/dashboard-gentelella/jquery.smartWizard.js"></script>
             }
+        }
+        else if (ViewBag.inDataTables == "1")
+        {
+            @Scripts.Render("~/bundles/gentelella-datatable-script")
         }
 
         @Html.Partial("_Footer")

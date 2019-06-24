@@ -82,7 +82,7 @@
                         else
                         {
                             <div class="fables-third-text-color fables-second-hover-color font-10 top-header-link px-3 px-md-2 px-lg-4" id="avatarUserLogged" style="padding-left:50px">
-                                <img src="@HttpContext.Current.Session["user.pathAvatar"].ToString()" title="Avatar do Técnico Logado" width="80px">
+                                <img src="@(HttpContext.Current.Session["user.pathAvatar"].ToString() + "?time=" + DateTime.Now)" title="Avatar do Técnico Logado" width="80px">
                             </div>
                             <div class="fables-third-text-color icons-header-mobile" style="vertical-align:middle;padding-left:10px" id="menuUserLogged">
                                 <div class="dropdown">
@@ -91,12 +91,15 @@
                                     </button>
                                     <div class="dropdown-menu p-0 fables-forth-background-color rounded-0 m-0 border-0 lang-dropdown" aria-labelledby="dropdownLangButton">
                                         <a class="dropdown-item font-12 fables-second-hover-color" style="color:#F3A100;font-size:12px" href="/Account/ChangePassword">
-                                            <span class="fables-iconpassword"></span>&nbsp;&nbsp;Altera Senha
+                                            <span class="fables-iconpassword"></span>&nbsp;&nbsp;Alterar Senha
+                                        </a>
+                                        <a class="dropdown-item font-12 fables-second-hover-color" style="color:#F3A100;font-size:12px" href="/Account/UpdateAvatar">
+                                            <span class="fables-iconfile"></span>&nbsp;&nbsp;Meu Avatar
                                         </a>
                                         <a class="dropdown-item font-11 fables-second-hover-color" style="color:#F3A100;font-size:12px" href="/Account/Update">
                                             <span class="fables-icondata"></span>&nbsp;&nbsp;Meus Dados
                                         </a>
-                                        <a class="dropdown-item font-11 fables-second-hover-color" style="color:#F3A100;font-size:12px" href="/arena20/dashboard-my-matches/summary.html">
+                                        <a class="dropdown-item font-11 fables-second-hover-color" style="color:#F3A100;font-size:12px" href="/MyMatches/Summary">
                                             <span class="fables-iconeye"></span>&nbsp;&nbsp;Meus Jogos
                                         </a>
                                         <a class="dropdown-item font-11 fables-second-hover-color" style="color:#F3A100;font-size:12px" href="/Account/Signout">
