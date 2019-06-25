@@ -18,6 +18,17 @@
 
     Boolean matchDone = false;
     if (Model.totalGoalsHome != String.Empty) { matchDone = true;  }
+
+    string sourceForm = Model.sourceForm;
+    string activeSideBar = "/CurrentSeason/" + sourceForm;
+    string ACTION_VOLTAR = "VOLTAR_CURRENT_SEASON";
+    string ACTION_CONTROLLER = "CurrentSeason";
+    if (sourceForm != String.Empty && (sourceForm.IndexOf("NextMatch") > -1 || sourceForm.IndexOf("MatchPlayed") > -1))
+    {
+        ACTION_CONTROLLER = "MyMatches";
+        ACTION_VOLTAR = "VOLTAR_MY_MATCHES";
+        activeSideBar = "/MyMatches/" + sourceForm;
+    }
 }
 
 
@@ -44,10 +55,11 @@
 
     <form id="comeback-form" action=""></form>
 
-    <form action="/Moderator/LaunchSimpleResult" class="form-horizontal" id="registration-form" method="post" role="form">
+    <form action="@("/" + ACTION_CONTROLLER + "/LaunchSimpleResultCurrent")" class="form-horizontal" id="registration-form" method="post" role="form">
         @Html.AntiForgeryToken()
         @{ TempData["FullModel"] = Model; }
         <input type="hidden" id="actionForm" name="actionForm" value="SAVE_SIMPLE_RESULT" />
+        <input type="hidden" id="sourceForm" name="sourceForm" value="@sourceForm" />
         <input type="hidden" id="selectedID" name="selectedID" value="@Model.championshipID" />
         <input type="hidden" id="matchID" name="matchID" value="@Model.matchID" />
         <input type="hidden" id="scorersTeamHome" name="scorersTeamHome" value="" />
@@ -86,7 +98,7 @@
                 <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-14" style="padding-right:25px">
                     <div class="gentelella-ln_solid" style=""></div>
                     <div class="gentelella-row gentelella-a-right">
-                        <input type="button" class="gentelella-btn gentelella-btn-primary" onClick="JAVASCRIPT: submeteModerator('LaunchResultDetails', 'SHOW_CHAMPIONSHIP_DETAILS', '');" value="Voltar" />
+                        <input type="button" class="gentelella-btn gentelella-btn-primary" onClick="JAVASCRIPT: submeteModerator('@sourceForm', '@ACTION_VOLTAR', '');" value="Voltar" />
                         &nbsp;&nbsp;&nbsp;
                         <button type="button" target="put0x0" class="gentelella-btn gentelella-btn-xsl gentelella-btn-success" title="Informar o Resultado de 0x0&#013;(sem gols) para a Partida">0x0</button>
                         &nbsp;&nbsp;&nbsp;
@@ -318,7 +330,7 @@
                 toastr.success('@TempData["actionSuccessfully"].');
 
             if (detectMobileDevice() == 0)
-                activeSidebarMenu(window.location.pathname.replace("Simple", ""));
+                activeSidebarMenu("@activeSideBar");
 
             objCalculate = new calculateScore({
                 sObjectGoalsHome: "#numGoalsHome",

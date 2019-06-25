@@ -100,51 +100,59 @@
             </div>
             <div class="gentelella-x_content">
 
-                <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
-                    <div class="gentelella-x_panel">
-                        <div class="gentelella-x_content">
+                <form action="/Moderator/LaunchResultDetails" class="form-horizontal" id="registration-form" method="post" role="form">
 
-                            <table id="datatable-responsive" class="gentelella-table gentelella-table-striped gentelella-table-bordered gentelella-dt-responsive gentelella-nowrap" cellspacing="0" width="100%">
-                                <thead style="background-color:#2C3E4F;color:white">
-                                    <tr>
-                                        <th width="21%" class="gentelella-a-center">Competição</th>
-                                        <th width="15%" class="gentelella-a-center">Fase</th>
-                                        <th width="5%" class="gentelella-a-center">Rodada</th>
-                                        <th width="12%" class="gentelella-a-center">Período</th>
-                                        <th width="40%" class="gentelella-a-center">Jogo</th>
-                                        <th width="7%" class="gentelella-a-center">Ação</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="listOfMatch">
-                                    @foreach (var match in Model.listOfMatch)
-                                    {
+                    @Html.AntiForgeryToken()
+                    @{ TempData["FullModel"] = Model; }
+                    <input type="hidden" id="actionForm" name="actionForm" value="SAVE" />
+                    <input type="hidden" id="sourceForm" name="sourceForm" value="@("MatchPlayed"+Model.typeMode)" />
+                    <input type="hidden" id="selectedID" name="selectedID" value="" />
+                    <input type="hidden" id="matchID" name="matchID" value="" />
+                    <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                        <div class="gentelella-x_panel">
+                            <div class="gentelella-x_content">
+
+                                <table id="datatable-responsive" class="gentelella-table gentelella-table-striped gentelella-table-bordered gentelella-dt-responsive gentelella-nowrap" cellspacing="0" width="100%">
+                                    <thead style="background-color:#2C3E4F;color:white">
                                         <tr>
-                                            <td class="gentelella-a-center" style="vertical-align:middle">@match.championshipName</td>
-                                            <td class="gentelella-a-center" style="vertical-align:middle">@match.stageName</td>
-                                            <td class="gentelella-a-center" style="vertical-align:middle">@(match.round.ToString("00") + "ª")</td>
-                                            <td class="gentelella-a-center" style="vertical-align:middle">@match.startDate.ToString("dd/MM")&nbsp;&nbsp;à&nbsp;&nbsp;@match.endDate.ToString("dd/MM")</td>
-                                            <td style="vertical-align:middle">
-                                                <table width="100%">
-                                                    <tr class="show-match" userIDHome="@match.userHomeID" userIDAway="@match.userAwayID" goalsHome="@match.totalGoalsHome" goalsAway="@match.totalGoalsAway">
-                                                        <td class="gentelella-a-right" width="39%" style="padding-right:10px">@match.teamNameHome</td>
-                                                        <td width="22%" style="font-weight:bold"><img src="/images/team-logo/@(match.teamNameHome + ".jpg")" onerror="this.src='/images/notfound.png';" width="20">&nbsp;&nbsp;@(match.totalGoalsHome)&nbsp;<span style="cursor:pointer;text-decoration:underline" title="Treinadores/Managers responsáveis pela partida:&#013; @(match.psnIDHome + " x " + match.psnIDAway)">x</span>&nbsp;@(match.totalGoalsAway)&nbsp;&nbsp;<img src="/images/team-logo/@(match.teamNameAway + ".jpg")" onerror="this.src='/images/notfound.png';" width="20"></td>
-                                                        <td width="39%">@match.teamNameAway</td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                            <td class="gentelella-a-center" style="cursor:pointer;vertical-align:middle">
-                                                <span title="Click para marcar o jogo com seu adversário&#013; ou realizar qualquer outro comentário." class="gentelella-btn gentelella-btn-primary gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-commenting-o gentelella-fa-1-2x"></i></span>
-                                            </td>
+                                            <th width="21%" class="gentelella-a-center">Competição</th>
+                                            <th width="15%" class="gentelella-a-center">Fase</th>
+                                            <th width="5%" class="gentelella-a-center">Rodada</th>
+                                            <th width="12%" class="gentelella-a-center">Período</th>
+                                            <th width="40%" class="gentelella-a-center">Jogo</th>
+                                            <th width="7%" class="gentelella-a-center">Ação</th>
                                         </tr>
-                                    }
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody id="listOfMatch">
+                                        @foreach (var match in Model.listOfMatch)
+                                        {
+                                            <tr>
+                                                <td class="gentelella-a-center" style="vertical-align:middle">@match.championshipName</td>
+                                                <td class="gentelella-a-center" style="vertical-align:middle">@match.stageName</td>
+                                                <td class="gentelella-a-center" style="vertical-align:middle">@(match.round.ToString("00") + "ª")</td>
+                                                <td class="gentelella-a-center" style="vertical-align:middle">@match.startDate.ToString("dd/MM")&nbsp;&nbsp;à&nbsp;&nbsp;@match.endDate.ToString("dd/MM")</td>
+                                                <td style="vertical-align:middle">
+                                                    <table width="100%">
+                                                        <tr class="show-match" userIDHome="@match.userHomeID" userIDAway="@match.userAwayID" goalsHome="@match.totalGoalsHome" goalsAway="@match.totalGoalsAway">
+                                                            <td class="gentelella-a-right" width="39%" style="padding-right:10px">@match.teamNameHome</td>
+                                                            <td width="22%" style="font-weight:bold"><img src="/images/team-logo/@(match.teamNameHome + ".jpg")" onerror="this.src='/images/notfound.png';" width="20">&nbsp;&nbsp;@(match.totalGoalsHome)&nbsp;<span style="cursor:pointer;text-decoration:underline" title="Treinadores/Managers responsáveis pela partida:&#013; @(match.psnIDHome + " x " + match.psnIDAway)">x</span>&nbsp;@(match.totalGoalsAway)&nbsp;&nbsp;<img src="/images/team-logo/@(match.teamNameAway + ".jpg")" onerror="this.src='/images/notfound.png';" width="20"></td>
+                                                            <td width="39%">@match.teamNameAway</td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td class="gentelella-a-center" style="cursor:pointer;vertical-align:middle">
+                                                    <a href="JAVASCRIPT: $('#matchID').val(@match.matchID);submeteModerator('CommentMatchCurrent', 'SHOW_CHAMPIONSHIPMATCHTABLE_DETAILS', '@match.championshipID');" title="Click para marcar o jogo com seu adversário&#013; ou realizar qualquer outro comentário." class="gentelella-btn gentelella-btn-primary gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-commenting-o gentelella-fa-1-2x"></i></a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
 
 
+                            </div>
                         </div>
                     </div>
-                </div>
-
+                </form>
 
             </div>
         </div>

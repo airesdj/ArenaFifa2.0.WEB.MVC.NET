@@ -20,18 +20,16 @@ Hi Guys, voltando o assunto do Arena 2.0, a integraçãojá foi iniciada e está
 - Detalhes Por Usuário da Lista Negra da Atual Temporada
 - TODO Dashboard do Hall da Fama
 - TODO Dashboard do Ranking do Arena
-- TODO Dashboard do Menu Moderador (*_NOVO_*)
+- TODO Dashboard do Menu Moderador
+- TODO Dashboard do Meus Jogos (*_NOVO_*)
 
 
 *_Funcionalidade que está EM ANDAMENTO:_*
-- Todo Dashboard das Tela de Meus Jogos (*_9/13_*) ==> *Em Desenvolvimento a tela de Upload Escudo FUT*
-      . Restam: = Upload Escudo PRO
-				= Tela de Comentários
-				= Tela de Lançar resultado
+- Todo Dashboard das Tela de Campeonatos (*_0/19_*) ==> *Não iniciado*
+      . Restam: = Todos os 19 módulos
 
 
 *_Funcionalidades que AINDA NÃO começaram o processo de integração:_*
-- Todo Dashboard das Tela de Campeonatos
 - Todos Processos Liberação da Renovação
 - Todos Processos Geração da Nova Temporada
 - Todos Processos Batch:

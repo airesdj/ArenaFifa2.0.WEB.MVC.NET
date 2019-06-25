@@ -1,10 +1,23 @@
 ﻿@using ArenaFifa20.NET.Models
 @model ChampionshipMatchTableDetailsModel
 @{
-    ViewBag.Title = "Moderator Menu - Launch Result - Comment Match";
+    ViewBag.Title = "Comment Match";
     int countPos = 0;
 
     string userIDLogged = HttpContext.Current.Session["user.id"].ToString();
+
+    string sourceForm = Model.sourceForm;
+    string activeSideBar = "/CurrentSeason/" + sourceForm;
+    string ACTION_VOLTAR = "VOLTAR_CURRENT_SEASON";
+    string ACTION_CONTROLLER = "CurrentSeason";
+    string USER_COMMENT = "USER_COMMENT_CURRENT_SEASON";
+    if (sourceForm != String.Empty && (sourceForm.IndexOf("NextMatch") > -1 || sourceForm.IndexOf("MatchPlayed") > -1))
+    {
+        ACTION_CONTROLLER = "MyMatches";
+        ACTION_VOLTAR = "VOLTAR_MY_MATCHES";
+        USER_COMMENT = "USER_COMMENT_MY_MATCHES";
+        activeSideBar = "/MyMatches/" + sourceForm;
+    }
 }
 
 
@@ -29,16 +42,16 @@
 
                 <form id="comeback-form" action=""></form>
 
-                <form action="/Moderator/CommentMatch" class="form-horizontal" id="registration-form" method="post" role="form" data-parsley-validate>
+                <form action="@("/" + ACTION_CONTROLLER + "/CommentMatchCurrent")" class="form-horizontal" id="registration-form" method="post" role="form" data-parsley-validate>
 
 
                     @Html.AntiForgeryToken()
                     @{ TempData["FullModel"] = Model; }
                     <input type="hidden" id="actionForm" name="actionForm" value="SAVE_COMMENT" />
+                    <input type="hidden" id="sourceForm" name="sourceForm" value="@sourceForm" />
                     <input type="hidden" id="selectedID" name="selectedID" value="@Model.championshipID" />
                     <input type="hidden" id="matchID" name="matchID" value="@Model.matchID" />
                     <input type="hidden" id="userID" name="userID" value="" />
-                    <input type="hidden" id="blackListSelected" name="blackListSelected" value="" />
                     <input type="hidden" id="modeType" name="modeType" value="@Model.modeType" />
 
                     <section class="section-placar p-b-100" style="background-image:url(/images/fundo-jogo.jpg)">
@@ -47,7 +60,7 @@
                                 <header class="section-placar-header gentelella-col-md-12">
                                     <div class="gentelella-row">
                                         <div class="gentelella-col-sm-3 white-color">
-                                            <span class="gentelella-glyphicon gentelella-glyphicon-menu-left" aria-hidden="true"></span> <span style="cursor:pointer" onClick="JAVASCRIPT: submeteModerator('LaunchResultDetails', 'VOLTAR_COMMENT', '');" class="gentelella-hidden-xs gentelella-hidden-sm">VOLTAR</span>
+                                            <span class="gentelella-glyphicon gentelella-glyphicon-menu-left" aria-hidden="true"></span> <span style="cursor:pointer" onClick="JAVASCRIPT: submeteModerator('@sourceForm', '@ACTION_VOLTAR', '');" class="gentelella-hidden-xs gentelella-hidden-sm">VOLTAR</span>
                                         </div>
                                         <div class="gentelella-col-sm-5 gentelella-a-center">
                                             <h1 class="white-color block" style=""><b>@Model.championshipName</b></h1>
@@ -133,16 +146,17 @@
                     <div class="" role="tabpanel" data-example-id="togglable-tabs">
                         <ul id="myTab" class="gentelella-nav gentelella-nav-tabs gentelella-bar_tabs" role="tablist" style="background-color:#fff">
                             <li role="presentation" class="active">
-                                <a href="#tab_content1" id="comment-tab" role="tab" data-toggle="tab" aria-expanded="true">Comentários</a>
+                                <a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Comentários</a>
                             </li>
                             <li role="presentation" class="">
-                                <a href="#tab_content2" id="games-tab" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Últimos Jogos</a>
+                                <a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Últimos Jogos</a>
                             </li>
                         </ul>
                         <div id="myTabContent" class="gentelella-tab-content">
 
-                            <div role="tabpanel" class="gentelella-tab-pane gentelella-fade active gentelella-in" id="tab_content1" aria-labelledby="comment-tab">
-                                <br />
+
+                            <div role="tabpanel" class="gentelella-tab-pane gentelella-fade active gentelella-in" id="tab_content1" aria-labelledby="home-tab">
+                                <br><br>
 
                                 <h5>Comentários</h5>
                                 <div class="gentelella-ln_solid" style="border-top:1px solid black"></div>
@@ -188,11 +202,11 @@
                                 <br />
                                 <div style="color:steelblue;font-weight:bold;display:none" class="receiving-email">
                                     <i class="gentelella-fa gentelella-fa-mail-reply-all"></i>&nbsp;&nbsp;
-                                    Você ESTÁ recebendo por e-mail os camentários desta partida.&nbsp;&nbsp;&nbsp; (<i class="gentelella-fa gentelella-fa-close"></i>&nbsp;<span style="text-decoration:underline;cursor:pointer" title="Parar de Receber os Comentários da Partida" id="cancelEmailComments" onclick="JAVASCRIPT: $('#txtComment').val('.');checkFormValid(0);submeteModerator('CommentMatch', 'CANCEL_USER_COMMENT', '');"><i>Deseja CANCELAR o recebimento de e-mail de comentários para esta partida?</i></span>)
+                                    Você ESTÁ recebendo por e-mail os camentários desta partida.&nbsp;&nbsp;&nbsp; (<i class="gentelella-fa gentelella-fa-close"></i>&nbsp;<span style="text-decoration:underline;cursor:pointer" title="Parar de Receber os Comentários da Partida" id="cancelEmailComments" onclick="JAVASCRIPT: $('#txtComment').val('.');submeteModerator('CommentMatchCurrent', '@("CANCEL_" + USER_COMMENT)', '');"><i>Deseja CANCELAR o recebimento de e-mail de comentários para esta partida?</i></span>)
                                 </div>
                                 <div style="color:steelblue;font-weight:bold;display:none" class="dont-receive-email">
                                     <i class="gentelella-fa gentelella-fa-close"></i>&nbsp;&nbsp;
-                                    Você NÃO está recebendo por e-mail os comentários desta Partida.&nbsp;&nbsp;&nbsp; (<i class="gentelella-fa gentelella-fa-mail-reply-all"></i>&nbsp;<span style="text-decoration:underline;cursor:pointer" title="Receber os Comentários da Partida" id="startEmailComments" onclick="JAVASCRIPT: $('#txtComment').val('.');checkFormValid(0);submeteModerator('CommentMatch', 'SAVE_USER_COMMENT', '');"><i>Deseja começar a RECEBER e-mails de comentários desta partida?</i></span>)
+                                    Você NÃO está recebendo por e-mail os comentários desta Partida.&nbsp;&nbsp;&nbsp; (<i class="gentelella-fa gentelella-fa-mail-reply-all"></i>&nbsp;<span style="text-decoration:underline;cursor:pointer" title="Receber os Comentários da Partida" id="startEmailComments" onclick="JAVASCRIPT: $('#txtComment').val('.');submeteModerator('CommentMatchCurrent', '@("SAVE_" + USER_COMMENT)', '');"><i>Deseja começar a RECEBER e-mails de comentários desta partida?</i></span>)
                                 </div>
                                 <br>
                                 <p>
@@ -208,17 +222,9 @@
                                 </div>
 
                                 <div class="gentelella-row">
-                                    <div class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-12">
-                                        <label class="gentelella-control-label" for="dtInicio" id="labelFirstCombobox">Escolha um Comentário Programado </label><i style="color:red">*</i> :
-                                        <select id="cmbComment" class="gentelella-form-control" onChange="checkFormDecreeResult()">
-                                            <option value="">Selecione..</option>
-                                            <option value="Partida adiada até o fim da próxima rodada.&nbsp;&nbsp;&nbsp;Caso a partida não seja realizada até o final do novo prazo, o resultado será baseado nas postagens a partir de agora.">Adia partida até a próxima rodada</option>
-                                            <option value="Por conta da troca de técnico esta partida adiada até o fim da próxima rodada.&nbsp;&nbsp;&nbsp;Caso a partida não seja realizada até o final do novo prazo, o resultado será baseado nas postagens a partir de agora.">Adia partida por conta da TROCA DE TÉCNICOS</option>
-                                        </select>
-                                    </div>
-                                    <div class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-12">
+                                    <div class="gentelella-col-md-8 gentelella-col-sm-8 gentelella-col-xs-12">
                                         <label class="gentelella-control-label" for="dtInicio" id="labelFirstCombobox">Adicionar Comentários </label><i style="color:red">*</i> :
-                                        <textarea id="txtComment" name="txtComment" class="gentelella-form-control" rows="5"></textarea>
+                                        <textarea id="txtComment" name="txtComment" class="gentelella-form-control" rows="5" required></textarea>
                                     </div>
                                 </div>
 
@@ -226,7 +232,7 @@
                                 <div class="gentelella-form-group gentelella-a-right">
                                     <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
                                         <div class="gentelella-ln_solid"></div>
-                                        <input type="button" class="gentelella-btn gentelella-btn-primary" onClick="JAVASCRIPT: submeteModerator('LaunchResultDetails', 'VOLTAR_COMMENT', '');" value="Voltar" />
+                                        <input type="button" class="gentelella-btn gentelella-btn-primary" onClick="JAVASCRIPT: submeteModerator('@sourceForm', '@ACTION_VOLTAR', '');" value="Voltar" />
                                         <input type="submit" class="gentelella-btn gentelella-btn-success" value="Enviar Comentário" />
                                         <div id="waiting" class="gentelella-red" style="display:none">
                                             <br />
@@ -235,49 +241,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                @if (!String.IsNullOrEmpty(Model.totalGoalsAway))
-                                {
-                                    <div class="gentelella-form-group gentelella-a-right">
-                                        <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
-                                            <div class="gentelella-ln_solid"></div>
-                                            @if (!String.IsNullOrEmpty(Model.messageBlackListUser1) || !String.IsNullOrEmpty(Model.messageBlackListUser2))
-                                            {
-                                                <input type="button" class="gentelella-btn gentelella-btn-warning" id="RemoveBList" onClick="JAVASCRIPT: removeBlackList();" value="Retirar Lista Negra" />
-                                                <br /><br />
-                                            }
-                                            @if (String.IsNullOrEmpty(Model.messageBlackListUser1))
-                                            {
-                                                <span style="font-size:12px;font-family:verdana"><b>@("Time MANDANTE: " + Model.teamNameHome + " (" + Model.psnIDHome + ")")</b></span>
-                                                <br />
-                                                <input type="button" class="gentelella-btn gentelella-btn-warning" id="HomeLN_OMT" onClick="JAVASCRIPT: addBlackList('Home', '@Model.userHomeID', 'LN_OMT');" value="Incluir Lista Negra: Omissão Total" />
-                                                @Html.Raw("&nbsp; &nbsp;")
-                                                <input type="button" class="gentelella-btn gentelella-btn-warning" id="HomeLN_OMP" onClick="JAVASCRIPT: addBlackList('Home', '@Model.userHomeID', 'LN_OMP');" value="Incluir Lista Negra: Omissão Parcial" />
-                                                @Html.Raw("&nbsp; &nbsp;")
-                                                <input type="button" class="gentelella-btn gentelella-btn-warning" id="HomeLN_ADV" onClick="JAVASCRIPT: addBlackList('Home', '@Model.userHomeID', 'LN_ADV');" value="Incluir Lista Negra: Advertência" />
-                                                @Html.Raw("&nbsp; &nbsp;")
-                                                <input type="button" class="gentelella-btn gentelella-btn-warning" id="HomeLN_ADP" onClick="JAVASCRIPT: addBlackList('Home', '@Model.userHomeID', 'LN_ADP');" value="Incluir Lista Negra: Antidesportiva" />
-                                            }
-                                            <br /><br />
-                                            @if (String.IsNullOrEmpty(Model.messageBlackListUser2))
-                                            {
-                                                <span style="font-size:12px;font-family:verdana"><b>@("Time VISITANTE: " + Model.teamNameAway + " (" + Model.psnIDAway + ")")</b></span>
-                                                <br />
-                                                <input type="button" class="gentelella-btn gentelella-btn-warning" id="AwayLN_OMT" onClick="JAVASCRIPT: addBlackList('Away', '@Model.userAwayID', 'LN_OMT');" value="Incluir Lista Negra: Omissão Total" />
-                                                @Html.Raw("&nbsp; &nbsp;")
-                                                <input type="button" class="gentelella-btn gentelella-btn-warning" id="AwayLN_OMP" onClick="JAVASCRIPT: addBlackList('Away', '@Model.userAwayID', 'LN_OMP');" value="Incluir Lista Negra: Omissão Parcial" />
-                                                @Html.Raw("&nbsp; &nbsp;")
-                                                <input type="button" class="gentelella-btn gentelella-btn-warning" id="AwayLN_ADV" onClick="JAVASCRIPT: addBlackList('Away', '@Model.userAwayID', 'LN_ADV');" value="Incluir Lista Negra: Advertência" />
-                                                @Html.Raw("&nbsp; &nbsp;")
-                                                <input type="button" class="gentelella-btn gentelella-btn-warning" id="AwayLN_ADP" onClick="JAVASCRIPT: addBlackList('Away', '@Model.userAwayID', 'LN_ADP');" value="Incluir Lista Negra: Antidesportiva" />
-                                            }
-                                        </div>
-                                    </div>
-                                }
-
                             </div>
 
-                            <div role="tabpanel" class="gentelella-tab-pane gentelella-fade gentelella-in" id="tab_content2" aria-labelledby="games-tab">
-                                <br />
+                            <div role="tabpanel" class="gentelella-tab-pane gentelella-fade gentelella-in" id="tab_content2" aria-labelledby="home-tab">
 
                                 <div class="gentelella-row">
                                     <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
@@ -394,28 +360,19 @@
             toastr.success('@TempData["actionSuccessfully"].');
 
         if (detectMobileDevice() == 0)
-            activeSidebarMenu("/Moderator/LaunchResult");
+            activeSidebarMenu("@activeSideBar");
 
         $("h4").attr("style", "height:0px")
         $("h5").attr("style", "height:0px")
         $("code").attr("style", "height:1px;background-color:#fff;padding:2px 0px")
 
         $("input.gentelella-btn-success").on("click", function () {
-            checkFormValid(0);
-            if ($("#txtComment").attr("style") !="border:1px solid red;background-color:#F2DEDE")
+            if ($("#txtComment").val() != "")
                 $("#waiting").show();
         });
 
-        $("#cmbComment").on("change", function () {
-            if ($(this).val() == "")
-                $("#txtComment").val("");
-            else
-                $("#txtComment").val("<b>" + $(this).val() + "</b>");
-        });
-
-        checkFormValid(1);
-
         activateRegistrationForm("CommentMatch", '@Model.actionUser');
+
         $("#tab_content2").find("td[target='scoreHome']").each(function (index, value) {
             var goalsH = parseInt($(this).attr("goalsHome"));
             var goalsA = parseInt($(this).attr("goalsAway"));
@@ -449,22 +406,6 @@
         
     });
 
-    function checkFormValid(pFirst) {
-        if ($("#cmbComment").val() == "" && $("#txtComment").val() == "") {
-            $("#cmbComment").attr("required", "");
-            $("#txtComment").attr("required", "");
-        }
-        else if ($("#cmbComment").val() != "" && $("#txtComment").val() == "") {
-            document.getElementById("txtComment").removeAttribute("required");
-        }
-        else if ($("#cmbComment").val() == "" && $("#txtComment").val() != "") {
-            document.getElementById("cmbComment").removeAttribute("required");
-        }
-        if ($("#txtComment").attr("required") == "required" && pFirst != 1) {
-            checkTextArea();
-        }
-    }
-
     function checkTextArea() {
         if ($("#txtComment").val() == "") {
             $("#txtComment").attr("style", "border:1px solid red;background-color:#F2DEDE");
@@ -474,49 +415,6 @@
         }
     }
 
-    function removeBlackList() {
-        $("#modalScreeenMsgTitle").html("");
-        $("#modalScreeenMsgSubTitle").html("");
-        $("#modalScreeenMsgQuestion").html("");
-
-        $("#RemoveBList").attr("data-toggle", "modal");
-        $("#RemoveBList").attr("data-target", "#bs-message-general-modal-sm");
-
-        $("#modalScreeenMsgTitle").html("EXCLUIR LISTA NEGRA");
-        $("#modalScreeenMsgButton").on("click", function () { submeteModerator('CommentMatch', 'DELETE_BLACKLIST', ''); });
-        $("#modalScreeenMsgQuestion").html("Deseja realmente EXCLUIR TODA a Lista Negra desta partida?");
-
-        $('#bs-message-general-modal-sm').modal('show');
-        $("#RemoveBList").attr("data-toggle", "");
-        $("#RemoveBList").attr("data-target", "");
-    }
-
-    function addBlackList(type, userID, valueBList) {
-        $("#modalScreeenMsgTitle").html("");
-        $("#modalScreeenMsgSubTitle").html("");
-        $("#modalScreeenMsgQuestion").html("");
-
-        var divID = type + valueBList;
-
-        $("#" + divID).attr("data-toggle", "modal");
-        $("#" + divID).attr("data-target", "#bs-message-general-modal-sm");
-        $("#userID").val(userID);
-        $("#blackListSelected").val(valueBList);
-        var userName = "";
-
-        if (type == "Home") { userName = '@Model.psnIDHome'; }
-        else { userName = '@Model.psnIDAway'; }
-
-        var msgQuestion = "Deseja adicionar à Lista Negra '" + valueBList + "' para o técnico '" + userName + "' referente a esta partida?";
-
-        $("#modalScreeenMsgTitle").html("INCLUIR LISTA NEGRA");
-        $("#modalScreeenMsgButton").on("click", function () { submeteModerator('CommentMatch', 'ADD_BLACKLIST', ''); });
-        $("#modalScreeenMsgQuestion").html(msgQuestion);
-
-        $('#bs-message-general-modal-sm').modal('show');
-        $("#" + divID).attr("data-toggle", "");
-        $("#" + divID).attr("data-target", "");
-    }
     </script>
 }
 

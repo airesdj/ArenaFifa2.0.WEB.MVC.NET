@@ -204,10 +204,33 @@ function submeteModerator(actionName, actionForm, itemSelected) {
         $("#registration-form").submit();
     }
     else if (actionForm == "DELETE_BLACKLIST" || actionForm == "ADD_BLACKLIST") {
-        $("#actionForm").val(actionForm);
         $("#txtComment").val(".");
         checkFormValid(0);
         $("#registration-form").attr("action", "/Moderator/" + actionName);
+        $("#registration-form").submit();
+    }
+    else if (actionForm == "SHOW_CHAMPIONSHIPMATCHTABLE_DETAILS" && actionName != "CommentMatch" && actionName != "DecreeResult") {
+        $("#registration-form").attr("action", "/MyMatches/" + actionName);
+        $("#registration-form").submit();
+    }
+    else if (actionForm == "SHOW_LAUNCH_SIMPLE_RESULT_DETAILS" && actionName != "LaunchSimpleResult") {
+        $("#registration-form").attr("action", "/MyMatches/" + actionName);
+        $("#registration-form").submit();
+    }
+    else if (actionForm == "VOLTAR_MY_MATCHES") {
+        $("#actionForm").val("SHOW_CHAMPIONSHIP_DETAILS");
+        $("#txtComment").val(".");
+        $("#registration-form").attr("action", "/MyMatches/" + actionName);
+        $("#registration-form").submit();
+    }
+    else if (String(actionForm).indexOf("_MY_MATCHES") > -1) {
+        $("#txtComment").val(".");
+        $("#registration-form").attr("action", "/MyMatches/" + actionName);
+        $("#registration-form").submit();
+    }
+    else if (String(actionForm).indexOf("_CURRENT_SEASON") > -1) {
+        $("#txtComment").val(".");
+        $("#registration-form").attr("action", "/CurrentSeason/" + actionName);
         $("#registration-form").submit();
     }
     else {

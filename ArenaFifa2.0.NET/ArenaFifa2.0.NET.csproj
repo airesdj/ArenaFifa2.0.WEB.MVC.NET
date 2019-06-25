@@ -189,6 +189,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\CurrentSeasonController.cs" />
     <Compile Include="Controllers\MyMatchesController.cs" />
     <Compile Include="Controllers\ModeratorController.cs" />
     <Compile Include="Controllers\RankingController.cs" />
@@ -2765,9 +2766,13 @@
     <Content Include="Views\Shared\_QuestionModal.cshtml" />
     <Content Include="Views\Shared\_QuestionModalv2.cshtml" />
     <Content Include="Views\Shared\_ResultModal.cshtml" />
+    <Content Include="Views\Account\ChangeAvatar.cshtml" />
+    <Content Include="Views\Shared\CommentMatchCurrent.cshtml" />
+    <Content Include="Views\Shared\LaunchSimpleResultCurrent.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\CurrentSeason\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

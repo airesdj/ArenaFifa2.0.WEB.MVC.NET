@@ -2420,50 +2420,32 @@ namespace ArenaFifa20.NET.Controllers
 
                 if (actionForm == "save_comment")
                 {
-                    commentMatchMode.matchID = Convert.ToInt32(formHTML["matchID"]);
-                    commentMatchMode.comment = Server.HtmlDecode(formHTML["txtComment"]);
-                    commentMatchMode.actionUser = "save_comment";
-                    commentMatchMode.userID = Convert.ToUInt16(Session["user.id"].ToString());
-
-                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("ChampionshipCommentMatch", commentMatchMode).Result;
-                    modelReturnJSON4 = response.Content.ReadAsAsync<ChampionshipCommentMatchDetailsModel>().Result;
-
-                    modelReturnJSON.returnMessage = modelReturnJSON4.returnMessage;
+                    modelReturnJSON = GlobalFunctions.getDetailsCommentMatch(actionForm, Server.HtmlDecode(formHTML["txtComment"]), Session["user.id"].ToString(),
+                                                                             String.Empty, formHTML["matchID"], (ChampionshipMatchTableDetailsModel)TempData["FullModel"]);
 
                     if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
                     {
-                        modelReturnJSON = (ChampionshipMatchTableDetailsModel)TempData["FullModel"];
-
-                        GlobalFunctions.SendEmailCommentAllUsersByGame(modelReturnJSON, commentMatchMode.comment, formHTML["matchID"]);
-
                         TempData["actionSuccessfully"] = "Comentário efetuado com sucesso";
                     }
+                    response.StatusCode = HttpStatusCode.Created;
                 }
                 else if (actionForm == "save_user_comment")
                 {
-                    commentMatchMode.matchID = Convert.ToInt32(formHTML["matchID"]);
-                    commentMatchMode.championshipID = Convert.ToInt16(formHTML["selectedID"]);
-                    commentMatchMode.actionUser = actionForm;
-                    commentMatchMode.userID = Convert.ToInt32(Session["user.id"].ToString());
-
-                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("ChampionshipCommentUsers", commentMatchMode).Result;
-                    modelReturnJSON = response.Content.ReadAsAsync<ChampionshipMatchTableDetailsModel>().Result;
+                    modelReturnJSON = GlobalFunctions.getDetailsCommentMatch(actionForm, String.Empty, Session["user.id"].ToString(),
+                                                                             formHTML["selectedID"], formHTML["matchID"], (ChampionshipMatchTableDetailsModel)TempData["FullModel"]);
 
                     if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
                         TempData["actionSuccessfully"] = "Ação efetuada com sucesso. Você agora estará recebendo os comentários desta partida";
+                    response.StatusCode = HttpStatusCode.Created;
                 }
                 else if (actionForm == "cancel_user_comment")
                 {
-                    commentMatchMode.matchID = Convert.ToInt32(formHTML["matchID"]);
-                    commentMatchMode.championshipID = Convert.ToInt16(formHTML["selectedID"]);
-                    commentMatchMode.actionUser = actionForm;
-                    commentMatchMode.userID = Convert.ToInt32(Session["user.id"].ToString());
-
-                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("ChampionshipCommentUsers", commentMatchMode).Result;
-                    modelReturnJSON = response.Content.ReadAsAsync<ChampionshipMatchTableDetailsModel>().Result;
+                    modelReturnJSON = GlobalFunctions.getDetailsCommentMatch(actionForm, String.Empty, Session["user.id"].ToString(),
+                                                                             formHTML["selectedID"], formHTML["matchID"], (ChampionshipMatchTableDetailsModel)TempData["FullModel"]);
 
                     if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
                         TempData["actionSuccessfully"] = "Ação efetuada com sucesso. Você NÃO receberá mais os comentários desta partida";
+                    response.StatusCode = HttpStatusCode.Created;
                 }
                 else if (actionForm == "add_blacklist")
                 {
@@ -2577,34 +2559,9 @@ namespace ArenaFifa20.NET.Controllers
                         if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
                         {
 
-                            if (actionForm == "save_comment")
+                            if (actionForm == "save_comment" || actionForm == "save_user_comment" || actionForm == "cancel_user_comment")
                             {
                                 ViewBag.inScorerDetails = "1";
-
-                                response = GlobalVariables.WebApiClient.GetAsync("ChampionshipCommentMatch/" + formHTML["matchID"]).Result;
-                                modelReturnJSON2 = response.Content.ReadAsAsync<ChampionshipCommentMatchListViewModel>().Result;
-
-                                modelReturnJSON.returnMessage = modelReturnJSON2.returnMessage;
-
-                                if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
-                                {
-                                    modelReturnJSON.listOfCommentMatch = modelReturnJSON2.listOfCommentMatch;
-
-                                }
-                                return View(modelReturnJSON);
-                            }
-                            else if (actionForm == "save_user_comment" || actionForm == "cancel_user_comment")
-                            {
-                                ViewBag.inScorerDetails = "1";
-                                modelReturnJSON = (ChampionshipMatchTableDetailsModel)TempData["FullModel"];
-
-                                response = GlobalVariables.WebApiClient.GetAsync("ChampionshipCommentUsers/" + formHTML["matchID"]).Result;
-                                modelReturnJSON3 = response.Content.ReadAsAsync<ChampionshipCommentMatchUsersListViewModel>().Result;
-
-                                modelReturnJSON.returnMessage = modelReturnJSON3.returnMessage;
-
-                                if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
-                                    modelReturnJSON.listOfUsersCommentMatch = modelReturnJSON3.listOfUsersCommentMatch;
 
                                 return View(modelReturnJSON);
                             }
@@ -2664,129 +2621,7 @@ namespace ArenaFifa20.NET.Controllers
                                 {
                                     ViewBag.inScorerDetails = "1";
 
-                                    response = GlobalVariables.WebApiClient.GetAsync("ChampionshipMatchTable/" + (formHTML["selectedID"] + ";" + formHTML["matchID"])).Result;
-                                    modelReturnJSON = response.Content.ReadAsAsync<ChampionshipMatchTableDetailsModel>().Result;
-
-                                    if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
-                                    {
-                                        modelReturnJSON.pathLogoTeamHome = GlobalFunctions.getPathLogoTeam(modelReturnJSON.teamNameHome);
-                                        modelReturnJSON.pathLogoTeamAway = GlobalFunctions.getPathLogoTeam(modelReturnJSON.teamNameAway);
-
-                                        string pathChampionshipLogo = string.Empty;
-                                        string pathTypeLogo = string.Empty;
-
-                                        GlobalFunctions.getPathLogoChampionship(modelReturnJSON.championshipName, modelReturnJSON.modeType, ref pathChampionshipLogo, ref pathTypeLogo);
-
-                                        modelReturnJSON.pathLogoChampionship = pathChampionshipLogo;
-                                        modelReturnJSON.pathLogoType = pathTypeLogo;
-
-                                        response = GlobalVariables.WebApiClient.GetAsync("ChampionshipCommentMatch/" + formHTML["matchID"]).Result;
-                                        modelReturnJSON2 = response.Content.ReadAsAsync<ChampionshipCommentMatchListViewModel>().Result;
-
-                                        modelReturnJSON.returnMessage = modelReturnJSON2.returnMessage;
-
-                                        if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
-                                        {
-                                            modelReturnJSON.listOfCommentMatch = modelReturnJSON2.listOfCommentMatch;
-
-                                            response = GlobalVariables.WebApiClient.GetAsync("ChampionshipCommentUsers/" + formHTML["matchID"]).Result;
-                                            modelReturnJSON3 = response.Content.ReadAsAsync<ChampionshipCommentMatchUsersListViewModel>().Result;
-
-                                            modelReturnJSON.returnMessage = modelReturnJSON3.returnMessage;
-
-                                            if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
-                                            {
-                                                modelReturnJSON.listOfUsersCommentMatch = modelReturnJSON3.listOfUsersCommentMatch;
-
-                                                response = GlobalVariables.WebApiClient.GetAsync("ScorerMatch/" + (formHTML["selectedID"] + "|" + formHTML["matchID"])).Result;
-                                                scorersMatcModel = response.Content.ReadAsAsync<ScorerMatchViewModel>().Result;
-
-                                                modelReturnJSON.returnMessage = scorersMatcModel.returnMessage;
-
-                                                if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
-                                                {
-                                                    if (scorersMatcModel.listOfScorerMatch != null)
-                                                        modelReturnJSON.listOfScorerMatch = scorersMatcModel.listOfScorerMatch;
-                                                    else
-                                                        modelReturnJSON.listOfScorerMatch = new List<ScorerMatchDetails>();
-
-                                                    response = GlobalVariables.WebApiClient.GetAsync("Championship/" + formHTML["selectedID"]).Result;
-                                                    championshipModel = response.Content.ReadAsAsync<ChampionshipDetailsModel>().Result;
-
-                                                    modelReturnJSON.returnMessage = championshipModel.returnMessage;
-
-                                                    if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
-                                                    {
-                                                        modelReturnJSON.userID1 = championshipModel.userID1;
-                                                        modelReturnJSON.userName1 = championshipModel.userName1;
-                                                        modelReturnJSON.psnID1 = championshipModel.psnID1;
-
-                                                        modelReturnJSON.userID2 = championshipModel.userID2;
-                                                        modelReturnJSON.userName2 = championshipModel.userName2;
-                                                        modelReturnJSON.psnID2 = championshipModel.psnID2;
-
-                                                        modelReturnJSON.totalRecordsOfHistoric = Convert.ToInt16(ConfigurationManager.AppSettings["total.records.historic.each.team"].ToString());
-
-                                                        modelReturnJSON.actionUser = "show_historic_each_team";
-
-                                                        response = GlobalVariables.WebApiClient.PostAsJsonAsync("ChampionshipMatchTable", modelReturnJSON).Result;
-                                                        listOfMatchTable = response.Content.ReadAsAsync<ChampionshipMatchTableViewModel>().Result;
-
-                                                        modelReturnJSON.returnMessage = listOfMatchTable.returnMessage;
-
-                                                        if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
-                                                        {
-                                                            if (listOfMatchTable.listOfMatch!=null)
-                                                                modelReturnJSON.listOfMatch = listOfMatchTable.listOfMatch;
-                                                            else
-                                                                modelReturnJSON.listOfMatch = new List<ChampionshipMatchTableDetailsModel>();
-
-                                                            blackListMode.actionUser = "get_by_match_user";
-                                                            blackListMode.matchID = modelReturnJSON.matchID;
-                                                            blackListMode.userID = modelReturnJSON.userHomeID;
-
-                                                            response = GlobalVariables.WebApiClient.PostAsJsonAsync("BlackList", blackListMode).Result;
-                                                            modelReturnJSON5 = response.Content.ReadAsAsync<BlackListViewModel>().Result;
-
-                                                            modelReturnJSON.returnMessage = modelReturnJSON5.returnMessage.Replace("BlackList", "Moderator");
-
-                                                            if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
-                                                            {
-                                                                modelReturnJSON.blackListIDUser1 = modelReturnJSON5.valueBlackList;
-                                                                modelReturnJSON.messageBlackListUser1 = modelReturnJSON5.messageBlackList;
-
-                                                                blackListMode = new BlackListViewModel();
-                                                                modelReturnJSON5 = new BlackListViewModel();
-
-                                                                blackListMode.actionUser = "get_by_match_user";
-                                                                blackListMode.matchID = modelReturnJSON.matchID;
-                                                                blackListMode.userID = modelReturnJSON.userAwayID;
-
-                                                                response = GlobalVariables.WebApiClient.PostAsJsonAsync("BlackList", blackListMode).Result;
-                                                                modelReturnJSON5 = response.Content.ReadAsAsync<BlackListViewModel>().Result;
-
-                                                                modelReturnJSON.returnMessage = modelReturnJSON5.returnMessage.Replace("BlackList", "Moderator");
-
-                                                                if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
-                                                                {
-                                                                    modelReturnJSON.blackListIDUser2 = modelReturnJSON5.valueBlackList;
-                                                                    modelReturnJSON.messageBlackListUser2 = modelReturnJSON5.messageBlackList;
-                                                                }
-                                                            }
-                                                        }
-                                                        else
-                                                            modelReturnJSON.listOfMatch = new List<ChampionshipMatchTableDetailsModel>();
-
-                                                    }
-
-                                                }
-
-                                            }
-                                        }
-
-
-                                    }
-
+                                    modelReturnJSON = GlobalFunctions.getDetailsViewChampionshipMatch(formHTML["selectedID"], formHTML["matchID"]);
                                 }
                                 modelReturnJSON.actionUser = actionForm.ToUpper();
                                 if (!String.IsNullOrEmpty(modelReturnJSON.returnMessage) && modelReturnJSON.returnMessage != "ModeratorSuccessfully")
@@ -2844,70 +2679,24 @@ namespace ArenaFifa20.NET.Controllers
             var objFunctions = new Commons.functions();
 
             string actionForm = formHTML["actionForm"].ToLower();
-            string loadScorers = String.Empty;
-            string loadGoals = String.Empty;
+            string returnMessage = String.Empty;
 
             setViewBagVariables();
             ViewBag.inLaunchResult = "1";
-            ViewBag.inCalculateScore = "1";
 
             try
             {
 
                 if (actionForm == "save_simple_result")
                 {
+                    modelReturnJSON = GlobalFunctions.getDetailsLaunchResult(actionForm, Session["user.id"].ToString(), formHTML["selectedID"], 
+                                                                             formHTML["matchID"], formHTML["goalsTeamHome"], formHTML["goalsTeamAway"],
+                                                                             formHTML["scorersTeamHome"], formHTML["scorersTeamAway"], Session["user.psnID"].ToString(),
+                                                                             (ChampionshipMatchTableDetailsModel)TempData["FullModel"], out returnMessage);
 
-                    ModeratorMenuMode.matchID = Convert.ToInt32(formHTML["matchID"]);
-                    ModeratorMenuMode.championshipID = Convert.ToInt32(formHTML["selectedID"]);
-
-                    ModeratorMenuMode.totalGoalsHome = formHTML["goalsTeamHome"];
-                    ModeratorMenuMode.totalGoalsAway = formHTML["goalsTeamAway"];
-
-                    ModeratorMenuMode.userIDAction = Convert.ToUInt16(Session["user.id"].ToString());
-                    ModeratorMenuMode.psnIDAction = Session["user.psnID"].ToString();
-
-                    ModeratorMenuMode.actionUser = actionForm;
-                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("ChampionshipMatchTable", ModeratorMenuMode).Result;
-                    modelReturnJSON = response.Content.ReadAsAsync<ChampionshipMatchTableDetailsModel>().Result;
-
-                    if (modelReturnJSON.returnMessage == "ModeratorSuccessfully" && (ModeratorMenuMode.totalGoalsHome != "0" || ModeratorMenuMode.totalGoalsAway != "0"))
-                    {
-                        ScorerMatchViewModel scorerMatchModel = new ScorerMatchViewModel();
-                        ScorerMatchViewModel modelReturnJSON2 = new ScorerMatchViewModel();
-
-                        scorerMatchModel.matchID = Convert.ToInt32(formHTML["matchID"]);
-                        scorerMatchModel.championshipID = Convert.ToInt32(formHTML["selectedID"]);
-
-                        if (formHTML["scorersTeamHome"].Trim() != String.Empty)
-                        {
-                            objFunctions.sortOutScorersGoalsByMatch(formHTML["scorersTeamHome"], ref loadScorers, ref loadGoals);
-                            scorerMatchModel.loadScorersIDHome = loadScorers;
-                            scorerMatchModel.loadScorersGoalsHome = loadGoals;
-                        }
-
-                        if (formHTML["scorersTeamAway"].Trim() != String.Empty)
-                        {
-                            objFunctions.sortOutScorersGoalsByMatch(formHTML["scorersTeamAway"], ref loadScorers, ref loadGoals);
-                            scorerMatchModel.loadScorersIDAway = loadScorers;
-                            scorerMatchModel.loadScorersGoalsAway = loadGoals;
-                        }
-
-                        scorerMatchModel.actionUser = "save_all_by_match";
-
-                        response = GlobalVariables.WebApiClient.PostAsJsonAsync("ScorerMatch", scorerMatchModel).Result;
-                        modelReturnJSON2 = response.Content.ReadAsAsync<ScorerMatchViewModel>().Result;
-
-                        modelReturnJSON.returnMessage = modelReturnJSON2.returnMessage;
-
-                        if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
-                            TempData["actionSuccessfully"] = "Resultado e Artilharia atualizados com sucesso.";
-
-                        scorerMatchModel = null;
-                        modelReturnJSON2 = null;
-                    }
-                    else if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
-                        TempData["actionSuccessfully"] = "Resultado atualizado com sucesso.";
-
+                    if (modelReturnJSON.returnMessage == "ModeratorSuccessfully" && returnMessage != String.Empty)
+                        TempData["actionSuccessfully"] = returnMessage;
+                    response.StatusCode = HttpStatusCode.Created;
                 }
                 else
                 {
@@ -2921,7 +2710,6 @@ namespace ArenaFifa20.NET.Controllers
                     case HttpStatusCode.Created:
                         if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
                         {
-
                             if (actionForm == "save_simple_result")
                             {
 
@@ -2934,95 +2722,30 @@ namespace ArenaFifa20.NET.Controllers
                             }
                             else
                             {
-                                if (actionForm == "show_launch_simple_result_details")
-                                {
-
-                                    response = GlobalVariables.WebApiClient.GetAsync("ChampionshipMatchTable/" + (formHTML["selectedID"] + ";" + formHTML["matchID"])).Result;
-                                    modelReturnJSON = response.Content.ReadAsAsync<ChampionshipMatchTableDetailsModel>().Result;
-
-                                    ScorerViewModel scorersTeamHomeModel = new ScorerViewModel();
-                                    ScorerViewModel scorersTeamAwayModel = new ScorerViewModel();
-                                    ScorerDetails scorersDetailsModel = new ScorerDetails();
-                                    ScorerMatchViewModel scorersMatcModel = new ScorerMatchViewModel();
-
-                                    string pathChampionshipLogo = String.Empty;
-                                    string pathTypeLogo = String.Empty;
-
-                                    if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
-                                    {
-                                        scorersDetailsModel.actionUser = "getListOfScorerByTeam";
-                                        scorersDetailsModel.teamID = modelReturnJSON.teamHomeID;
-                                        response = GlobalVariables.WebApiClient.PostAsJsonAsync("Scorer", scorersDetailsModel).Result;
-                                        scorersTeamHomeModel = response.Content.ReadAsAsync<ScorerViewModel>().Result;
-
-                                        if (scorersTeamHomeModel.returnMessage == "ModeratorSuccessfully")
-                                        {
-                                            scorersDetailsModel.actionUser = "getListOfScorerByTeam";
-                                            scorersDetailsModel.teamID = modelReturnJSON.teamAwayID;
-                                            response = GlobalVariables.WebApiClient.PostAsJsonAsync("Scorer", scorersDetailsModel).Result;
-                                            scorersTeamAwayModel = response.Content.ReadAsAsync<ScorerViewModel>().Result;
-
-                                            if (scorersTeamAwayModel.returnMessage == "ModeratorSuccessfully")
-                                            {
-                                                modelReturnJSON.listOfScorerTeamHome = scorersTeamHomeModel.listOfScorer;
-                                                modelReturnJSON.listOfScorerTeamAway = scorersTeamAwayModel.listOfScorer;
-
-                                                response = GlobalVariables.WebApiClient.GetAsync("ScorerMatch/" + (formHTML["selectedID"] + "|" + formHTML["matchID"])).Result;
-                                                scorersMatcModel = response.Content.ReadAsAsync<ScorerMatchViewModel>().Result;
-
-                                                modelReturnJSON.returnMessage = scorersMatcModel.returnMessage;
-
-                                                if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
-                                                {
-                                                    if (scorersMatcModel.listOfScorerMatch != null)
-                                                        modelReturnJSON.listOfScorerMatch = scorersMatcModel.listOfScorerMatch;
-                                                    else
-                                                        modelReturnJSON.listOfScorerMatch = new List<ScorerMatchDetails>();
-                                                }
-
-                                            }
-                                            else
-                                                modelReturnJSON.returnMessage = scorersTeamAwayModel.returnMessage;
-
-                                        }
-                                        else
-                                            modelReturnJSON.returnMessage = scorersTeamHomeModel.returnMessage;
-
-                                        GlobalFunctions.getPathLogoChampionship(modelReturnJSON.championshipName, modelReturnJSON.modeType, ref pathChampionshipLogo, ref pathTypeLogo);
-
-                                        modelReturnJSON.pathLogoChampionship = pathChampionshipLogo;
-                                        modelReturnJSON.pathLogoType = pathTypeLogo.Replace("white", "beige");
-                                        modelReturnJSON.pathLogoTeamHome = GlobalFunctions.getPathLogoTeam(modelReturnJSON.teamNameHome);
-                                        modelReturnJSON.pathLogoTeamAway = GlobalFunctions.getPathLogoTeam(modelReturnJSON.teamNameAway);
-                                    }
-
-                                    scorersTeamHomeModel = null;
-                                    scorersTeamAwayModel = null;
-                                    scorersDetailsModel = null;
-                                    scorersMatcModel = null;
-
-                                }
+                                ViewBag.inCalculateScore = "1";
+                                modelReturnJSON = GlobalFunctions.getDetailsLaunchResult(actionForm, Session["user.id"].ToString(), formHTML["selectedID"],
+                                                                                            formHTML["matchID"], formHTML["goalsTeamHome"], formHTML["goalsTeamAway"],
+                                                                                            formHTML["scorersTeamHome"], formHTML["scorersTeamAway"], Session["user.psnID"].ToString(),
+                                                                                            null, out returnMessage);
                                 modelReturnJSON.actionUser = actionForm.ToUpper();
-                                if (!String.IsNullOrEmpty(modelReturnJSON.returnMessage) && modelReturnJSON.returnMessage != "ModeratorSuccessfully") {
+                                if (!String.IsNullOrEmpty(modelReturnJSON.returnMessage) && modelReturnJSON.returnMessage != "ModeratorSuccessfully")
+                                {
                                     TempData["returnMessage"] = modelReturnJSON.returnMessage + " - " + actionForm + ". (" + modelReturnJSON.returnMessage + ")";
                                     modelReturnJSON.listOfScorerTeamHome = new List<ScorerDetails>();
                                     modelReturnJSON.listOfScorerTeamAway = new List<ScorerDetails>();
                                     modelReturnJSON.championshipID = Convert.ToInt16(formHTML["selectedID"]);
                                 }
-
                                 return View(modelReturnJSON);
                             }
                         }
                         else
                         {
-                            modelReturnJSON.listOfScorerTeamHome = new List<ScorerDetails>();
-                            modelReturnJSON.listOfScorerTeamAway = new List<ScorerDetails>();
+                            modelReturnJSON = (ChampionshipMatchTableDetailsModel)TempData["FullModel"];
                             TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Lançar Simples Resultado. (" + modelReturnJSON.returnMessage + ")";
                             return View(modelReturnJSON);
                         }
                     default:
-                        modelReturnJSON.listOfScorerTeamHome = new List<ScorerDetails>();
-                        modelReturnJSON.listOfScorerTeamAway = new List<ScorerDetails>();
+                        modelReturnJSON = (ChampionshipMatchTableDetailsModel)TempData["FullModel"];
                         TempData["returnMessage"] = "Ocorreu algum erro na exibição do Menu Moderador - Lançar Simples Resultado. (" + response.StatusCode + ")";
                         ModelState.AddModelError("", "application error.");
                         return View(modelReturnJSON);
@@ -3033,7 +2756,7 @@ namespace ArenaFifa20.NET.Controllers
             {
                 modelReturnJSON.listOfScorerTeamHome = new List<ScorerDetails>();
                 modelReturnJSON.listOfScorerTeamAway = new List<ScorerDetails>();
-                TempData["returnMessage"] = "Erro interno - Exibindo Menu Moderador - Lançar Simples Resultado: (" + ex.InnerException.Message + ")";
+                TempData["returnMessage"] = "Erro interno - Exibindo Menu Moderador - Lançar Simples Resultado: (" + ex.Message + ")";
                 ModelState.AddModelError("", "application error.");
                 return View(modelReturnJSON);
 

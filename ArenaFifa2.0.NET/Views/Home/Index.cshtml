@@ -239,5 +239,13 @@
             }
         }
 
+        $(document).ready(function () {
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+
+            if ('@TempData["actionSuccessfully"]' != '')
+                toastr.success('@TempData["actionSuccessfully"].');
+
+        });
     </script>
 }

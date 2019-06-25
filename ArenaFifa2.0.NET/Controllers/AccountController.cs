@@ -637,6 +637,67 @@ namespace ArenaFifa20.NET.Controllers
             return View();
         }
 
+        // GET: /Account/ChangeAvatar
+        [AllowAnonymous]
+        [SessionTimeout]
+        public ActionResult ChangeAvatar(string returnUrl)
+        {
+            //model.id = Session["user.id"].ToString();
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
+        }
+
+        // POST: /Account/ChangeAvatar
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        [SessionTimeout]
+        public ActionResult ChangeAvatar()
+        {
+            try
+            {
+                HttpPostedFileBase file = Request.Files[0];
+                if (file == null)
+                    TempData["returnMessage"] = "ATENÇÃO TÉCNICO: Ação NÃO efetuada. Nenhuma imagem foi enviada";
+                else
+                {
+                    string defaultPath = ConfigurationManager.AppSettings["avatar.path.coach"].ToString();
+                    string currentPathImage = defaultPath + "/" + Session["user.id"] + ".jpg";
+
+                    if (System.IO.File.Exists(Server.MapPath(currentPathImage.Replace(Session["user.id"].ToString(), Session["user.id"].ToString() + "-old"))))
+                        System.IO.File.Delete(Server.MapPath(currentPathImage).Replace(Session["user.id"].ToString(), Session["user.id"].ToString() + "-old"));
+
+                    if (System.IO.File.Exists(Server.MapPath(currentPathImage)))
+                    {
+                        System.IO.File.Copy(Server.MapPath(currentPathImage), Server.MapPath(currentPathImage.Replace(Session["user.id"].ToString(), Session["user.id"].ToString() + "-old")));
+                        System.IO.File.Delete(Server.MapPath(currentPathImage));
+                    }
+
+                    string pic = System.IO.Path.GetFileName(Session["user.id"] + ".jpg");
+                    string path = System.IO.Path.Combine(Server.MapPath(defaultPath), pic);
+                    if (System.IO.File.Exists(path))
+                    {
+                        System.IO.File.Copy(path, path.Replace(file.FileName.Split(Convert.ToChar("."))[0], file.FileName.Split(Convert.ToChar("."))[0] + "-old"));
+                        System.IO.File.Delete(path);
+                    }
+                    file.SaveAs(path);
+                    TempData["actionSuccessfully"] = "O seu avatar foi alterado com sucesso";
+                }
+                return View();
+
+
+            }
+            catch (Exception ex)
+            {
+                TempData["returnMessage"] = "Erro interno - Alterando Avatar: (" + ex.Message + ")";
+                return View();
+
+            }
+            finally
+            {
+            }
+        }
+
 
         protected override void Dispose(bool disposing)
         {

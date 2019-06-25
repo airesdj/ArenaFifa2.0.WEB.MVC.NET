@@ -34,6 +34,9 @@ namespace ArenaFifa20.NET.Controllers
                 ViewBag.inMyMatchesMenuPRO = "0";
             else
                 ViewBag.inMyMatchesMenuPRO = "1";
+            ViewBag.inLaunchResult = "0";
+            ViewBag.inScorerDetails = "0";
+            ViewBag.inCalculateScore = "0";
         }
 
         // GET: MyMatches/Summary
@@ -844,6 +847,214 @@ namespace ArenaFifa20.NET.Controllers
             }
         }
 
+
+
+        // POST: MyMatches/CommentMatchCurrent
+        [SessionTimeout]
+        [HttpPost]
+        public ActionResult CommentMatchCurrent(FormCollection formHTML)
+        {
+            HttpResponseMessage response = new HttpResponseMessage();
+            ChampionshipMatchTableDetailsModel modelReturnJSON = new ChampionshipMatchTableDetailsModel();
+
+            try
+            {
+                string championshipID = formHTML["selectedID"];
+                string matchID = formHTML["matchID"];
+                string sourceForm = formHTML["sourceForm"];
+                string actionForm = formHTML["actionForm"].ToLower();
+
+                setViewBagVariables();
+                ViewBag.inLaunchResult = "1";
+                ViewBag.inScorerDetails = "1";
+
+                if (actionForm == "save_comment")
+                {
+                    modelReturnJSON = GlobalFunctions.getDetailsCommentMatch(actionForm, Server.HtmlDecode(formHTML["txtComment"]), Session["user.id"].ToString(),
+                                                                             championshipID, matchID, (ChampionshipMatchTableDetailsModel)TempData["FullModel"]);
+
+                    if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                    {
+                        TempData["actionSuccessfully"] = "Comentário efetuado com sucesso";
+                    }
+                    response.StatusCode = HttpStatusCode.Created;
+                }
+                else if (actionForm == "save_user_comment_my_matches")
+                {
+                    modelReturnJSON = GlobalFunctions.getDetailsCommentMatch(actionForm, String.Empty, Session["user.id"].ToString(),
+                                                                             championshipID, matchID, (ChampionshipMatchTableDetailsModel)TempData["FullModel"]);
+                    if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                        TempData["actionSuccessfully"] = "Ação efetuada com sucesso. Você agora estará recebendo os comentários desta partida";
+                    response.StatusCode = HttpStatusCode.Created;
+                }
+                else if (actionForm == "cancel_user_comment_my_matches")
+                {
+                    modelReturnJSON = GlobalFunctions.getDetailsCommentMatch(actionForm, String.Empty, Session["user.id"].ToString(),
+                                                                             championshipID, matchID, (ChampionshipMatchTableDetailsModel)TempData["FullModel"]);
+                    if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                        TempData["actionSuccessfully"] = "Ação efetuada com sucesso. Você NÃO receberá mais os comentários desta partida";
+                    response.StatusCode = HttpStatusCode.Created;
+                }
+                else
+                {
+                    modelReturnJSON.returnMessage = "ModeratorSuccessfully";
+                    modelReturnJSON.actionUser = actionForm.ToUpper();
+                    response.StatusCode = HttpStatusCode.Created;
+                }
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                        {
+
+                            if (actionForm == "save_comment" || actionForm == "save_user_comment_my_matches" || actionForm == "cancel_user_comment_my_matches")
+                            {
+                                modelReturnJSON.sourceForm = sourceForm;
+                                return View(modelReturnJSON);
+                            }
+                            else
+                            {
+                                if (actionForm == "show_championshipmatchtable_details")
+                                {
+                                    modelReturnJSON = GlobalFunctions.getDetailsViewChampionshipMatch(championshipID, matchID);
+                                }
+                                modelReturnJSON.actionUser = actionForm.ToUpper();
+                                if (!String.IsNullOrEmpty(modelReturnJSON.returnMessage) && modelReturnJSON.returnMessage != "ModeratorSuccessfully")
+                                    TempData["returnMessage"] = modelReturnJSON.returnMessage + " - " + actionForm + ". (" + modelReturnJSON.returnMessage + ")";
+
+                                modelReturnJSON.sourceForm = sourceForm;
+                                return View(modelReturnJSON);
+                            }
+                        }
+                        else
+                        {
+                            TempData["returnMessage"] = "Ocorreu algum erro na exibição do Meus Jogos - Comentar Partida. (" + modelReturnJSON.returnMessage + ")";
+                            return View(modelReturnJSON);
+                        }
+                    default:
+                        TempData["returnMessage"] = "Ocorreu algum erro na exibição do Meus Jogos - Comentar Partida. (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View(TempData["FullModel"]);
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["returnMessage"] = "Erro interno - Exibindo Menu de Meus Jogos - Comentar Partida: (" + ex.Message + ")";
+                return View(modelReturnJSON);
+
+            }
+            finally
+            {
+                modelReturnJSON = null;
+                response = null;
+            }
+        }
+
+
+        // POST: MyMatches/LaunchSimpleResultCurrent
+        [SessionTimeout]
+        [HttpPost]
+        public ActionResult LaunchSimpleResultCurrent(FormCollection formHTML)
+        {
+            HttpResponseMessage response = new HttpResponseMessage();
+            ChampionshipMatchTableDetailsModel modelReturnJSON = new ChampionshipMatchTableDetailsModel();
+            MyNextMatchesViewModel modelReturnJSON2 = new MyNextMatchesViewModel();
+            MyNextMatchesViewModel ModeratorMenuMode = new MyNextMatchesViewModel();
+
+            try
+            {
+                string sourceForm = formHTML["sourceForm"];
+                string actionForm = formHTML["actionForm"].ToLower();
+                string returnMessage = String.Empty;
+
+                setViewBagVariables();
+                ViewBag.inLaunchResult = "1";
+
+                if (actionForm == "save_simple_result")
+                {
+                    modelReturnJSON = GlobalFunctions.getDetailsLaunchResult(actionForm, Session["user.id"].ToString(), formHTML["selectedID"],
+                                                                             formHTML["matchID"], formHTML["goalsTeamHome"], formHTML["goalsTeamAway"],
+                                                                             formHTML["scorersTeamHome"], formHTML["scorersTeamAway"], Session["user.psnID"].ToString(),
+                                                                             (ChampionshipMatchTableDetailsModel)TempData["FullModel"], out returnMessage);
+
+                    if (modelReturnJSON.returnMessage == "ModeratorSuccessfully" && returnMessage != String.Empty)
+                        TempData["actionSuccessfully"] = returnMessage;
+                    response.StatusCode = HttpStatusCode.Created;
+                }
+                else
+                {
+                    modelReturnJSON.returnMessage = "ModeratorSuccessfully";
+                    modelReturnJSON.actionUser = actionForm.ToUpper();
+                    response.StatusCode = HttpStatusCode.Created;
+                }
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                        {
+                            if (actionForm == "save_simple_result")
+                            {
+                                ModeratorMenuMode.actionUser = "my" + sourceForm.Replace("Match", "Matches");
+                                ModeratorMenuMode.userID = Convert.ToInt32(Session["user.id"].ToString());
+                                response = GlobalVariables.WebApiClient.PostAsJsonAsync("MyMatches", ModeratorMenuMode).Result;
+                                modelReturnJSON2 = response.Content.ReadAsAsync<MyNextMatchesViewModel>().Result;
+
+                                modelReturnJSON2.actionUser = actionForm.ToUpper();
+                                if (!String.IsNullOrEmpty(modelReturnJSON2.returnMessage) && modelReturnJSON2.returnMessage != "MyMatchesSuccessfully")
+                                    TempData["returnMessage"] = modelReturnJSON2.returnMessage + " - " + actionForm + ". (" + modelReturnJSON2.returnMessage + ")";
+
+                                return View("NextMatch", modelReturnJSON2);
+                            }
+                            else
+                            {
+                                ViewBag.inCalculateScore = "1";
+                                modelReturnJSON = GlobalFunctions.getDetailsLaunchResult(actionForm, Session["user.id"].ToString(), formHTML["selectedID"],
+                                                                                            formHTML["matchID"], formHTML["goalsTeamHome"], formHTML["goalsTeamAway"],
+                                                                                            formHTML["scorersTeamHome"], formHTML["scorersTeamAway"], Session["user.psnID"].ToString(),
+                                                                                            null, out returnMessage);
+                                modelReturnJSON.actionUser = actionForm.ToUpper();
+                                modelReturnJSON.sourceForm = sourceForm;
+                                if (!String.IsNullOrEmpty(modelReturnJSON.returnMessage) && modelReturnJSON.returnMessage != "ModeratorSuccessfully")
+                                {
+                                    TempData["returnMessage"] = modelReturnJSON.returnMessage + " - " + actionForm + ". (" + modelReturnJSON.returnMessage + ")";
+                                    modelReturnJSON.listOfScorerTeamHome = new List<ScorerDetails>();
+                                    modelReturnJSON.listOfScorerTeamAway = new List<ScorerDetails>();
+                                    modelReturnJSON.championshipID = Convert.ToInt16(formHTML["selectedID"]);
+                                }
+                                return View(modelReturnJSON);
+                            }
+                        }
+                        else
+                        {
+                            modelReturnJSON = (ChampionshipMatchTableDetailsModel)TempData["FullModel"];
+                            TempData["returnMessage"] = "Ocorreu algum erro na exibição do Meus Jogos - Lançar Resultado. (" + modelReturnJSON.returnMessage + ")";
+                            return View(modelReturnJSON);
+                        }
+                    default:
+                        modelReturnJSON = (ChampionshipMatchTableDetailsModel)TempData["FullModel"];
+                        TempData["returnMessage"] = "Ocorreu algum erro na exibição do Meus Jogos - Lançar Resultado. (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View(TempData["FullModel"]);
+                }
+            }
+            catch (Exception ex)
+            {
+                modelReturnJSON.listOfScorerTeamHome = new List<ScorerDetails>();
+                modelReturnJSON.listOfScorerTeamAway = new List<ScorerDetails>();
+                TempData["returnMessage"] = "Erro interno - Exibindo Menu de Meus Jogos - Lançar Resultado: (" + ex.Message + ")";
+                return View(modelReturnJSON);
+
+            }
+            finally
+            {
+                modelReturnJSON = null;
+                modelReturnJSON2 = null;
+                ModeratorMenuMode = null;
+                response = null;
+            }
+        }
 
 
     }

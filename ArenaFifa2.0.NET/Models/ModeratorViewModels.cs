@@ -441,6 +441,8 @@ namespace ArenaFifa20.NET.Models
         public List<ChampionshipCommentMatchDetailsModel> listOfCommentMatch { get; set; }
         public List<ChampionshipCommentMatchUsersDetailsModel> listOfUsersCommentMatch { get; set; }
         public List<ChampionshipMatchTableDetailsModel> listOfMatch { get; set; }
+        public string sourceForm { get; set; }
+        public string actionForm { get; set; }
         public string actionUser { get; set; }
         public string returnMessage { get; set; }
     }
