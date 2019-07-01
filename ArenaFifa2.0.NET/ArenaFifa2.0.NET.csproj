@@ -202,6 +202,7 @@
     <Compile Include="GlobalFunctions.cs" />
     <Compile Include="GlobalVariables.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\CurrentSeasonViewModels.cs" />
     <Compile Include="Models\MyMatchesViewModels.cs" />
     <Compile Include="Models\SpoolerViewModels.cs" />
     <Compile Include="Models\ModeratorViewModels.cs" />
@@ -2760,19 +2761,29 @@
     <Content Include="Views\MyMatches\NextMatch.cshtml" />
     <Content Include="Views\MyMatches\MatchPlayed.cshtml" />
     <Content Include="Views\MyMatches\Scorer.cshtml" />
-    <Content Include="Views\MyMatches\UploadLogoTeamFUT.cshtml" />
+    <Content Include="Views\Shared\UploadLogoTeamFUT.cshtml" />
     <Content Include="Views\Shared\_MessageValidate.cshtml" />
-    <Content Include="Views\MyMatches\UploadLogoTeamPRO.cshtml" />
+    <Content Include="Views\Shared\UploadLogoTeamPRO.cshtml" />
     <Content Include="Views\Shared\_QuestionModal.cshtml" />
     <Content Include="Views\Shared\_QuestionModalv2.cshtml" />
     <Content Include="Views\Shared\_ResultModal.cshtml" />
     <Content Include="Views\Account\ChangeAvatar.cshtml" />
     <Content Include="Views\Shared\CommentMatchCurrent.cshtml" />
     <Content Include="Views\Shared\LaunchSimpleResultCurrent.cshtml" />
+    <Content Include="Views\Shared\_MenuSideBarCurrentSeason.cshtml" />
+    <Content Include="Views\CurrentSeason\Summary.cshtml" />
+    <Content Include="Views\CurrentSeason\Scorer.cshtml" />
+    <Content Include="Views\CurrentSeason\Moderator.cshtml" />
+    <Content Include="Views\CurrentSeason\Group.cshtml" />
+    <Content Include="Views\CurrentSeason\TeamCoach.cshtml" />
+    <Content Include="Views\CurrentSeason\Regulation.cshtml" />
+    <Content Include="Views\CurrentSeason\ForecastPlayoffGame.cshtml" />
+    <Content Include="Views\CurrentSeason\ClashesHistory.cshtml" />
+    <Content Include="Views\CurrentSeason\Calendar.cshtml" />
+    <Content Include="Views\CurrentSeason\LineUpOfPlayoffGames.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\CurrentSeason\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

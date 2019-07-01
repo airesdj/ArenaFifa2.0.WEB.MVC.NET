@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using static ArenaFifa20.NET.App_Start.CustomValidators;
 
 namespace ArenaFifa20.NET.Models
 {
@@ -47,7 +42,8 @@ namespace ArenaFifa20.NET.Models
         public MyMatchesTotalModel totalsMyMatches { get; set; }
         public List<listScorers> listOfScorers { get; set; }
         public List<squadListModel> listOfSquad { get; set; }
-
+        public string sourceForm { get; set; }
+        public string actionForm { get; set; }
         public string actionUser { get; set; }
         public string returnMessage { get; set; }
     }

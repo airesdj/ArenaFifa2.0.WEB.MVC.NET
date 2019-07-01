@@ -251,3 +251,11 @@ function setOrderingDatatableResponsive(arrayOrder1, arrayOrder2, arrayOrder3) {
     table.draw();
     table = null;
 }
+
+function setSubmitMenuSummaryCurrentSeason(modeType, championshipID, actionForm) {
+    $("#currentModeTypeSeason").val(modeType);
+    $("#actionType").val(modeType);
+    $("#championshipID").val(championshipID);
+    $("#registration-form").attr("action", "/CurrentSeason/" + actionForm);
+    $("#registration-form").submit();
+}

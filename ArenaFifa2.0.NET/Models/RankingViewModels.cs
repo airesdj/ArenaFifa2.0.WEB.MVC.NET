@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
-using static ArenaFifa20.NET.App_Start.CustomValidators;
 
 namespace ArenaFifa20.NET.Models
 {

@@ -19,13 +19,13 @@
     {
         @Styles.Render("~/Content/gentelella-css")
 
-        if (ViewBag.inModeratorMenu == "1")
+        if (ViewBag.inModeratorMenu == "1" && ViewBag.inLineUpPlayOffGames != "1")
         {
             @Styles.Render("~/Content/gentelella-datatable-css")
             <link href="/Content/dashboard-gentelella/bootstrap.min-checkbox.css" rel="stylesheet" />
             <link href="/Content/dashboard-gentelella/docs.min-2.css" rel="stylesheet" />
         }
-        else if (ViewBag.inDataTables == "1")
+        else if (ViewBag.inDataTables == "1" && ViewBag.inLineUpPlayOffGames != "1")
         {
             @Styles.Render("~/Content/gentelella-datatable-css")
         }
@@ -35,9 +35,13 @@
             <link href="/Content/show-score-details.css" rel="stylesheet" />
             <link href="/Content/jplist/jplist.demo-pages.min.css" rel="stylesheet" />
         }
-        if (@ViewBag.inSmartWizardMenu == "1")
+        if (ViewBag.inSmartWizardMenu == "1")
         {
-            <script src="/Content/dashboard-gentelella/smart_wizard_vertical-new.css"></script>
+            <link href="/Content/dashboard-gentelella/smart_wizard_vertical-new.css" rel="stylesheet" />
+        }
+        if (ViewBag.inLineUpPlayOffGames == "1")
+        {
+            <link href="/Content/line-up-playoff.css" rel="stylesheet" />
         }
 
     }
@@ -68,11 +72,15 @@ else
             else if (ViewBag.inRanking == "1")
             { @Html.Partial("_MenuSideBarRanking");
         }
-        else if (ViewBag.inModeratorMenu == "1" && ViewBag.inModeratorMyMatches != "1")
+        else if (ViewBag.inModeratorMenu == "1" && ViewBag.inModeratorMyMatches != "1" && ViewBag.inCurrentSeason != "1")
         { @Html.Partial("_MenuSideBarModerator");
     }
     else if (ViewBag.inModeratorMyMatches == "1")
-    { @Html.Partial("_MenuSideBarMyMatches");}
+    { @Html.Partial("_MenuSideBarMyMatches");
+}
+else if (ViewBag.inCurrentSeason == "1")
+{ @Html.Partial("_MenuSideBarCurrentSeason");
+}
                 <!-- /sidebar menu -->
 
                 <div id="includedContentMenuMobile"></div>
@@ -94,14 +102,18 @@ else
         @Scripts.Render("~/bundles/carousel-portfolio-script")
 
         @if (@ViewBag.inUsingAjaxRazor == "1")
-        {@Scripts.Render("~/bundles/jqueryajax");}
+        {@Scripts.Render("~/bundles/jqueryajax");
+    }
         @if (@ViewBag.inCalculateScore == "1")
         {
             <script src="/Scripts/calculate-score.js"></script>}
 
         @if (@ViewBag.inModeratorMenu == "1")
         {
-            @Scripts.Render("~/bundles/gentelella-datatable-script")
+            if (@ViewBag.inCalculateHistoryMatches != "1")
+            {
+                @Scripts.Render("~/bundles/gentelella-datatable-script")
+            }
             @Scripts.Render("~/bundles/gentelella-form-script")
 
             if (@ViewBag.inModeratorMenuTextEditor == "1")
@@ -115,6 +127,10 @@ else
             if (@ViewBag.inSmartWizardMenu == "1")
             {
                 <script src="/Scripts/dashboard-gentelella/jquery.smartWizard.js"></script>
+            }
+            if (@ViewBag.inCalculateHistoryMatches == "1")
+            {
+                <script src="/Scripts/calculate-history-matches.js"></script>
             }
         }
         else if (ViewBag.inDataTables == "1")

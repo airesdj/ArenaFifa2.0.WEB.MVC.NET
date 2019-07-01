@@ -1,0 +1,223 @@
+﻿@using ArenaFifa20.NET.Models
+@model CurrentSeasonSummaryViewModel
+@{
+    ViewBag.Title = "Current Season - Summary";
+    string teamName = Model.menuCurrentSeason.teamName;
+
+    string Manager_Tecnico = "Técnico";
+
+    if (!String.IsNullOrEmpty(teamName))
+    {
+        if (teamName.Length > 20)
+        {
+            teamName = teamName.Substring(0, 19);
+        }
+    }
+
+    if (Model.modeType=="PRO") { Manager_Tecnico = "Manager"; }
+
+}
+
+<form action="" class="form-horizontal" id="registration-form" method="post" role="form">
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="actionType" name="actionType" value="" />
+    <input type="hidden" id="currentModeTypeSeason" name="currentModeTypeSeason" value="" />
+    <input type="hidden" id="championshipID" name="championshipID" value="" />
+</form>
+
+<!-- page content -->
+<div class="gentelella-right_col" role="main" style="padding-left:50px">
+    <div class="gentelella-page-title">
+        <div class="gentelella-title">
+            <h3>@(Model.menuCurrentSeason.currentSeasonName + " " + Model.modeType) - PAINEL</h3>
+        </div>
+        <div class="gentelella-title_right">
+            <div class="gentelella-col-md-5 gentelella-col-sm-5 gentelella-col-xs-12 gentelella-form-group gentelella-pull-right gentelella-top_search">
+                <div class="gentelella-input-group">
+                    &nbsp;
+                </div>
+            </div>
+        </div>
+    </div>
+    <br><br>
+
+    <div class="gentelella-row gentelella-top_tiles">
+        @if (Model.totalMatches > 0)
+        {
+            <div class="gentelella-animated gentelella-flipInY gentelella-col-lg-3 gentelella-col-md-3 gentelella-col-sm-6 gentelella-col-xs-12">
+                <div class="gentelella-tile-stats">
+                    <div class="gentelella-icon"><i class="gentelella-fa gentelella-fa-calendar"></i></div>
+                    <div class="gentelella-count">@Model.totalMatches</div>
+                    <h3>JOGOS</h3>
+                    <p>Total de Jogos realizados na temporada - @Model.modeType </p>
+                </div>
+            </div>
+            <div class="gentelella-animated gentelella-flipInY gentelella-col-lg-3 gentelella-col-md-3 gentelella-col-sm-6 gentelella-col-xs-12">
+                <div class="gentelella-tile-stats">
+                    <div class="gentelella-icon"><i class="gentelella-fa gentelella-fa-soccer-ball-o"></i></div>
+                    <div class="gentelella-count">@Model.totalGoals</div>
+                    <h3>GOLS</h3>
+                    <p>Total de Gols feitos na temporada - @Model.modeType </p>
+                </div>
+            </div>
+            <div class="gentelella-animated gentelella-flipInY gentelella-col-lg-3 gentelella-col-md-3 gentelella-col-sm-6 gentelella-col-xs-12">
+                <div class="gentelella-tile-stats">
+                    <div class="gentelella-icon"><i class="gentelella-fa gentelella-fa-soccer-ball-o"></i></div>
+                    <div class="gentelella-count">@Model.averageGoals</div>
+                    <h3>MÉDIA DE GOLS</h3>
+                    <p>Média Total de Gols na temporada - @Model.modeType </p>
+                </div>
+            </div>
+        }
+        @if (!String.IsNullOrEmpty(teamName))
+        {
+            <div class="gentelella-animated gentelella-flipInY gentelella-col-lg-3 gentelella-col-md-3 gentelella-col-sm-6 gentelella-col-xs-12">
+                <div class="gentelella-tile-stats">
+                    <div class="gentelella-icon"><i class="gentelella-fa gentelella-fa-check-square-o"></i></div>
+                    <div class="gentelella-count"><img src="/images/team-logo/@(Model.menuCurrentSeason.teamName + ".jpg")" onerror="this.src='/images/notfound.png';" width="40" /></div>
+                    <h3>@teamName</h3>
+                    <p>Seu time jogando na: @Model.menuCurrentSeason.currentChampionshipName </p>
+                </div>
+            </div>
+        }
+    </div>
+
+    <br /><br />
+
+
+    <div class="gentelella-row">
+        @if (Model.listOfScorersH2H.Count > 0)
+        {
+            <div class="gentelella-col-md-4">
+                <div class="gentelella-x_panel">
+                    <div class="gentelella-x_title">
+                        <h2>Top 5 de seus Goleadores - H2H</h2>
+                        <div class="gentelella-clearfix"></div>
+                    </div>
+                    <div class="gentelella-x_content">
+                        @foreach (var item in Model.listOfScorersH2H)
+                        {
+                            <article class="gentelella-media gentelella-event">
+                                <a class="gentelella-pull-left gentelella-date">
+                                    <p class="gentelella-day">@item.totalGoals</p>
+                                    <p class="gentelella-month">Gols</p>
+                                </a>
+                                <div class="gentelella-media-body">
+                                    <img src="/images/scorers-logo/@(item.playerID.ToString() + ".jpg")" onerror="this.src='/images/user.png';" width="40" />&nbsp;&nbsp;&nbsp;@item.playerName
+                                    <p>Time: @item.teamName</p>
+                                </div>
+                            </article>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+        @if (Model.listOfScorersPRO.Count > 0)
+        {
+            <div class="gentelella-col-md-4">
+                <div class="gentelella-x_panel">
+                    <div class="gentelella-x_title">
+                        <h2>Top 5 de seus Goleadores - PRO CLUB</h2>
+                        <div class="gentelella-clearfix"></div>
+                    </div>
+                    <div class="gentelella-x_content">
+                        @foreach (var item in Model.listOfScorersPRO)
+                        {
+                            <article class="gentelella-media gentelella-event">
+                                <a class="gentelella-pull-left gentelella-date">
+                                    <p class="gentelella-day">@item.totalGoals</p>
+                                    <p class="gentelella-month">Gols</p>
+                                </a>
+                                <div class="gentelella-media-body">
+                                    <img src="/images/scorers-logo/@(item.playerID.ToString() + ".jpg")" onerror="this.src='/images/user.png';" width="40" />&nbsp;&nbsp;&nbsp;@item.playerName
+                                    <p>Clube: @item.teamName</p>
+                                </div>
+                            </article>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+
+
+        @if (Model.listOfTeamTableSerieA.Count > 0)
+        {
+            <div class="gentelella-col-md-4">
+                <div class="gentelella-x_panel">
+                    <div class="gentelella-x_title">
+                        <h2>Top 5 - Classificação - Série A</h2>
+                        <div class="gentelella-clearfix"></div>
+                    </div>
+                    <div class="gentelella-x_content">
+                        @foreach (var item in Model.listOfTeamTableSerieA)
+                        {
+                            <article class="gentelella-media gentelella-event">
+                                <a class="gentelella-pull-left gentelella-date">
+                                    <p class="gentelella-day">@item.totalPoint</p>
+                                    <p class="gentelella-month">Pontos</p>
+                                </a>
+                                <div class="gentelella-media-body">
+                                    <img src="/images/team-logo/@(item.teamName.ToString() + ".jpg")" onerror="this.src='/images/notfound.png';" width="40" />&nbsp;&nbsp;&nbsp;@item.teamName
+                                    <p>@(Manager_Tecnico): @item.psnID</p>
+                                </div>
+                            </article>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (Model.listOfTeamTableSerieB.Count > 0)
+        {
+            <div class="gentelella-col-md-4">
+                <div class="gentelella-x_panel">
+                    <div class="gentelella-x_title">
+                        <h2>Top 5 - Classificação - Série B</h2>
+                        <div class="gentelella-clearfix"></div>
+                    </div>
+                    <div class="gentelella-x_content">
+                        @foreach (var item in Model.listOfTeamTableSerieB)
+                        {
+                            <article class="gentelella-media gentelella-event">
+                                <a class="gentelella-pull-left gentelella-date">
+                                    <p class="gentelella-day">@item.totalPoint</p>
+                                    <p class="gentelella-month">Pontos</p>
+                                </a>
+                                <div class="gentelella-media-body">
+                                    <img src="/images/team-logo/@(item.teamName.ToString() + ".jpg")" onerror="this.src='/images/notfound.png';" width="40" />&nbsp;&nbsp;&nbsp;@item.teamName
+                                    <p>@(Manager_Tecnico): @item.psnID</p>
+                                </div>
+                            </article>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<!-- /page content -->
+
+
+@section Scripts {
+    <script>
+        $(function () {
+            if (detectMobileDevice() == 1) {
+                //$("#includedContentMenuMobile").load("/arena20/includes/menu-logged-mobile.html");
+                //$("#includedContentMenuRankingMobile").load("menu-my-matches-mobile.html");
+                hidden_show_ObjectMobile("footerMobile", "block");
+            }
+        });
+
+        $(document).ready(function () {
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+
+            if (detectMobileDevice() == 0) {
+                //$("ul.current-championship").slideDown();
+            }
+
+        });
+
+    </script>
+}
+

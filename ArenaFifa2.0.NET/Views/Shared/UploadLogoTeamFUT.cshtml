@@ -1,11 +1,30 @@
 ﻿@using ArenaFifa20.NET.Models
 @model MyNextMatchesViewModel
 @{
-    ViewBag.Title = "My Matches - Upload Logo My Team FUT";
+    string sourceForm = Model.sourceForm;
+    string actionForm = String.Empty;
+    string ACTION_CONTROLLER = "CurrentSeason";
+    if (!String.IsNullOrEmpty(sourceForm))
+    {
+        ViewBag.Title = "Current Season - Upload Logo My Team FUT";
+    }
+    else
+    {
+        ACTION_CONTROLLER = "MyMatches";
+        ViewBag.Title = "My Matches - Upload Logo My Team FUT";
+    }
+    actionForm = "/" + ACTION_CONTROLLER + "/UploadLogo";
 }
 
-<input type="hidden" id="userID" name="userID" value="@Model.userID" />
 <!-- page content -->
+<form action="" class="form-horizontal" id="registration-form" method="post" role="form">
+
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="actionType" name="actionType" value="" />
+    <input type="hidden" id="currentModeTypeSeason" name="currentModeTypeSeason" value="" />
+    <input type="hidden" id="championshipID" name="championshipID" value="" />
+</form>
+
 <div class="gentelella-right_col" role="main" style="padding-left:50px">
     <div class="gentelella-page-title">
         <div class="gentelella-title">
@@ -38,11 +57,12 @@
                     <div class="gentelella-x_panel">
                         <div class="gentelella-x_content">
 
-                            <form action="/MyMatches/UploadLogo" enctype="multipart/form-data" class="form-horizontal" id="registration-form-logo" method="post" role="form" data-parsley-validate>
+                            <form action="@actionForm" enctype="multipart/form-data" class="form-horizontal" id="registration-form-logo" method="post" role="form" data-parsley-validate>
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" id="actionForm" name="actionForm" value="UPLOAD-LOGO-FUT" />
                                 <input type="hidden" id="selectedID" name="selectedID" value="@Model.userID" />
                                 <input type="hidden" id="clubLogoName" name="clubLogoName" value="@Model.totalsMyMatches.teamNameFUT" />
+                                <input type="hidden" id="userID" name="userID" value="@Model.userID" />
                                 <div class="gentelella-row">
                                     <p style="padding-left:18px;color:steelblue;text-align:justify">
                                         Você pode enviar arquivo JPG, JPEG ou PNG (tamanho máximo de 60K). Não envie imagens de personagens de desenho animado, pessoas famosas, nudez, trabalho artístico ou material protegido por direitos autorais. O tamanho mínimo de imagem é de 60x60.
@@ -101,7 +121,7 @@
             activateRegistrationForm("UploadLogoTeamFUT", '@Model.actionUser');
 
             if (detectMobileDevice() == 0) {
-                activeSidebarMenu("/MyMatches/UploadLogoTeamFUT");
+                activeSidebarMenu("/@ACTION_CONTROLLER/UploadLogoTeamFUT");
             }
             onUploadLogoTeamClub("fileLogoTeam", "pictureBtn");
         });

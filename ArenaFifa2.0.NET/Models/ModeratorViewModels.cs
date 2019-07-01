@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using static ArenaFifa20.NET.App_Start.CustomValidators;
 
 namespace ArenaFifa20.NET.Models
 {
@@ -293,13 +289,14 @@ namespace ArenaFifa20.NET.Models
         public string typeName { get; set; }
         public string modeType { get; set; }
         public int totalQualifyNextStage { get; set; }
+        public int sourcePlaceFromChampionshipSource { get; set; }
+        public int ChampionshipIDDestiny { get; set; }
+        public int ChampionshipIDSource { get; set; }
         public string console { get; set; }
         public DateTime lastUpdate { get; set; }
         public string psnIDUpdate { get; set; }
         public int totalTeamQualifyDivAbove { get; set; }
         public string stagePlayoffFormatted { get; set; }
-        public int championshipDestiny { get; set; }
-        public int championshipSource { get; set; }
         public int doubleRound { get; set; }
         public int userID1 { get; set; }
         public int userID2 { get; set; }
@@ -307,6 +304,10 @@ namespace ArenaFifa20.NET.Models
         public string userName2 { get; set; }
         public string psnID1 { get; set; }
         public string psnID2 { get; set; }
+        public string email1 { get; set; }
+        public string email2 { get; set; }
+        public string pathAvatar1 { get; set; }
+        public string pathAvatar2 { get; set; }
         public string teamName1 { get; set; }
         public string teamName2 { get; set; }
         public int started { get; set; }
@@ -317,7 +318,7 @@ namespace ArenaFifa20.NET.Models
         public string listStagesAdd { get; set; }
         public string listUsersStage2Add { get; set; }
         public string listTeamsStage0Add { get; set; }
-        public List<StandardDetailsModel> listOfTeam { get; set; }
+        public List<ChampionshipTeamDetailsModel> listOfTeam { get; set; }
         public List<ChampionshipUserDetailsModel> listOfUser { get; set; }
         public List<StandardDetailsModel> listOfStage { get; set; }
         public List<StandardDetailsModel_v2> listOfType { get; set; }
@@ -422,6 +423,7 @@ namespace ArenaFifa20.NET.Models
         public string modeType { get; set; }
         public int userIDAction { get; set; }
         public string psnIDAction { get; set; }
+        public string psnIDSearch { get; set; }
         public string messageBlackList { get; set; }
         public string typeBlackList { get; set; }
         public int userID1 { get; set; }
@@ -464,6 +466,8 @@ namespace ArenaFifa20.NET.Models
         public string teamName { get; set; }
         public string teamURL { get; set; }
         public string teamType { get; set; }
+        public int userID { get; set; }
+        public string userName { get; set; }
         public string psnID { get; set; }
         public int deletedCurrentSeason { get; set; }
         public int previousPosition { get; set; }
@@ -481,9 +485,20 @@ namespace ArenaFifa20.NET.Models
 
     public class ChampionshipTeamListViewModel
     {
-        public List<StandardDetailsModel> listOfTeam { get; set; }
+        public List<ChampionshipTeamDetailsModel> listOfTeam { get; set; }
         public string actionUser { get; set; }
         public string returnMessage { get; set; }
+    }
+
+    public class ChampionshipTeamDetailsModel
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+        public string type { get; set; }
+        public string pathImg { get; set; }
+        public int userID { get; set; }
+        public string userName { get; set; }
+        public string psnID { get; set; }
     }
 
     public class ChampionshipTypeListViewModel
