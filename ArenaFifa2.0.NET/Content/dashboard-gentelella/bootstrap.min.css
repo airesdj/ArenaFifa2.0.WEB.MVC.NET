@@ -66,6 +66,11 @@ span.btn-stage-active {COLOR: #FFF; TEXT-DECORATION: none}
   height:1px;
   margin:20px 0
 }
+.gentelella-teamgrupo-highlight {
+  background: #fcf8e3;
+  color: #c7254e;
+  font-weight: bold;
+}
 .color-lightgray{color:#969696}
 .uppercase{text-transform:uppercase}
 .text-1{font-size:11px;letter-spacing:.02em}

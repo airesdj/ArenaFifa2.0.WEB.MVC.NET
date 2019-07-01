@@ -42,6 +42,8 @@ namespace ArenaFifa20.NET
             Session["user.teamNameH2H"] = String.Empty;
             Session["user.teamNameFUT"] = String.Empty;
             Session["user.teamNamePRO"] = String.Empty;
+
+            Session["user.current.season.menu"] = null;
         }
     }
 }

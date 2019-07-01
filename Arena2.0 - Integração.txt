@@ -25,9 +25,14 @@ Hi Guys, voltando o assunto do Arena 2.0, a integraçãojá foi iniciada e está
 
 
 *_Funcionalidade que está EM ANDAMENTO:_*
-- Todo Dashboard das Tela de Campeonatos (*_0/19_*) ==> *Não iniciado*
-      . Restam: = Todos os 19 módulos
+- Todo Dashboard das Tela de Campeonatos (*_15/21_*) ==> *EM ANAMENTO: Chamada de outro de Campeonato dentro da Modalidade*
+      . Restam: = Tabelas e Resultados Liga
+				= Tabela e Resultados Por Grupo
+				= Tabela e Resultados apenas Playoff
+				= Comentários dos Jogos
+				= Lançamento de Resultado
 
+	*Observação: Temporadas anteriores não disponibilizada na 1a versão.*
 
 *_Funcionalidades que AINDA NÃO começaram o processo de integração:_*
 - Todos Processos Liberação da Renovação

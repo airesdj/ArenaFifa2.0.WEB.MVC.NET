@@ -6,7 +6,7 @@
     string teamNameFUT = Model.teamNameFUT;
     string teamNamePRO = Model.teamNamePRO;
 
-    if (teamNameH2H.Length>20)
+    if (teamNameH2H.Length > 20)
     {
         teamNameH2H = teamNameH2H.Substring(0, 19);
     }
@@ -23,8 +23,14 @@
 
 }
 
-
 <!-- page content -->
+<form action="" class="form-horizontal" id="registration-form" method="post" role="form">
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="actionForm" name="actionForm" value="" />
+    <input type="hidden" id="currentModeTypeSeason" name="currentModeTypeSeason" value="" />
+    <input type="hidden" id="championshipID" name="championshipID" value="" />
+</form>
+
 <div class="gentelella-right_col" role="main" style="padding-left:50px">
     <div class="gentelella-page-title">
         <div class="gentelella-title_left">
@@ -117,7 +123,7 @@
 
 
     <div class="gentelella-row">
-        @if (Model.listOfScorersH2H.Count>0)
+        @if (Model.listOfScorersH2H.Count > 0)
         {
             <div class="gentelella-col-md-4">
                 <div class="gentelella-x_panel">
@@ -143,7 +149,7 @@
                 </div>
             </div>
         }
-        @if (Model.listOfScorersPRO.Count>0)
+        @if (Model.listOfScorersPRO.Count > 0)
         {
             <div class="gentelella-col-md-4">
                 <div class="gentelella-x_panel">

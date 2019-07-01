@@ -726,6 +726,150 @@ namespace ArenaFifa20.NET
 
         }
 
+        public static void saveFileUploadLogo(HttpPostedFileBase file, string clubLogoName, 
+                                              string fullPathClubLogoName, string fullDefaultPath)
+        {
+            try
+            {
+                if (System.IO.File.Exists(fullPathClubLogoName.Replace(clubLogoName, clubLogoName + "-old")))
+                    System.IO.File.Delete(fullPathClubLogoName.Replace(clubLogoName, clubLogoName + "-old"));
+
+                if (System.IO.File.Exists(fullPathClubLogoName))
+                {
+                    System.IO.File.Copy(fullPathClubLogoName, fullPathClubLogoName.Replace(clubLogoName, clubLogoName + "-old"));
+                    System.IO.File.Delete(fullPathClubLogoName);
+                }
+
+                string pic = System.IO.Path.GetFileName(clubLogoName + ".jpg");
+                string path = System.IO.Path.Combine(fullDefaultPath, pic);
+                if (System.IO.File.Exists(path))
+                {
+                    System.IO.File.Copy(path, path.Replace(file.FileName.Split(Convert.ToChar("."))[0], file.FileName.Split(Convert.ToChar("."))[0] + "-old"));
+                    System.IO.File.Delete(path);
+                }
+                file.SaveAs(path);
+
+            }
+            catch (Exception ex)
+            {
+                throw new SystemException("ERROR, ao tentar gravar logo do seu clube/time: " + ex.Message);
+            }
+        }
+
+        public static MyNextMatchesViewModel updateMobileManagerPRO(string actionUser, int userID, string fullMobileNumber,
+                                                                    MyNextMatchesViewModel fullModel, out string returnMessage)
+        {
+            HttpResponseMessage response = null;
+            MyNextMatchesViewModel modelReturnJSON = new MyNextMatchesViewModel();
+            MyNextMatchesViewModel ModeratorMenuMode = new MyNextMatchesViewModel();
+            try
+            {
+                ModeratorMenuMode.actionUser = actionUser;
+                ModeratorMenuMode.userID = userID;
+                ModeratorMenuMode.codeMobileNumber = stripCodeMobileFullNumber(fullMobileNumber);
+                ModeratorMenuMode.mobileNumber = stripNumberMobileFullNumber(fullMobileNumber);
+                response = GlobalVariables.WebApiClient.PostAsJsonAsync("MyMatches", ModeratorMenuMode).Result;
+                modelReturnJSON = response.Content.ReadAsAsync<MyNextMatchesViewModel>().Result;
+                if (modelReturnJSON.returnMessage == "MyMatchesSuccessfully")
+                    returnMessage = "Os dados do Celular do Manager foram alterados com sucesso";
+                else
+                    returnMessage = modelReturnJSON.returnMessage;
+
+                modelReturnJSON = fullModel;
+                //modelReturnJSON.returnMessage = "MyMatchesSuccessfully";
+                modelReturnJSON.codeMobileNumber = ModeratorMenuMode.codeMobileNumber;
+                modelReturnJSON.mobileNumber = ModeratorMenuMode.mobileNumber;
+
+                return modelReturnJSON;
+            }
+            catch (Exception ex)
+            {
+                returnMessage = "Erro interno - Exibindo Tela de Upload Logo Team PRO: (" + ex.Message + ")";
+                return fullModel;
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+                ModeratorMenuMode = null;
+            }
+        }
+
+
+        public static MyNextMatchesViewModel maintenanceSquadPRO(string actionUser, int clubID, string psnID, int playerID, int userID,
+                                                                 MyNextMatchesViewModel fullModel, out string returnMessage)
+        {
+            HttpResponseMessage response = null;
+            MyNextMatchesViewModel modelReturnJSON = new MyNextMatchesViewModel();
+            MyNextMatchesViewModel ModeratorMenuMode = new MyNextMatchesViewModel();
+            MyMatchesSummaryViewModel modelReturnJSON2 = new MyMatchesSummaryViewModel();
+            MyMatchesSummaryViewModel ModeratorMenuMode2 = new MyMatchesSummaryViewModel();
+            List<squadListModel> listOfSquad = new List<squadListModel>();
+            try
+            {
+
+                if (actionUser.IndexOf("Add") > -1)
+                {
+                    ModeratorMenuMode2.actionUser = actionUser;
+                    ModeratorMenuMode2.teamID = clubID;
+                    ModeratorMenuMode2.psnID = psnID;
+                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("MyMatches", ModeratorMenuMode2).Result;
+                    modelReturnJSON2 = response.Content.ReadAsAsync<MyMatchesSummaryViewModel>().Result;
+                    returnMessage = string.Empty;
+                    if (modelReturnJSON2.returnMessage == "MyMatchesSuccessfully")
+                        returnMessage = "O jogador foi adicionado com sucesso em seu elenco";
+                    else if (modelReturnJSON2.returnMessage == "PsnNotFound")
+                        returnMessage = "ATENÇÃO MANAGER: Ação NÃO efetuada. PSN informada (" + ModeratorMenuMode2.psnID + ") não foi encontrada";
+                    else if (modelReturnJSON2.returnMessage == "PlayerIsInYourClub")
+                        returnMessage = "ATENÇÃO MANAGER: Ação NÃO efetuada. O Jogador já ESTÁ no seu elenco";
+                    else if (modelReturnJSON2.returnMessage == "PlayerIsInAnotherClub")
+                        returnMessage = "ATENÇÃO MANAGER: Ação NÃO efetuada. O Jogador já se encontra em OUTRO elenco";
+
+                }
+                else
+                {
+                    ModeratorMenuMode.actionUser = actionUser;
+                    ModeratorMenuMode.userID = playerID;
+                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("MyMatches", ModeratorMenuMode).Result;
+                    modelReturnJSON2 = response.Content.ReadAsAsync<MyMatchesSummaryViewModel>().Result;
+
+                    returnMessage = "O jogador foi excluído com sucesso do seu elenco";
+                }
+
+                ModeratorMenuMode.actionUser = "uploadLogoTeamPROListOfSquad";
+                ModeratorMenuMode.userID = userID;
+                response = GlobalVariables.WebApiClient.PostAsJsonAsync("MyMatches", ModeratorMenuMode).Result;
+                modelReturnJSON = response.Content.ReadAsAsync<MyNextMatchesViewModel>().Result;
+
+                listOfSquad = modelReturnJSON.listOfSquad;
+
+                modelReturnJSON = fullModel;
+                modelReturnJSON.returnMessage = "MyMatchesSuccessfully";
+                modelReturnJSON.listOfSquad = listOfSquad;
+                if (modelReturnJSON2.returnMessage != "MyMatchesSuccessfully")
+                {
+                    modelReturnJSON.psnIDForm = psnID;
+                    if (("PsnNotFound,'PlayerIsInYourClub',PlayerIsInAnotherClub").IndexOf(modelReturnJSON2.returnMessage) == -1)
+                        modelReturnJSON.returnMessage = modelReturnJSON2.returnMessage;
+                }
+
+                return modelReturnJSON;
+            }
+            catch (Exception ex)
+            {
+                returnMessage = "Erro interno - Exibindo Tela de Manutenção Elenco PRO: (" + ex.Message + ")";
+                return fullModel;
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+                ModeratorMenuMode = null;
+                modelReturnJSON2 = null;
+                ModeratorMenuMode2 = null;
+                listOfSquad = null;
+            }
+        }
 
         public static string stripCodeMobileFullNumber(string mobilieFullNumber)
         {

@@ -1,0 +1,276 @@
+﻿@using ArenaFifa20.NET.Models
+@model ChampionshipMatchTableClashesHistoryTotalswModel
+@{
+    ViewBag.Title = "Current Season - Clashes History";
+}
+
+<!-- page content -->
+<form action="" class="form-horizontal" id="registration-form" method="post" role="form">
+
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="actionType" name="actionType" value="" />
+    <input type="hidden" id="currentModeTypeSeason" name="currentModeTypeSeason" value="" />
+    <input type="hidden" id="championshipID" name="championshipID" value="" />
+</form>
+
+<div class="gentelella-right_col" role="main" style="padding-left:50px">
+    <div class="gentelella-page-title">
+        <div class="gentelella-col-md-9 gentelella-col-sm-9 gentelella-col-xs-12">
+            <h3>@("HISTÓRICO DE CONFRONTOS - " + Model.menuCurrentSeason.modeType)</h3>
+        </div>
+        <div class="gentelella-col-md-3 gentelella-col-sm-3 gentelella-a-right gentelella-col-xs-12">
+            <img title="COMPETIÇÕES DA MODALIDADE @Model.menuCurrentSeason.modeType" src="/images/@("logo-" + Model.menuCurrentSeason.modeType + "-beige.jpg")" width="60" />
+        </div>
+    </div>
+    <br><br>
+
+    <div class="gentelella-x_content">
+
+        @{ TempData["FullModel"] = Model; }
+        @Html.Partial("_MessageValidate")
+        <form action="/CurrentSeason/ClashesHistory" class="form-horizontal" id="registration-form-search" method="post" role="form" data-parsley-validate>
+
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="actionForm" name="actionForm" value="SEARCH_HISTORY" />
+            <input type="hidden" id="currentModeTypeSeason" name="currentModeTypeSeason" value="" />
+            <input type="hidden" id="championshipID" name="championshipID" value="" />
+            <div class="gentelella-col-md-3 gentelella-col-sm-3 gentelella-col-xs-14">
+                <label for="deacricao">Psn ID <i style="color:red">*</i> :</label>
+                <input type="text" id="txtPsnID" name="txtPsnID" class="gentelella-form-control" data-parsley-maxlength="30" required />
+            </div>
+            <div class="gentelella-row">
+                <div class="gentelella-form-group gentelella-a-right">
+                    <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                        <br>
+                        <div class="gentelella-ln_solid"></div>
+                        <input type="submit" class="gentelella-btn gentelella-btn-success" value="Pesquisar Confronto" />
+                    </div>
+                </div>
+            </div>
+            <br><br>
+
+            <div class="gentelella-tab-pane" id="tab_content">
+                <div class="gentelella-row">
+                    <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                        <div class="gentelella-x_panel">
+                            <div class="gentelella-x_content">
+
+                                <div style="color:steelblue;text-align:justify;font-size:20px;font-weight:bold">
+                                    HISTÓRICO
+                                </div>
+                                <div class="gentelella-ln_solid"></div>
+
+                                <div class="gentelella-row">
+                                    <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                                        <b>Histórico de Confrontos entres os Técnicos</b>
+                                    </div>
+                                    <div class="gentelella-ln_solid-comment"></div>
+                                </div>
+                                <div class="gentelella-row">
+                                    <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                                        <div class="gentelella-col-md-2 gentelella-col-sm-2 gentelella-col-xs-12 "></div>
+                                        <div class="gentelella-col-md-2 gentelella-col-sm-2 gentelella-col-xs-12 gentelella-a-center">
+                                            <div id="idLabelWinHomeTeam">Vitórias</div><br><div id="winsHomeTeam">-</div>
+                                        </div>
+                                        <div class="gentelella-col-md-4 gentelella-col-sm-4 gentelella-col-xs-12 gentelella-a-center" style="font-size:14px;color:black">
+                                            <br>
+                                            <img src="/images/coach-avatar/@(Model.userIDLogged.ToString() + ".jpg")" onerror="this.src='/images/user.png';" width="50" height="50" />
+                                            &nbsp;&nbsp;@Model.psnIDLogged&nbsp;&nbsp;
+                                            <img src="/images/Confrontos_X.JPG">
+                                            &nbsp;&nbsp;@Model.psnIDSearch&nbsp;&nbsp;
+                                            <img src="/images/coach-avatar/@(Model.userIDSearch.ToString() + ".jpg")" onerror="this.src='/images/user.png';" width="50" height="50" />
+                                        </div>
+                                        <div class="gentelella-col-md-2 gentelella-col-sm-2 gentelella-col-xs-12 gentelella-a-right">
+                                            <div id="idLabelWinAwayTeam">Vitórias</div><br><div id="winsAwayTeam">-</div>
+                                            <!--style="font-size:20px;color:red"-->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @if ((Model.totalDraw + Model.totalWinUsuLogged + Model.totalWinUsuSearch) == 0)
+                                {
+                                    <div class="gentelella-row">
+                                        <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12 gentelella-a-center gentelella-teamtable-relegated">
+                                            Este confronto ainda não foi realizado no site ArenaFifa na modalidade @Model.menuCurrentSeason.modeType.
+                                        </div>
+                                        <br /><br />
+                                    </div>
+                                }
+
+                                <div class="gentelella-row">
+                                    <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12 gentelella-a-center">
+                                        <img title="" onclick="" style="cursor:pointer" width="" height="20px" src="/images/Confrontos_Cinza.JPG" id="winsHistoryMatchesHomeTeam">
+                                        <img title="" onclick="" style="cursor:pointer" width="" height="20px" src="/images/Confrontos_Cinza.JPG" id="drawsHistoryMatches">
+                                        <img title="" onclick="" style="cursor:pointer" width="" height="20px" src="/images/Confrontos_Cinza.JPG" id="winsHistoryMatchesAwayTeam">
+                                    </div>
+                                </div>
+                                <br><br>
+
+                                <div class="gentelella-row">
+                                    <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                                        <div class="gentelella-col-md-2 gentelella-col-sm-2 gentelella-col-xs-12 "></div>
+                                        <div class="gentelella-col-md-2 gentelella-col-sm-2 gentelella-col-xs-12 gentelella-a-center">
+                                            <br>
+                                            <img src="/images/QuemMarcouMaisGols.jpg">
+                                        </div>
+                                        <div class="gentelella-col-md-4 gentelella-col-sm-4 gentelella-col-xs-12" style="font-size:24px;color:black">
+                                            <img id="goalsHomeTeamHistory" height="20px" src="/images/Confrontos_Cinza.JPG">&nbsp;<span id="goalsHomeTeam">.</span>
+                                            <br>
+                                            <img id="goalsAwayTeamHistory" height="20px" src="/images/Confrontos_Cinza.JPG">&nbsp;<span id="goalsAwayTeam">.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br><br>
+
+                                <center>
+                                    <div id='gamesResultsCoachesHomeTeam' target="showMatches" style='overflow-x:hidden;position:relative;height:300px;width:650px'>
+                                        <div class="gentelella-row gentelella-a-right" style="padding-right:20px">
+                                            <span style="color:steelblue;font-weight:bold;font-size:12px;cursor:pointer" title="Fechar janela de jogos" onClick="$('#gamesResultsCoachesHomeTeam').hide();"><i class="gentelella-fa gentelella-fa-close"></i>&nbsp;Fechar</span>
+                                        </div>
+                                        <table id="datatable-responsive" class="gentelella-table gentelella-table-striped gentelella-table-bordered gentelella-dt-responsive gentelella-nowrap" cellspacing="0" width="100%">
+                                            <thead style="background-color:#2C3E4F;color:white;font-size:12px">
+                                                <tr>
+                                                    <th width="15%" class="gentelella-a-center">Temporada</th>
+                                                    <th width="15%" class="gentelella-a-center">Competição</th>
+                                                    <th width="15%" class="gentelella-a-center">Fase</th>
+                                                    <th width="15%" class="gentelella-a-center">Período</th>
+                                                    <th width="20%" class="gentelella-a-center">Jogo</th>
+                                                    <th width="20%" class="gentelella-a-center">Técnicos</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody style="font-size:9px">
+                                                @foreach (var item in Model.listOfMatchWinUsuLogged)
+                                                {
+                                                    <tr>
+                                                        <td class="gentelella-a-center" style="vertical-align:middle">@item.seasonName</td>
+                                                        <td class="gentelella-a-center" style="vertical-align:middle">@item.championshipName</td>
+                                                        <td class="gentelella-a-center" style="vertical-align:middle">@item.stageName<br>(Rodada @item.round.ToString("00"))</td>
+                                                        <td class="gentelella-a-center">@item.startDate.ToString("dd/MM/yyyy")<br>à<br>@item.endDate.ToString("dd/MM/yyyy")</td>
+                                                        <td class="gentelella-a-center">@item.teamNameHome<br>@(item.totalGoalsHome + " x " + item.totalGoalsAway)<br>@item.teamNameAway</td>
+                                                        <td class="gentelella-a-center">@item.psnIDHome<br>@(item.totalGoalsHome + " x " + item.totalGoalsAway)<br>@item.psnIDAway</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div id='gamesResultsCoachesAwayTeam' target="showMatches" style='overflow-x:hidden;position:relative;height:300px;width:650px'>
+                                        <div class="gentelella-row gentelella-a-right" style="padding-right:20px">
+                                            <span style="color:steelblue;font-weight:bold;font-size:12px;cursor:pointer" title="Fechar janela de jogos" onClick="$('#gamesResultsCoachesAwayTeam').hide();"><i class="gentelella-fa gentelella-fa-close"></i>&nbsp;Fechar</span>
+                                        </div>
+                                        <table id="datatable-responsive" class="gentelella-table gentelella-table-striped gentelella-table-bordered gentelella-dt-responsive gentelella-nowrap" cellspacing="0" width="100%">
+                                            <thead style="background-color:#2C3E4F;color:white;font-size:12px">
+                                                <tr>
+                                                    <th width="15%" class="gentelella-a-center">Temporada</th>
+                                                    <th width="15%" class="gentelella-a-center">Competição</th>
+                                                    <th width="15%" class="gentelella-a-center">Fase</th>
+                                                    <th width="15%" class="gentelella-a-center">Período</th>
+                                                    <th width="20%" class="gentelella-a-center">Jogo</th>
+                                                    <th width="20%" class="gentelella-a-center">Técnicos</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody style="font-size:9px">
+                                                @foreach (var item in Model.listOfMatchWinUsuSearch)
+                                                {
+                                                    <tr>
+                                                        <td class="gentelella-a-center" style="vertical-align:middle">@item.seasonName</td>
+                                                        <td class="gentelella-a-center" style="vertical-align:middle">@item.championshipName</td>
+                                                        <td class="gentelella-a-center" style="vertical-align:middle">@item.stageName<br>(Rodada @item.round.ToString("00"))</td>
+                                                        <td class="gentelella-a-center">@item.startDate.ToString("dd/MM/yyyy")<br>à<br>@item.endDate.ToString("dd/MM/yyyy")</td>
+                                                        <td class="gentelella-a-center">@item.teamNameHome<br>@(item.totalGoalsHome + " x " + item.totalGoalsAway)<br>@item.teamNameAway</td>
+                                                        <td class="gentelella-a-center">@item.psnIDHome<br>@(item.totalGoalsHome + " x " + item.totalGoalsAway)<br>@item.psnIDAway</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+
+                                    <div id='gamesResultsCoachesDraw' target="showMatches" style='overflow-x:hidden;position:relative;height:300px;width:650px'>
+                                        <div class="gentelella-row gentelella-a-right" style="padding-right:20px">
+                                            <span style="color:steelblue;font-weight:bold;font-size:12px;cursor:pointer" title="Fechar janela de jogos" onClick="$('#gamesResultsCoachesDraw').hide();"><i class="gentelella-fa gentelella-fa-close"></i>&nbsp;Fechar</span>
+                                        </div>
+                                        <table id="datatable-responsive" class="gentelella-table gentelella-table-striped gentelella-table-bordered gentelella-dt-responsive gentelella-nowrap" cellspacing="0" width="100%">
+                                            <thead style="background-color:#2C3E4F;color:white;font-size:12px">
+                                                <tr>
+                                                    <th width="15%" class="gentelella-a-center">Temporada</th>
+                                                    <th width="15%" class="gentelella-a-center">Competição</th>
+                                                    <th width="15%" class="gentelella-a-center">Fase</th>
+                                                    <th width="15%" class="gentelella-a-center">Período</th>
+                                                    <th width="20%" class="gentelella-a-center">Jogo</th>
+                                                    <th width="20%" class="gentelella-a-center">Técnicos</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody style="font-size:9px">
+                                                @foreach (var item in Model.listOfMatchDraw)
+                                                {
+                                                    <tr>
+                                                        <td class="gentelella-a-center" style="vertical-align:middle">@item.seasonName</td>
+                                                        <td class="gentelella-a-center" style="vertical-align:middle">@item.championshipName</td>
+                                                        <td class="gentelella-a-center" style="vertical-align:middle">@item.stageName<br>(Rodada @item.round.ToString("00"))</td>
+                                                        <td class="gentelella-a-center">@item.startDate.ToString("dd/MM/yyyy")<br>à<br>@item.endDate.ToString("dd/MM/yyyy")</td>
+                                                        <td class="gentelella-a-center">@item.teamNameHome<br>@(item.totalGoalsHome + " x " + item.totalGoalsAway)<br>@item.teamNameAway</td>
+                                                        <td class="gentelella-a-center">@item.psnIDHome<br>@(item.totalGoalsHome + " x " + item.totalGoalsAway)<br>@item.psnIDAway</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </center>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </form>
+    </div>
+</div>
+<!-- /page content -->
+@Html.Partial("_QuestionModal")
+@section Scripts {
+    <script>
+        $(function () {
+            if (detectMobileDevice() == 1) {
+                //$("#includedContentMenuMobile").load("/arena20/includes/menu-logged-mobile.html");
+                //$("#includedContentMenuRankingMobile").load("menu-my-matches-mobile.html");
+                hidden_show_ObjectMobile("footerMobile", "block");
+            }
+        });
+        $(document).ready(function () {
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+
+            if ('@TempData["actionSuccessfully"]' != '')
+                toastr.success('@TempData["actionSuccessfully"].');
+
+            if (detectMobileDevice() == 0) {
+                activeSidebarMenu(window.location.pathname);
+            }
+
+            activateRegistrationForm("ClashesHistory", "");
+
+            if ('@Model.actionUser' == "VIEW") {
+                $("#tab_content").hide();
+            }
+            else {
+                objCalculateHistory = new calculateHistoryMatches({
+                    iTotalGoalsHomeTeam: @Model.totalGoalsUsuLogged,
+                    iTotalGoalsAwayTeam: @Model.totalGoalsUsuSearch,
+                    iTotalMatches: @(Model.totalWinUsuLogged + Model.totalWinUsuSearch + Model.totalDraw),
+                    iTotalWinsHomeTeam: @Model.totalWinUsuLogged,
+                    iTotalWinsAwayTeam: @Model.totalWinUsuSearch,
+                    iTotalDraws: @Model.totalDraw,
+                    sLabelTitleHometeam: "@Model.psnIDLogged",
+                    sLabelTitleAwayteam: "@Model.psnIDSearch"
+                });
+                objCalculateHistory.initializeHistory();
+            }
+        });
+
+    </script>
+}
+

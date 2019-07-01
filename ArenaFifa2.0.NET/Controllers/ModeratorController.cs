@@ -1975,7 +1975,7 @@ namespace ArenaFifa20.NET.Controllers
                                         }
                                         modelReturnJSON.labelActionButton = "Efetuar Troca";
 
-                                        modelReturnJSON.listOfTeam = new List<StandardDetailsModel>();
+                                        modelReturnJSON.listOfTeam = new List<ChampionshipTeamDetailsModel>();
 
                                         typeSearch = formHTML["selectedType"];
 
@@ -2059,7 +2059,7 @@ namespace ArenaFifa20.NET.Controllers
             {
                 modelReturnJSON.actionUser = actionForm;
                 modelReturnJSON.listOfUserGetIn = new List<ChampionshipUserDetailsModel>();
-                modelReturnJSON.listOfTeam = new List<StandardDetailsModel>();
+                modelReturnJSON.listOfTeam = new List<ChampionshipTeamDetailsModel>();
                 modelReturnJSON.listOfUserGetOut = new List<ChampionshipUserDetailsModel>();
                 TempData["returnMessage"] = "Erro interno - Exibindo Menu Moderador - Cadastro de Campeonatos - Gerenciar Ação - " + actionForm + ": (" + ex.Message + ")";
                 ModelState.AddModelError("", "application error.");
@@ -2861,7 +2861,7 @@ namespace ArenaFifa20.NET.Controllers
                         ModeratorMenuMode.championshipID = Convert.ToInt16(championshipID);
                         ModeratorMenuMode.stageID = Convert.ToInt16(stageID);
                         ModeratorMenuMode.startStageDate = Convert.ToDateTime(startStageDate);
-                        ModeratorMenuMode.actionUser = "generate_stage_playoff_stage0";
+                        ModeratorMenuMode.actionUser = "generate_stage_playoff_from_stage0";
                     }
                     else if (previousStageID != GlobalVariables.STAGE_QUALIFY1 && previousStageID != GlobalVariables.STAGE_QUALIFY2)
                     {
