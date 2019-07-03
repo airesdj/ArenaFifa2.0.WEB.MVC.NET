@@ -151,16 +151,21 @@ namespace ArenaFifa20.NET
             userModel = null;
         }
 
-        public static ChampionshipDetailsModel ShowChampionshipDetails(string championshipID)
+        public static ChampionshipDetailsModel ShowChampionshipDetails(string championshipID, ChampionshipDetailsModel detailModel = null, 
+                                                                       Boolean isCurrentSeason = false, int userIDSession = 0)
         {
             HttpResponseMessage response = new HttpResponseMessage();
             ChampionshipDetailsModel modelReturnJSON = new ChampionshipDetailsModel();
 
             try
             {
-
-                response = GlobalVariables.WebApiClient.GetAsync("Championship/" + championshipID).Result;
-                modelReturnJSON = response.Content.ReadAsAsync<ChampionshipDetailsModel>().Result;
+                if (detailModel == null)
+                {
+                    response = GlobalVariables.WebApiClient.GetAsync("Championship/" + championshipID).Result;
+                    modelReturnJSON = response.Content.ReadAsAsync<ChampionshipDetailsModel>().Result;
+                }
+                else
+                    modelReturnJSON = detailModel;
 
                 ChampionshipTeamTableListViewModel listOfTeamTable = new ChampionshipTeamTableListViewModel();
                 ChampionshipMatchTableViewModel listOfMatchTable = new ChampionshipMatchTableViewModel();
@@ -188,25 +193,27 @@ namespace ArenaFifa20.NET
                         modelReturnJSON.listOfMatch = listOfMatchTable.listOfMatch;
                         modelReturnJSON.returnMessage = listOfMatchTable.returnMessage;
 
-                        if (modelReturnJSON.returnMessage == "ModeratorSuccessfully" && modelReturnJSON.listOfTeamTable.Count > 0)
+                        if (isCurrentSeason==false)
                         {
-                            for (int i = 0; i < modelReturnJSON.listOfTeamTable.Count; i++)
+                            if (modelReturnJSON.returnMessage == "ModeratorSuccessfully" && modelReturnJSON.listOfTeamTable.Count > 0)
                             {
-                                modelReturnJSON.listOfTeamTable[i].pathTeamLogo = getPathLogoTeam(modelReturnJSON.listOfTeamTable[i].teamName);
+                                for (int i = 0; i < modelReturnJSON.listOfTeamTable.Count; i++)
+                                {
+                                    modelReturnJSON.listOfTeamTable[i].pathTeamLogo = getPathLogoTeam(modelReturnJSON.listOfTeamTable[i].teamName);
+                                }
+                                if (modelReturnJSON.listOfTeamTable[0].groupID > 0)
+                                    modelReturnJSON.drawDoneTeamTableGroup = 1;
+                                else
+                                    modelReturnJSON.drawDoneTeamTableGroup = 0;
                             }
-                            if (modelReturnJSON.listOfTeamTable[0].groupID > 0)
-                                modelReturnJSON.drawDoneTeamTableGroup = 1;
-                            else
-                                modelReturnJSON.drawDoneTeamTableGroup = 0;
-                        }
-                        else if (modelReturnJSON.returnMessage == "ModeratorSuccessfully" && modelReturnJSON.listOfTeam.Count > 0)
-                        {
-                            for (int i = 0; i < modelReturnJSON.listOfTeam.Count; i++)
+                            else if (modelReturnJSON.returnMessage == "ModeratorSuccessfully" && modelReturnJSON.listOfTeam.Count > 0)
                             {
-                                modelReturnJSON.listOfTeam[i].pathImg = getPathLogoTeam(modelReturnJSON.listOfTeam[i].name);
+                                for (int i = 0; i < modelReturnJSON.listOfTeam.Count; i++)
+                                {
+                                    modelReturnJSON.listOfTeam[i].pathImg = getPathLogoTeam(modelReturnJSON.listOfTeam[i].name);
+                                }
                             }
                         }
-
                     }
 
                 }
@@ -218,6 +225,28 @@ namespace ArenaFifa20.NET
                 if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
                 {
                     if (modelReturnJSON.listOfMatch.Count > 0) { modelReturnJSON.drawDoneMatchTable = 1; } else { modelReturnJSON.drawDoneMatchTable = 0; }
+
+                    if (isCurrentSeason==true)
+                    {
+                        ChampionshipMatchTableDetailsModel model = new ChampionshipMatchTableDetailsModel();
+                        ChampionshipMatchTableClashesListViewModel modelReturnJSONClashes = new ChampionshipMatchTableClashesListViewModel();
+
+                        modelReturnJSON.listOfClashes = new List<ChampionshipMatchTableClashesByTeamModel>();
+
+                        model.actionUser = "get_clashes_by_team";
+                        model.championshipID = Convert.ToInt16(championshipID);
+                        model.userIDAction = userIDSession;
+                        response = GlobalVariables.WebApiClient.PostAsJsonAsync("ChampionshipMatchTable", model).Result;
+                        modelReturnJSONClashes = response.Content.ReadAsAsync<ChampionshipMatchTableClashesListViewModel>().Result;
+
+                        if (modelReturnJSONClashes != null)
+                        {
+                            if (modelReturnJSONClashes.returnMessage == "ModeratorSuccessfully")
+                                modelReturnJSON.listOfClashes = modelReturnJSONClashes.listOfClashes;
+                        }
+                        modelReturnJSONClashes = null;
+                        model = null;
+                    }
                 }
 
                 listOfTeamTable = null;
@@ -622,7 +651,6 @@ namespace ArenaFifa20.NET
                 {
                     modelReturnJSON.pathLogoTeamHome = getPathLogoTeam(modelReturnJSON.teamNameHome);
                     modelReturnJSON.pathLogoTeamAway = getPathLogoTeam(modelReturnJSON.teamNameAway);
-
                     string pathChampionshipLogo = string.Empty;
                     string pathTypeLogo = string.Empty;
 
@@ -893,6 +921,63 @@ namespace ArenaFifa20.NET
             }
 
             return codeMobileNumber;
+        }
+
+        public static void getHistoryClashesTeamAndCoach(ref ChampionshipMatchTableDetailsModel modelReturnJSON)
+        {
+            ChampionshipMatchTableClashesHistoryTotalswModel modelReturnJSON5 = new ChampionshipMatchTableClashesHistoryTotalswModel();
+            ChampionshipMatchTableClashesHistoryTotalsByTeamswModel modelReturnJSON6 = new ChampionshipMatchTableClashesHistoryTotalsByTeamswModel();
+            ChampionshipMatchTableDetailsModel ModeratorMenuMode = new ChampionshipMatchTableDetailsModel();
+            HttpResponseMessage response = new HttpResponseMessage();
+
+            try
+            {
+                ModeratorMenuMode.actionUser = "clashes_historic_by_coaches";
+                ModeratorMenuMode.userIDAction = modelReturnJSON.userHomeID;
+                ModeratorMenuMode.psnIDAction = modelReturnJSON.psnIDHome;
+                ModeratorMenuMode.psnIDSearch = modelReturnJSON.psnIDAway;
+                ModeratorMenuMode.modeType = modelReturnJSON.modeType;
+                response = GlobalVariables.WebApiClient.PostAsJsonAsync("ChampionshipMatchTable", ModeratorMenuMode).Result;
+                modelReturnJSON5 = response.Content.ReadAsAsync<ChampionshipMatchTableClashesHistoryTotalswModel>().Result;
+
+                if (modelReturnJSON5.returnMessage != "ModeratorSuccessfully")
+                {
+                    modelReturnJSON.historyCoachClash.listOfMatchDraw = new List<ChampionshipMatchTableDetailsModel>();
+                    modelReturnJSON.historyCoachClash.listOfMatchWinUsuLogged = new List<ChampionshipMatchTableDetailsModel>();
+                    modelReturnJSON.historyCoachClash.listOfMatchWinUsuSearch = new List<ChampionshipMatchTableDetailsModel>();
+                }
+                else
+                {
+                    modelReturnJSON.historyCoachClash = modelReturnJSON5;
+
+                    ModeratorMenuMode.actionUser = "clashes_historic_by_teams";
+                    ModeratorMenuMode.teamHomeID = modelReturnJSON.teamHomeID;
+                    ModeratorMenuMode.teamAwayID = modelReturnJSON.teamAwayID;
+                    ModeratorMenuMode.modeType = modelReturnJSON.modeType;
+                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("ChampionshipMatchTable", ModeratorMenuMode).Result;
+                    modelReturnJSON6 = response.Content.ReadAsAsync<ChampionshipMatchTableClashesHistoryTotalsByTeamswModel>().Result;
+
+                    if (modelReturnJSON6.returnMessage != "ModeratorSuccessfully")
+                    {
+                        modelReturnJSON.historyTeamClash.listOfMatchDraw = new List<ChampionshipMatchTableDetailsModel>();
+                        modelReturnJSON.historyTeamClash.listOfMatchWinTeamHome = new List<ChampionshipMatchTableDetailsModel>();
+                        modelReturnJSON.historyTeamClash.listOfMatchWinTeamAway = new List<ChampionshipMatchTableDetailsModel>();
+                    }
+                    else
+                        modelReturnJSON.historyTeamClash = modelReturnJSON6;
+                }
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                modelReturnJSON5 = null;
+                modelReturnJSON6 = null;
+                ModeratorMenuMode = null;
+                response = null;
+            }
         }
     }
 }

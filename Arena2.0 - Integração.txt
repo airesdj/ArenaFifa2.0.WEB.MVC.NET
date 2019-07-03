@@ -1,6 +1,6 @@
 *ARENA 2.0 - A INTEGRAÇÃO*
 
-Hi Guys, voltando o assunto do Arena 2.0, a integraçãojá foi iniciada e está sendo colocado inteligência nas páginas feitas na nossa demo.
+Hi Guys, voltando o assunto do Arena 2.0, a integração já foi iniciada e está sendo colocado inteligência nas páginas feitas na nossa demo.
 
 *_Funcionalidades que JÁ estão integradas:_*
 - Tela principal
@@ -25,12 +25,11 @@ Hi Guys, voltando o assunto do Arena 2.0, a integraçãojá foi iniciada e está
 
 
 *_Funcionalidade que está EM ANDAMENTO:_*
-- Todo Dashboard das Tela de Campeonatos (*_15/21_*) ==> *EM ANAMENTO: Chamada de outro de Campeonato dentro da Modalidade*
-      . Restam: = Tabelas e Resultados Liga
+- Todo Dashboard das Tela de Campeonatos (*_17/21_*) ==> *EM ANAMENTO: Chamada de outro de Campeonato dentro da Modalidade*
+      . Restam: = Lançamento de Resultado
 				= Tabela e Resultados Por Grupo
 				= Tabela e Resultados apenas Playoff
-				= Comentários dos Jogos
-				= Lançamento de Resultado
+				
 
 	*Observação: Temporadas anteriores não disponibilizada na 1a versão.*
 

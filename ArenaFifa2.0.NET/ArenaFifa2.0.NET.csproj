@@ -2781,6 +2781,7 @@
     <Content Include="Views\CurrentSeason\ClashesHistory.cshtml" />
     <Content Include="Views\CurrentSeason\Calendar.cshtml" />
     <Content Include="Views\CurrentSeason\LineUpOfPlayoffGames.cshtml" />
+    <Content Include="Views\CurrentSeason\ClashTable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

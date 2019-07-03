@@ -17,15 +17,19 @@
     }
     else
     {
+        if (ViewBag.inMyPaginateMatches == "1" || ViewBag.inScorerDetails == "1")
+        {
+            <link href="/Content/dashboard-gentelella/tooltip-premier-league.css" rel="stylesheet" />
+        }
         @Styles.Render("~/Content/gentelella-css")
 
-        if (ViewBag.inModeratorMenu == "1" && ViewBag.inLineUpPlayOffGames != "1")
+        if (ViewBag.inModeratorMenu == "1" && ViewBag.inLineUpPlayOffGames != "1" && ViewBag.inMyPaginateMatches != "1")
         {
             @Styles.Render("~/Content/gentelella-datatable-css")
             <link href="/Content/dashboard-gentelella/bootstrap.min-checkbox.css" rel="stylesheet" />
             <link href="/Content/dashboard-gentelella/docs.min-2.css" rel="stylesheet" />
         }
-        else if (ViewBag.inDataTables == "1" && ViewBag.inLineUpPlayOffGames != "1")
+        else if (ViewBag.inDataTables == "1" && ViewBag.inLineUpPlayOffGames != "1" && ViewBag.inMyPaginateMatches != "1")
         {
             @Styles.Render("~/Content/gentelella-datatable-css")
         }
@@ -42,6 +46,10 @@
         if (ViewBag.inLineUpPlayOffGames == "1")
         {
             <link href="/Content/line-up-playoff.css" rel="stylesheet" />
+        }
+        if (ViewBag.inMyPaginateMatches == "1")
+        {
+            <link href="/Content/jplist/jplist.demo-pages.min.css" rel="stylesheet" />
         }
 
     }
@@ -131,6 +139,10 @@ else if (ViewBag.inCurrentSeason == "1")
             if (@ViewBag.inCalculateHistoryMatches == "1")
             {
                 <script src="/Scripts/calculate-history-matches.js"></script>
+            }
+            if (@ViewBag.inMyPaginateMatches == "1")
+            {
+                <script src="/Scripts/paginate-matches-list.js"></script>
             }
         }
         else if (ViewBag.inDataTables == "1")

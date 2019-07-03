@@ -37,6 +37,8 @@ namespace ArenaFifa20.NET.Controllers
             ViewBag.inLaunchResult = "0";
             ViewBag.inScorerDetails = "0";
             ViewBag.inCalculateScore = "0";
+            ViewBag.inCalculateHistoryMatches = "0";
+
         }
 
         // GET: MyMatches/Summary
@@ -823,6 +825,8 @@ namespace ArenaFifa20.NET.Controllers
                 setViewBagVariables();
                 ViewBag.inLaunchResult = "1";
                 ViewBag.inScorerDetails = "1";
+                ViewBag.inCalculateHistoryMatches = "1";
+
 
                 if (actionForm == "save_comment")
                 {
@@ -874,6 +878,8 @@ namespace ArenaFifa20.NET.Controllers
                                 if (actionForm == "show_championshipmatchtable_details")
                                 {
                                     modelReturnJSON = GlobalFunctions.getDetailsViewChampionshipMatch(championshipID, matchID);
+
+                                    GlobalFunctions.getHistoryClashesTeamAndCoach(ref modelReturnJSON);
                                 }
                                 modelReturnJSON.actionUser = actionForm.ToUpper();
                                 if (!String.IsNullOrEmpty(modelReturnJSON.returnMessage) && modelReturnJSON.returnMessage != "ModeratorSuccessfully")

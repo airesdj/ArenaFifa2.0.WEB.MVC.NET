@@ -223,6 +223,32 @@
                 <!-- /mobile  -->
             </div>
 
+            @if (Model.menuCurrentSeason.modeType == "FUT")
+            {
+                <div class="gentelella-row">
+                    <div class="gentelella-col-md-6 gentelella-col-sm-12 gentelella-col-xs-12">
+                        <div class="gentelella-x_panel">
+                            <div class="gentelella-x_content" id="div2">
+
+                                <span style="color:steelblue;text-align:justify;font-size:16px;font-weight:bold" class="gentelella-title_left">
+                                    5. ALGUMAS REGRAS PARA JOGAR O ULTIMATE TEAM (FUT)
+                                </span>
+                                <div class="gentelella-ln_solid"></div>
+                                <p style="text-align:justify">
+                                    <b>Regra de utilização de Cartas de Treino:</b><br><br>
+                                    <h4><code>É PROÍBIDO a utilização de cartas de treino que visam aumentar atributos básicos de um jogador durante a partida.</code></h4>
+                                    <br>
+                                    <br>
+                                    <b>Regra de utilização de jogadores por empréstimo:</b><br><br>
+                                    <h4><code>É PROÍBIDO a utilização de qualquer tipo de jorgador por empréstimo seja começando a partida ou entrando no decorrer da mesma.</code></h4>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+
         </div>
 </div>
 <!-- /page content -->
@@ -245,6 +271,8 @@
             if (detectMobileDevice() == 0) {
                 activeSidebarMenu(window.location.pathname);
             }
+
+            $("code").attr("style", "height:0px;background-color:#fff");
 
             if ($("#div1").height() != $("#div2").height()) {
                 if ($("#div1").height() > $("#div2").height())

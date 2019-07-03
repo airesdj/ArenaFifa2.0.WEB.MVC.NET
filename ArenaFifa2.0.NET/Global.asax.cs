@@ -44,6 +44,7 @@ namespace ArenaFifa20.NET
             Session["user.teamNamePRO"] = String.Empty;
 
             Session["user.current.season.menu"] = null;
+            Session["user.current.season.summary"] = null;
         }
     }
 }

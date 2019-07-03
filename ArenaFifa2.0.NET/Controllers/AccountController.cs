@@ -58,7 +58,7 @@ namespace ArenaFifa20.NET.Controllers
                         if (modelReturnJSON.returnMessage == "loginSuccessfully")
                         {
                             Session["session.active"] = true;
-                            Session["user.id"] = "381"; //"1281"; //"385";  //modelReturnJSON.id.ToString();
+                            Session["user.id"] = "385"; //"1281"; //"385";  //modelReturnJSON.id.ToString();
                             Session["user.name"] = modelReturnJSON.name.ToString();
                             Session["user.psnID"] = modelReturnJSON.psnID.ToString();
                             Session["user.isModerator"] = modelReturnJSON.userModerator;
@@ -73,6 +73,7 @@ namespace ArenaFifa20.NET.Controllers
                             Session["user.teamNamePRO"] = String.Empty;
 
                             Session["user.current.season.menu"] = null;
+                            Session["user.current.season.summary"] = null;
 
                             Session["user.pathAvatar"] = ConfigurationManager.AppSettings["avatar.path.default"].ToString();
 

@@ -1,0 +1,562 @@
+﻿@using ArenaFifa20.NET.Models
+@model ChampionshipDetailsModel
+@{
+    ViewBag.Title = "Current Season - Clash Table";
+
+    string classActiveStage = "gentelella-btn gentelella-btn-dark btn-stage-active";
+    string classActiveNonStage = "gentelella-btn gentelella-btn-default btn-stage-non-active";
+    int countAux = 0;
+    int countPos = 0;
+    int balanceOfGoals = 0;
+    int indexRelegate = 0;
+    string joinStages = String.Empty;
+    string stageIDInitial = "fase0";
+    int roundInitial = 0;
+    int sessionUserID = Convert.ToInt32(HttpContext.Current.Session["user.id"].ToString());
+    string description1 = String.Empty;
+    string description2 = String.Empty;
+    string description3 = String.Empty;
+    Boolean hasStage0 = false;
+    int totalCountMatchStage = 0;
+    string joinStageNONActive = String.Empty;
+
+
+    if (Model.totalRelegation > 0)
+    {
+        indexRelegate = (Model.totalTeam - Model.totalRelegation) - 1;
+    }
+
+    if (!String.IsNullOrEmpty(Model.stageID_Round))
+    {
+        string[] stageRound = Model.stageID_Round.Split(Convert.ToChar(";"));
+        string[] arrayStage = stageRound[0].Split(Convert.ToChar("="));
+        string[] arrayRound = stageRound[1].Split(Convert.ToChar("="));
+        if (!String.IsNullOrEmpty(arrayStage[1]))
+        {
+            stageIDInitial = "fase" + arrayStage[1];
+        }
+        if (!String.IsNullOrEmpty(arrayRound[1]))
+        {
+            roundInitial = Convert.ToInt16(arrayRound[1]);
+        }
+    }
+
+}
+
+<!-- page content -->
+<div class="gentelella-right_col" role="main" style="padding-left:50px">
+    <div class="gentelella-page-title">
+        <div class="gentelella-col-md-9 gentelella-col-sm-9 gentelella-col-xs-12">
+            <h3>TABELA DE CONFRONTOS & CLASSIFICAÇÃO</h3>
+        </div>
+        <div class="gentelella-col-md-3 gentelella-col-sm-3 gentelella-a-right gentelella-col-xs-12">
+            <img title="@Model.menuCurrentSeason.currentChampionshipName" src="@("/images/championship-logo/" + Model.menuCurrentSeason.currentChampionshipName.Replace(" ", "_") + ".jpg")" width="50" />
+            &nbsp;&nbsp;
+            <img title="COMPETIÇÕES DA MODALIDADE @Model.menuCurrentSeason.modeType" src="/images/@("logo-" + Model.menuCurrentSeason.modeType + "-beige.jpg")" width="60" />
+        </div>
+    </div>
+    <center><h3>@Model.menuCurrentSeason.currentChampionshipName</h3></center>
+    <br><br>
+
+    <div class="gentelella-x_content">
+
+
+        <form action="" class="form-horizontal" id="registration-form" method="post" role="form">
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="actionType" name="actionType" value="" />
+            <input type="hidden" id="currentModeTypeSeason" name="currentModeTypeSeason" value="" />
+            <input type="hidden" id="championshipID" name="championshipID" value="" />
+            <input type="hidden" id="selectedID" name="selectedID" value="@Model.menuCurrentSeason.currentChampionshipID" />
+            <input type="hidden" id="matchID" name="matchID" value="" />
+            <ul class="group-btns list-unstyled m-t-30 m-b-30 hidden-xs">
+                <li>
+                    @foreach (var item in Model.listOfStage)
+                    {
+                        if (countAux > 0)
+                        {
+                            joinStages = joinStages + ",";
+                        }
+                        joinStages = joinStages + "fase" + item.id.ToString();
+                        <span class="gentelella-btn gentelella-btn-dark btn-stage-active" id="@("fase" + item.id.ToString())">
+                            @item.name
+                        </span>
+                        countAux = countAux + 1;
+                    }
+                </li>
+            </ul>
+
+            <br />
+
+            @foreach (var stage in Model.listOfStage)
+            {
+                if (stage.id == 0)
+                {
+                    hasStage0 = true;
+                    <div class="gentelella-col-md-8 gentelella-col-sm-8 gentelella-col-xs-14" id="fase0-1" style="padding-left:0px">
+                        <div class="gentelella-x_panel">
+                            <div class="gentelella-x_content">
+                                <h1 class="" style="color:#2C3E4F;font-weight:bold">TABELA</h1>
+                                <center>
+                                    <code>
+                                        Legenda:&nbsp;&nbsp;
+                                        <span class="gentelella-btn gentelella-btn-teamtable-qualified" width="20px" onmouseover="this.style.backgroundColor='steelblue'"></span>&nbsp;Classificados para a fase de playoff
+                                        &nbsp;&nbsp;/&nbsp;&nbsp;
+                                        <span class="gentelella-btn gentelella-btn-teamtable-relegated" width="20px"></span>&nbsp;Rebaixados
+                                    </code>
+                                </center>
+
+                                <table id="datatable-responsive-table" class="display gentelella-table gentelella-table-striped gentelella-table-bordered gentelella-dt-responsive gentelella-nowrap" cellspacing="0" width="100%">
+                                    <thead style="background-color:#2C3E4F;color:white">
+                                        <tr>
+                                            <th width="40%" class="">Posição - Time</th>
+                                            <th width="5%" class="gentelella-a-center" title="Total de Pontos Ganhos">PTS</th>
+                                            <th width="5%" class="gentelella-a-center" title="Quantidade de Jogos Realizados">J</th>
+                                            <th width="5%" class="gentelella-a-center" title="Quantidade de Vitórias Conquistadas">V</th>
+                                            <th width="5%" class="gentelella-a-center" title="Quantidade de Empates Conquistadas">E</th>
+                                            <th width="5%" class="gentelella-a-center" title="Quantidade de Derrotas Sofridas">D</th>
+                                            <th width="5%" class="gentelella-a-center" title="Total de Gols a Favor">GP</th>
+                                            <th width="5%" class="gentelella-a-center" title="Total de Gols Sofridos">GC</th>
+                                            <th width="5%" class="gentelella-a-center" title="Saldo de Gols: GP - GC">SG</th>
+                                            <th width="15%" class="gentelella-a-center" title="Recentes Confrontos">Recentes</th>
+                                            <th width="5%" class="gentelella-a-center" title="Próximo Confronto do Time neste Campeonato">Próx.</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="tableBodyContainer">
+                                        @{countPos = 1; }
+                                        @foreach (var teamTable in Model.listOfTeamTable)
+                                        {
+                                            balanceOfGoals = teamTable.totalGoalsFOR - teamTable.totalGoalsAGainst;
+                                            <tr>
+                                                <td class="tableTeam" title="@("Técnico/Manager: " + teamTable.psnID)">
+                                                    @(countPos.ToString("00"))º&nbsp;
+                                                    <img src="/images/team-logo/@(teamTable.teamName).jpg" title="@teamTable.teamName" onerror="this.src='/images/notfound.png';" width="20" />&nbsp;&nbsp;
+                                                    @teamTable.teamName
+                                                </td>
+                                                <td class="gentelella-a-center" style="vertical-align:middle">
+                                                    @teamTable.totalPoint.ToString("00")
+                                                </td>
+                                                <td class="gentelella-a-center" style="vertical-align:middle">
+                                                    @teamTable.totalPlayed.ToString("00")
+                                                </td>
+                                                <td class="gentelella-a-center" style="vertical-align:middle">
+                                                    @teamTable.totalWon.ToString("00")
+                                                </td>
+                                                <td class="gentelella-a-center" style="vertical-align:middle">
+                                                    @teamTable.totalDraw.ToString("00")
+                                                </td>
+                                                <td class="gentelella-a-center" style="vertical-align:middle">
+                                                    @teamTable.totalLost.ToString("00")
+                                                </td>
+                                                <td class="gentelella-a-center" style="vertical-align:middle">
+                                                    @teamTable.totalGoalsFOR.ToString("00")
+                                                </td>
+                                                <td class="gentelella-a-center" style="vertical-align:middle">
+                                                    @teamTable.totalGoalsAGainst.ToString("00")
+                                                </td>
+                                                <td class="gentelella-a-center" style="vertical-align:middle">
+                                                    @balanceOfGoals.ToString("00")
+                                                </td>
+                                                @foreach (var item in Model.listOfClashes.Where(s => s.userID == sessionUserID && s.championshipID == teamTable.championshipID && s.teamID == teamTable.teamID))
+                                                {
+                                                    description1 = String.Empty;
+                                                    description2 = String.Empty;
+                                                    description3 = String.Empty;
+
+                                                    if (!String.IsNullOrEmpty(item.statusPreviousMatch1))
+                                                    {
+                                                        description1 = item.statusPreviousMatch1 + ";" +
+                                                                       item.descriptionPreviousMatch1_1 + ";" +
+                                                                       item.descriptionPreviousMatch1_2 + ";" +
+                                                                       item.descriptionPreviousMatch1_3 + ";" +
+                                                                       item.descriptionPreviousMatch1_4;
+                                                    }
+                                                    if (!String.IsNullOrEmpty(item.statusPreviousMatch2))
+                                                    {
+                                                        description2 = item.statusPreviousMatch2 + ";" +
+                                                                       item.descriptionPreviousMatch2_1 + ";" +
+                                                                       item.descriptionPreviousMatch2_2 + ";" +
+                                                                       item.descriptionPreviousMatch2_3 + ";" +
+                                                                       item.descriptionPreviousMatch2_4;
+                                                    }
+                                                    if (!String.IsNullOrEmpty(item.statusPreviousMatch3))
+                                                    {
+                                                        description3 = item.statusPreviousMatch3 + ";" +
+                                                                       item.descriptionPreviousMatch3_1 + ";" +
+                                                                       item.descriptionPreviousMatch3_2 + ";" +
+                                                                       item.descriptionPreviousMatch3_3 + ";" +
+                                                                       item.descriptionPreviousMatch3_4;
+                                                    }
+                                                    <td class="form hideMed gentelella-a-center prevMatch" description1="@description1" description2="@description2" description3="@description3" style="vertical-align:middle"></td>
+                                                    <td class="gentelella-a-center nextMatch" style="vertical-align:middle" pathTeamName="/images/team-logo/@(item.teamName).jpg" teamName="@item.teamName" pathNextTeamName="/images/team-logo/@(item.nextMatchTeamName).jpg" nextTeamName="@item.nextMatchTeamName" round="@item.descriptionNextMatch"></td>
+                                                }
+                                            </tr>
+                                            countPos = countPos + 1;
+                                        }
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gentelella-col-md-4 gentelella-col-sm-4 gentelella-col-xs-14" id="fase0-2">
+                        <div class="gentelella-x_panel">
+                            <div class="gentelella-x_content">
+                                <h1 class="" style="color:#2C3E4F;font-weight:bold">JOGOS</h1><br>
+                                <!-- demo -->
+                                <div id="demo" class="box jplist">
+                                    <center>
+                                        <div class="" width="100%" style="background-color:#2C3E4F;color:white">
+                                            <a id="idGoBack" class="gentelella-btn gentelella-btn-xs" title="Ir para a Rodada Anterior" style="background-color:#2C3E4F"><i class="fa fa-arrow-left" style="color:white;"></i></a>
+                                            <select id="idGoRoundSelected" class="selectBoxRound" title="Selecione uma Rodada Diferente da Atual"></select>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <a id="idGoForward" class="gentelella-btn gentelella-btn-xs" title="Ir para a Próxima Rodada" style="background-color:#2C3E4F"><i class="fa fa-arrow-right" style="color:white;"></i></a>
+                                            <br>
+                                            <span id="idRoundTime">Período: 26/02 à 05/03</span>
+                                        </div>
+                                    </center>
+
+                                    <!-- data -->
+                                    <div class="gentelella-col-md-10 gentelella-col-sm-10 gentelella-col-xs-14">
+                                        <div class="list box text-shadow" style="margin:0 2% 1em 2%">
+                                            <!-- item 1 -->
+                                            @foreach (var match in Model.listOfMatch.Where(s => s.stageID == stage.id))
+                                            {
+                                                <div class="list-item box border-identify-item-match" launchResult="@match.launchResultReleased.ToString().ToLower()" userIDHome="@match.userHomeID" userIDAway="@match.userAwayID">
+                                                    <div class="gentelella-row ">
+                                                        <p class="date text-1 color-lightgray p-b-15 block text-right" style="color:#969696"><b>JOGO No.: @match.matchID</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                                                    </div>
+
+                                                    <!-- match -->
+                                                    <div class="gentelella-row text-center">
+                                                        <span class='tooltip-content'>
+                                                            <a class="gentelella-btn gentelella-btn-xs gentelella-btn-success gentelella-fa gentelella-fa-soccer-ball-o" target="" rel="" matchID="@match.matchID">
+                                                                &nbsp;Lançar Resultado
+                                                            </a>
+                                                            <div class='matchAbridged' onmouseover="this.style.backgroundColor='transparent'" style="background-color:transparent">
+                                                                <img src="/images/team-logo/@(match.teamNameHome).jpg" title="@match.teamNameHome" onerror="this.src='/images/notfound.png';" width="40" />
+                                                                &nbsp;&nbsp;
+                                                                @if (!String.IsNullOrEmpty(match.totalGoalsHome))
+                                                                {
+                                                                    <span class='score-done'>@match.totalGoalsHome&nbsp;<span>-</span>&nbsp;@match.totalGoalsAway</span>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span class='score'>@match.totalGoalsHome&nbsp;<span>-</span>&nbsp;@match.totalGoalsAway</span>
+                                                                }
+                                                                &nbsp;&nbsp;
+                                                                <img src="/images/team-logo/@(match.teamNameAway).jpg" title="@match.teamNameAway" onerror="this.src='/images/notfound.png';" width="40" />
+                                                            </div>
+                                                        </span>
+                                                        <span class="date text-1 color-lightgray p-b-15 block gentelella-a-right" style="color:#969696">@match.psnIDHome - @match.psnIDAway&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                        <a title="Click para marcar o jogo com seu adversário&#013; ou realizar qualquer outro comentário." class="gentelella-btn gentelella-btn-xs gentelella-btn-primary gentelella-fa gentelella-fa-commenting-o gentelella-fa-1" target="_blank" rel="" matchID="@match.matchID">
+                                                            &nbsp;Comentar no Jogo
+                                                        </a>
+                                                    </div>
+
+                                                </div>
+                                            }
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <!--end of demo -->
+
+                            </div>
+                        </div>
+                    </div>
+
+                }
+                else
+                {
+                    <div class="gentelella-col-md-10 gentelella-col-sm-10 gentelella-col-xs-14" id="@("fase" + stage.id + "-1")" style="padding-left:0px">
+                        <div class="gentelella-x_panel">
+                            <div class="gentelella-x_content">
+                                @{totalCountMatchStage = Model.listOfMatch.Where(s => s.stageID == stage.id).Count(); }
+                                @{var objTeste = Model.listOfMatch.Where(s => s.stageID == stage.id); }
+                                @{countPos = 0; }
+                                @if (totalCountMatchStage > 0)
+                                {
+                                    <h1 class="" style="color:#2C3E4F;font-weight:bold">JOGOS</h1>
+                                    <div id="demo" class="box jplist">
+
+                                        <center>
+                                            <div class="" width="100%" style="background-color:#2C3E4F;color:white">
+                                                <span id="idRoundTime">Fase com Apenas jogos de 'IDA' - Período: 26/02 à 05/03</span>
+                                            </div>
+                                        </center>
+                                        <br>
+
+                                        <div class="list box text-shadow" style="margin:0 2% 1em 2%">
+                                            @for (int i = 0; i < totalCountMatchStage; i++)
+                                            {
+                                                <div class="gentelella-row ">
+                                                    <div class="gentelella-col-md-5 gentelella-col-sm-5 gentelella-col-xs-14">
+                                                        <div class="list-item-@(stage.id) box border-identify-item-match" launchResult="@objTeste.ElementAt(i).launchResultReleased.ToString().ToLower()" userIDHome="@objTeste.ElementAt(i).userHomeID" userIDAway="@objTeste.ElementAt(i).userAwayID">
+                                                            <div class="gentelella-row ">
+                                                                <p class="date text-1 color-lightgray p-b-15 block text-right" style="color:#969696"><b>JOGO No.: @objTeste.ElementAt(i).matchID</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                                                            </div>
+
+                                                            <!-- match -->
+                                                            <div class="gentelella-row text-center">
+                                                                <span class='tooltip-content'>
+                                                                    <a class="gentelella-btn gentelella-btn-xs gentelella-btn-success gentelella-fa gentelella-fa-soccer-ball-o" target="" rel="" matchID="@objTeste.ElementAt(i).matchID">
+                                                                        &nbsp;Lançar Resultado
+                                                                    </a>
+                                                                    <div class='matchAbridged' onmouseover="this.style.backgroundColor='transparent'" style="background-color:transparent">
+                                                                        <img src="/images/team-logo/@(objTeste.ElementAt(i).teamNameHome).jpg" title="@objTeste.ElementAt(i).teamNameHome" onerror="this.src='/images/notfound.png';" width="40" />
+                                                                        &nbsp;&nbsp;
+                                                                        @if (!String.IsNullOrEmpty(objTeste.ElementAt(i).totalGoalsHome))
+                                                                        {
+                                                                            <span class='score-done'>@objTeste.ElementAt(i).totalGoalsHome&nbsp;<span>-</span>&nbsp;@objTeste.ElementAt(i).totalGoalsAway</span>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <span class='score'>@objTeste.ElementAt(i).totalGoalsHome&nbsp;<span>-</span>&nbsp;@objTeste.ElementAt(i).totalGoalsAway</span>
+                                                                        }
+                                                                        &nbsp;&nbsp;
+                                                                        <img src="/images/team-logo/@(objTeste.ElementAt(i).teamNameAway).jpg" title="@objTeste.ElementAt(i).teamNameAway" onerror="this.src='/images/notfound.png';" width="40" />
+                                                                    </div>
+                                                                </span>
+                                                                <span class="date text-1 color-lightgray p-b-15 block gentelella-a-right" style="color:#969696">@objTeste.ElementAt(i).psnIDHome - @objTeste.ElementAt(i).psnIDAway&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                                <a title="Click para marcar o jogo com seu adversário&#013; ou realizar qualquer outro comentário." class="gentelella-btn gentelella-btn-xs gentelella-btn-primary gentelella-fa gentelella-fa-commenting-o gentelella-fa-1" target="_blank" rel="" matchID="@objTeste.ElementAt(i).matchID">
+                                                                    &nbsp;Comentar no Jogo
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="gentelella-col-md-1 gentelella-col-sm-1 gentelella-col-xs-14">&nbsp;</div>
+
+                                                    i = i + 1;
+
+                                                    <div class="gentelella-col-md-5 gentelella-col-sm-5 gentelella-col-xs-14">
+                                                        <div class="gentelella-col-md-5 gentelella-col-sm-5 gentelella-col-xs-14">
+                                                            <div class="list-item-@(stage.id) box border-identify-item-match" launchResult="@objTeste.ElementAt(i).launchResultReleased.ToString().ToLower()" userIDHome="@objTeste.ElementAt(i).userHomeID" userIDAway="@objTeste.ElementAt(i).userAwayID">
+                                                                <div class="gentelella-row ">
+                                                                    <p class="date text-1 color-lightgray p-b-15 block text-right" style="color:#969696"><b>JOGO No.: @objTeste.ElementAt(i).matchID</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                                                                </div>
+
+                                                                <!-- match -->
+                                                                <div class="gentelella-row text-center">
+                                                                    <span class='tooltip-content'>
+                                                                        <a class="gentelella-btn gentelella-btn-xs gentelella-btn-success gentelella-fa gentelella-fa-soccer-ball-o" target="" rel="" matchID="@objTeste.ElementAt(i).matchID">
+                                                                            &nbsp;Lançar Resultado
+                                                                        </a>
+                                                                        <div class='matchAbridged' onmouseover="this.style.backgroundColor='transparent'" style="background-color:transparent">
+                                                                            <img src="/images/team-logo/@(objTeste.ElementAt(i).teamNameHome).jpg" title="@objTeste.ElementAt(i).teamNameHome" onerror="this.src='/images/notfound.png';" width="40" />
+                                                                            &nbsp;&nbsp;
+                                                                            <span class='score-done'>@objTeste.ElementAt(i).totalGoalsHome&nbsp;<span>-</span>&nbsp;@objTeste.ElementAt(i).totalGoalsAway</span>
+                                                                            &nbsp;&nbsp;
+                                                                            <img src="/images/team-logo/@(objTeste.ElementAt(i).teamNameAway).jpg" title="@objTeste.ElementAt(i).teamNameAway" onerror="this.src='/images/notfound.png';" width="40" />
+                                                                        </div>
+                                                                    </span>
+                                                                    <span class="date text-1 color-lightgray p-b-15 block gentelella-a-right" style="color:#969696">@objTeste.ElementAt(i).psnIDHome - @objTeste.ElementAt(i).psnIDAway&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                                    <a title="Click para marcar o jogo com seu adversário&#013; ou realizar qualquer outro comentário." class="gentelella-btn gentelella-btn-xs gentelella-btn-primary gentelella-fa gentelella-fa-commenting-o gentelella-fa-1" target="_blank" rel="" matchID="@objTeste.ElementAt(i).matchID">
+                                                                        &nbsp;Comentar no Jogo
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+
+                                    </div>
+
+                                }
+                                else
+                                {
+                                    joinStageNONActive = joinStageNONActive + "fase" + stage.id.ToString();
+                                    <div class="gentelella-col-md-8 gentelella-col-sm-8 gentelella-col-xs-14" style="padding-left:0px">
+                                        <code><b>Fase NÃO gerada.  Aguarde finalizar as fases anteriores.</b></code>
+                                    </div>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            }
+
+        </form>
+
+
+    </div>
+
+
+</div>
+<!-- /page content -->
+
+
+@section Scripts {
+<script>
+    $(function () {
+        if (detectMobileDevice() == 1) {
+            //$("#includedContentMenuMobile").load("/arena20/includes/menu-logged-mobile.html");
+            //$("#includedContentMenuRankingMobile").load("menu-my-matches-mobile.html");
+            hidden_show_ObjectMobile("footerMobile", "block");
+        }
+    });
+
+    var arrayStages = String('@joinStages').split(",");
+    var sHtml = "";
+    var arrayDescription;
+    var arrayAttrPreMatch = String("description1;description2;description3").split(";");
+    var classPrevMarch = "";
+    var classPrevMarchV = "gentelella-bg-green";
+    var classPrevMarchE = "gentelella-bg-gray";
+    var classPrevMarchD = "gentelella-bg-red";
+    var i = 0;
+
+    function redirectLaunchResultPage(matchID) {
+        $("#matchID").val(matchID);
+        $("#registration-form").attr("action", "/CurrentSeason/LaunchSimpleResultCurrent");
+        $("#registration-form").submit();
+    }
+
+    function redirectCommentPage(matchID) {
+        $("#matchID").val(matchID);
+        $("#registration-form").attr("action", "/CurrentSeason/CommentMatchCurrent");
+        $("#registration-form").submit();
+    }
+
+    $(document).ready(function () {
+        if ('@TempData["returnMessage"]' != '')
+            toastr.error('Aviso: @TempData["returnMessage"].');
+
+        if (detectMobileDevice() == 0) {
+            activeSidebarMenu(window.location.pathname);
+        }
+
+        $("code").attr("style", "height:0px;background-color:#fff");
+
+        putStageActive("@stageIDInitial");
+
+        for (var i = 0; i < arrayStages.length; i++) {
+            $("#" + arrayStages[i]).on("click", function () {
+                putStageActive($(this).attr("id"));
+            });
+            if (String('@joinStageNONActive').indexOf(arrayStages[i]) > -1) {
+                sHtml = "<span tabindex='0' class='button-tooltip'><span class='nextMatch'>" + $("#" + arrayStages[i]).html() + "<a href='' class='tooltipContainer linkable tooltip-link tooltip-right' role='tooltip'><span class='tooltip-content'><div class='matchAbridged'><span class='matchInfo'><b>Fase AINDA não gerada</b><br>Aguarde finalizar a fase anterior.</span></div></span></a></span></span>";
+                $("#" + arrayStages[i]).html(sHtml);
+            }
+            else if (arrayStages[i] != "fase0") {
+                $("div.list-item-" + arrayStages[i].replace("fase", "")).filter(function (index) {
+                    $(this).find(".gentelella-fa-commenting-o").attr("style", "color:#fff").on("click", function () {
+                        redirectCommentPage($(this).attr("matchID"));
+                    });
+                    if ($(this).find("span.score-done").length) {
+                        $(this).find(".gentelella-fa-soccer-ball-o").attr("disabled", "true").attr("title", "Resultado já lançado!\nEsta ação não pode mais ser executada.");
+                    }
+                    else if ($(this).attr("launchResult") == "false") {
+                        $(this).find(".gentelella-fa-soccer-ball-o").attr("disabled", "true").attr("title", "O prazo desta partida ainda não inicializou!\nEsta ação não pode ser executada.");
+                    }
+                    else if ($(this).attr("userIDHome") != "@sessionUserID" && $(this).attr("userIDAway") != "@sessionUserID") {
+                        $(this).find(".gentelella-fa-soccer-ball-o").attr("disabled", "true").attr("title", "Esta ação só é permitida para os\nTécnicos/Manager dos times envolvidos\n na partida.");
+                    }
+                    else {
+                        var objClick = $(this).find(".gentelella-fa-soccer-ball-o");
+                        objClick.attr("style", "color:#fff");
+                        objClick.on("click", function () {
+                            redirectLaunchResultPage($(this).attr("matchID"));
+                        });
+                    }
+                    if ((index % 2) == 0) { return true; } else { return false; }
+                }).addClass("gentelella-odd-item");
+
+            }
+        }
+
+        tableStage0 = $('#datatable-responsive-table');
+
+        markSituationTeamOnTable(@Model.totalQualify, @indexRelegate);
+
+        if ('@hasStage0' == 'True') {
+		    objPaginate = new paginateMatches({
+							    iCurrentPage : @roundInitial,
+							    iAmountTotalOfPages : @(Model.listOfTeamTable.Count - 1),
+							    sObjectItemList : "div.list-item",
+							    sObjectRoundDropDown : "#idGoRoundSelected",
+							    sObjectMoveNextItem : "#idGoForward",
+							    sObjectMovePreviousItem : "#idGoBack"});
+		    objPaginate.initializePaginateMatches();
+
+            $("div.list-item").filter(function (index) {
+                $(this).find(".gentelella-fa-commenting-o").attr("style", "color:#fff").on("click", function () {
+                    redirectCommentPage($(this).attr("matchID"));
+                });
+                if ($(this).find("span.score-done").length) {
+                    $(this).find(".gentelella-fa-soccer-ball-o").attr("disabled", "true").attr("title", "Resultado já lançado!\nEsta ação não pode mais ser executada.");
+                }
+                else if ($(this).attr("launchResult") == "false") {
+                    $(this).find(".gentelella-fa-soccer-ball-o").attr("disabled", "true").attr("title", "O prazo desta partida ainda não inicializou!\nEsta ação não pode ser executada.");
+                }
+                else if ($(this).attr("userIDHome") != "@sessionUserID" && $(this).attr("userIDAway") != "@sessionUserID") {
+                    $(this).find(".gentelella-fa-soccer-ball-o").attr("disabled", "true").attr("title", "Esta ação só é permitida para os\nTécnicos/Manager dos times envolvidos\n na partida.");
+                }
+                else {
+                    var objClick = $(this).find(".gentelella-fa-soccer-ball-o");
+                    objClick.attr("style", "color:#fff");
+                    objClick.on("click", function () {
+                        redirectLaunchResultPage($(this).attr("matchID"));
+                    });
+                }
+                if ((index % 2) == 0) { return true; } else { return false; }
+            }).addClass("gentelella-odd-item");
+
+            $("tbody.tableBodyContainer").find("td.prevMatch").each(function (index, value) {
+                sHtml = "<ul class='nav nav-list'>";
+                for (i = 0; i < arrayAttrPreMatch.length; i++) {
+                    if ($(this).attr(arrayAttrPreMatch[i]) != "") {
+                        arrayDescription = String($(this).attr(arrayAttrPreMatch[i])).split(";");
+                        classPrevMarch = "";
+                        if (arrayDescription[0] == "V")
+                            classPrevMarch = classPrevMarchV;
+                        else if (arrayDescription[0] == "E")
+                            classPrevMarch = classPrevMarchE;
+                        else if (arrayDescription[0] == "D")
+                            classPrevMarch = classPrevMarchD;
+                        sHtml += "&nbsp;<li tabindex='0' class='win button-tooltip' id='Tooltip'><span class='gentelella-badge " + classPrevMarch + "'>" + arrayDescription[0] + "</span><a href='' class='tooltipContainer linkable tooltip-link tooltip-right' role='tooltip'><span class='tooltip-content'><div class='matchAbridged'><span class='matchInfo'><b>Confronto Recente</b><br>" + arrayDescription[1] + "</span><img src='/images/team-logo/" + arrayDescription[2] + ".jpg' title='" + arrayDescription[2] + "' width='30' onerror='this.src = ''/images/notfound.png'';'/>&nbsp;&nbsp;<span class='score'>" + arrayDescription[3] + "</span>&nbsp;&nbsp;<img src='/images/team-logo/" + arrayDescription[4] + ".jpg' title='" + arrayDescription[4] + "' width='30' onerror='this.src = ''/images/notfound.png'';'/></div></span></a></li>";
+                    }
+                }
+                sHtml += "</ul>";
+                $(this).html(sHtml);
+            });
+
+            $("tbody.tableBodyContainer").find("td.nextMatch").each(function (index, value) {
+                sHtml = "<span tabindex='0' class='button-tooltip'><span class='nextMatch'><img src='" + $(this).attr("pathNextTeamName") + "' title='" + $(this).attr("NextTeamName") + "' width='25' onerror='this.src = ''/images/notfound.png'';'/><a href='' class='tooltipContainer linkable tooltip-link tooltip-right' role='tooltip'><span class='tooltip-content'><div class='matchAbridged'><span class='matchInfo'><b>Próximo Confronto</b><br>" + $(this).attr("round") + "</span><img src='" + $(this).attr("pathTeamName") + "' title='" + $(this).attr("teamName") + "' width='30' onerror='this.src = ''/images/notfound.png'';'/>&nbsp;&nbsp;<time>-</time>&nbsp;&nbsp;<img src='" + $(this).attr("pathNextTeamName") + "' title='" + $(this).attr("nextTeamName") + "' width='30' onerror='this.src = ''/images/notfound.png'';'/></div></span></a></span></span>";
+                $(this).html(sHtml);
+            });
+
+        }
+    });
+
+    function putStageActive(stageDescription) {
+        for (var i = 0; i < arrayStages.length; i++) {
+            $("#" + arrayStages[i] + "-1").hide();
+            $("#fase0-2").hide();
+        }
+        for (var i = 0; i < arrayStages.length; i++) {
+            if (stageDescription == arrayStages[i] && stageDescription == "fase0") {
+                $("#fase0-1").show();
+                $("#fase0-2").show();
+                $("#fase0").attr("class", "@classActiveStage");
+            }
+            else if (stageDescription == arrayStages[i]) {
+                $("#" + stageDescription + "-1").show();
+                $("#" + stageDescription).attr("class", "@classActiveStage");
+            }
+            else {
+                $("#" + arrayStages[i]).attr("class", "@classActiveNonStage");
+            }
+        }
+    }
+
+</script>
+}
+

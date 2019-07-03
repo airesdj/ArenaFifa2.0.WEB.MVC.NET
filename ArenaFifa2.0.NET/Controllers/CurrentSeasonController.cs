@@ -22,6 +22,7 @@ namespace ArenaFifa20.NET.Controllers
             ViewBag.inModeratorMenu = "1";
             ViewBag.inLaunchResult = "0";
             ViewBag.inLineUpPlayOffGames = "0";
+            ViewBag.inMyPaginateMatches = "0";
             ViewBag.inCurrentSeasonName = String.Empty;
             ViewBag.inCurrentChampionshipNameName = String.Empty;
             ViewBag.inCurrentChampionshipForGroup = String.Empty;
@@ -138,6 +139,7 @@ namespace ArenaFifa20.NET.Controllers
                             modelReturnJSON.menuCurrentSeason.currentChampionshipDetails.pathAvatar1 = getPathAvatar(modelReturnJSON.menuCurrentSeason.currentChampionshipDetails.psnID1);
                             modelReturnJSON.menuCurrentSeason.currentChampionshipDetails.pathAvatar2 = getPathAvatar(modelReturnJSON.menuCurrentSeason.currentChampionshipDetails.psnID2);
                             Session["user.current.season.menu"] = modelReturnJSON.menuCurrentSeason;
+                            Session["user.current.season.summary"] = modelReturnJSON;
 
                             setViewBagVariablesList((CurrentSeasonMenuViewModel)Session["user.current.season.menu"]);
 
@@ -170,6 +172,84 @@ namespace ArenaFifa20.NET.Controllers
             }
         }
 
+        // GET: CurrentSeason/ClashTable
+        [SessionTimeout]
+        public ActionResult ClashTable(FormCollection formHTML)
+        {
+
+            ChampionshipDetailsModel modelReturnJSON = new ChampionshipDetailsModel();
+            ChampionshipDetailsModel ModeratorMenuMode = new ChampionshipDetailsModel();
+            CurrentSeasonSummaryViewModel summaryModel = new CurrentSeasonSummaryViewModel();
+
+            string actionForm = "show_championship_details";
+
+            if (formHTML["actionForm"] != null)
+                actionForm = formHTML["actionForm"].ToLower();
+            if (actionForm=="voltar_current_season") { actionForm = "show_championship_details"; }
+            setViewBagVariables();
+            ViewBag.inLaunchResult = "1";
+            ViewBag.inMyPaginateMatches = "1";
+
+            try
+            {
+
+                summaryModel = (CurrentSeasonSummaryViewModel)Session["user.current.season.summary"];
+
+                modelReturnJSON.menuCurrentSeason = (CurrentSeasonMenuViewModel)Session["user.current.season.menu"];
+                setViewBagVariablesList(modelReturnJSON.menuCurrentSeason);
+
+                modelReturnJSON.listOfStage = new List<StandardDetailsModel>();
+                modelReturnJSON.listOfGroup = new List<StandardDetailsModel>();
+                modelReturnJSON.listOfMatch = new List<ChampionshipMatchTableDetailsModel>();
+                modelReturnJSON.listOfTeamTable = new List<ChampionshipTeamTableDetailsModel>();
+                modelReturnJSON.listOfChampionship = new List<ChampionshipDetailsModel>();
+
+                if (actionForm == "show_championship_details")
+                {
+                    modelReturnJSON = GlobalFunctions.ShowChampionshipDetails(summaryModel.menuCurrentSeason.currentChampionshipID.ToString(), 
+                                                                              summaryModel.menuCurrentSeason.currentChampionshipDetails, true,
+                                                                               Convert.ToInt32(Session["user.id"].ToString()));
+                }
+
+                modelReturnJSON.actionUser = actionForm.ToUpper();
+                modelReturnJSON.menuCurrentSeason = (CurrentSeasonMenuViewModel)Session["user.current.season.menu"];
+
+                if ((!String.IsNullOrEmpty(modelReturnJSON.returnMessage) && modelReturnJSON.returnMessage != "ModeratorSuccessfully"))
+                {
+                    TempData["returnMessage"] = modelReturnJSON.returnMessage + " - " + actionForm + ". (" + modelReturnJSON.returnMessage + ")";
+                    return View(modelReturnJSON);
+                }
+                else if (modelReturnJSON.drawDoneMatchTable == 0)
+                {
+                    TempData["returnMessage"] = "A Funcionalidade não está disponível. O Sorteio, deste campeonato, ainda não foi gerado.";
+                    return View("Summary", summaryModel);
+                }
+                else
+                {
+                    if (modelReturnJSON.forGroup == false && modelReturnJSON.twoTurns == false && modelReturnJSON.justOneTurn == false)
+                        return View("ClashTablePlayoff", modelReturnJSON);
+                    else if (modelReturnJSON.forGroup == true)
+                        return View("ClashTableGroup", modelReturnJSON);
+                    else
+                        return View(modelReturnJSON);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                TempData["returnMessage"] = "Erro interno - Exibindo Current Season - Clash Table: (" + ex.InnerException.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(modelReturnJSON);
+
+            }
+            finally
+            {
+                modelReturnJSON = null;
+                ModeratorMenuMode = null;
+                summaryModel = null;
+            }
+        }
+
         // GET: CurrentSeason/CommentMatchCurrent
         [SessionTimeout]
         [ValidateInput(false)]
@@ -186,8 +266,8 @@ namespace ArenaFifa20.NET.Controllers
 
             string actionForm = String.Empty;
             string sourceForm = String.Empty;
-            string championshipID = String.Empty;
-            string matchID = String.Empty;
+            string championshipID = "0";
+            string matchID = "0";
 
             if (formHTML["actionForm"]==null)
                 actionForm = "show_championshipmatchtable_details";
@@ -205,14 +285,16 @@ namespace ArenaFifa20.NET.Controllers
 
             setViewBagVariables();
             ViewBag.inLaunchResult = "1";
+            ViewBag.inScorerDetails = "1";
+            ViewBag.inCalculateHistoryMatches = "1";
 
             try
             {
                 setViewBagVariablesList((CurrentSeasonMenuViewModel)Session["user.current.season.menu"]);
 
-                if (actionForm == "save_comment")
+                if (actionForm.IndexOf("save_comment") > -1)
                 {
-                    commentMatchMode.matchID = Convert.ToInt32(formHTML["matchID"]);
+                    commentMatchMode.matchID = Convert.ToInt32(matchID);
                     commentMatchMode.comment = Server.HtmlDecode(formHTML["txtComment"]);
                     commentMatchMode.actionUser = "save_comment";
                     commentMatchMode.userID = Convert.ToUInt16(Session["user.id"].ToString());
@@ -226,16 +308,16 @@ namespace ArenaFifa20.NET.Controllers
                     {
                         modelReturnJSON = (ChampionshipMatchTableDetailsModel)TempData["FullModel"];
 
-                        GlobalFunctions.SendEmailCommentAllUsersByGame(modelReturnJSON, commentMatchMode.comment, formHTML["matchID"]);
+                        GlobalFunctions.SendEmailCommentAllUsersByGame(modelReturnJSON, commentMatchMode.comment, matchID);
 
                         TempData["actionSuccessfully"] = "Comentário efetuado com sucesso";
                     }
                 }
-                else if (actionForm == "save_user_comment")
+                else if (actionForm.IndexOf("save_user_comment") > -1)
                 {
-                    commentMatchMode.matchID = Convert.ToInt32(formHTML["matchID"]);
-                    commentMatchMode.championshipID = Convert.ToInt16(formHTML["selectedID"]);
-                    commentMatchMode.actionUser = actionForm;
+                    commentMatchMode.matchID = Convert.ToInt32(matchID);
+                    commentMatchMode.championshipID = Convert.ToInt16(championshipID);
+                    commentMatchMode.actionUser = actionForm.Replace("_current_season", String.Empty);
                     commentMatchMode.userID = Convert.ToInt32(Session["user.id"].ToString());
 
                     response = GlobalVariables.WebApiClient.PostAsJsonAsync("ChampionshipCommentUsers", commentMatchMode).Result;
@@ -244,11 +326,11 @@ namespace ArenaFifa20.NET.Controllers
                     if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
                         TempData["actionSuccessfully"] = "Ação efetuada com sucesso. Você agora estará recebendo os comentários desta partida";
                 }
-                else if (actionForm == "cancel_user_comment")
+                else if (actionForm.IndexOf("cancel_user_comment") > -1)
                 {
-                    commentMatchMode.matchID = Convert.ToInt32(formHTML["matchID"]);
-                    commentMatchMode.championshipID = Convert.ToInt16(formHTML["selectedID"]);
-                    commentMatchMode.actionUser = actionForm;
+                    commentMatchMode.matchID = Convert.ToInt32(matchID);
+                    commentMatchMode.championshipID = Convert.ToInt16(championshipID);
+                    commentMatchMode.actionUser = actionForm.Replace("_current_season", String.Empty);
                     commentMatchMode.userID = Convert.ToInt32(Session["user.id"].ToString());
 
                     response = GlobalVariables.WebApiClient.PostAsJsonAsync("ChampionshipCommentUsers", commentMatchMode).Result;
@@ -269,12 +351,9 @@ namespace ArenaFifa20.NET.Controllers
                     case HttpStatusCode.Created:
                         if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
                         {
-
-                            if (actionForm == "save_comment")
+                            if (actionForm.IndexOf("save_comment") > -1)
                             {
-                                ViewBag.inScorerDetails = "1";
-
-                                response = GlobalVariables.WebApiClient.GetAsync("ChampionshipCommentMatch/" + formHTML["matchID"]).Result;
+                                response = GlobalVariables.WebApiClient.GetAsync("ChampionshipCommentMatch/" + matchID).Result;
                                 modelReturnJSON2 = response.Content.ReadAsAsync<ChampionshipCommentMatchListViewModel>().Result;
 
                                 modelReturnJSON.returnMessage = modelReturnJSON2.returnMessage;
@@ -286,12 +365,11 @@ namespace ArenaFifa20.NET.Controllers
                                 }
                                 return View(modelReturnJSON);
                             }
-                            else if (actionForm == "save_user_comment" || actionForm == "cancel_user_comment")
+                            else if (actionForm.IndexOf("save_user_comment") > -1 || actionForm.IndexOf("cancel_user_comment") > -1)
                             {
-                                ViewBag.inScorerDetails = "1";
                                 modelReturnJSON = (ChampionshipMatchTableDetailsModel)TempData["FullModel"];
 
-                                response = GlobalVariables.WebApiClient.GetAsync("ChampionshipCommentUsers/" + formHTML["matchID"]).Result;
+                                response = GlobalVariables.WebApiClient.GetAsync("ChampionshipCommentUsers/" + matchID).Result;
                                 modelReturnJSON3 = response.Content.ReadAsAsync<ChampionshipCommentMatchUsersListViewModel>().Result;
 
                                 modelReturnJSON.returnMessage = modelReturnJSON3.returnMessage;
@@ -305,14 +383,14 @@ namespace ArenaFifa20.NET.Controllers
                             {
                                 if (actionForm == "show_championshipmatchtable_details")
                                 {
-                                    ViewBag.inScorerDetails = "1";
-
                                     modelReturnJSON = GlobalFunctions.getDetailsViewChampionshipMatch(championshipID, matchID);
+
+                                    GlobalFunctions.getHistoryClashesTeamAndCoach(ref modelReturnJSON);
                                 }
                                 modelReturnJSON.actionUser = actionForm.ToUpper();
                                 if (!String.IsNullOrEmpty(modelReturnJSON.returnMessage) && modelReturnJSON.returnMessage != "ModeratorSuccessfully")
                                     TempData["returnMessage"] = modelReturnJSON.returnMessage + " - " + actionForm + ". (" + modelReturnJSON.returnMessage + ")";
-
+                                modelReturnJSON.sourceForm = "ClashTable";
                                 return View(modelReturnJSON);
                             }
                         }
@@ -346,6 +424,7 @@ namespace ArenaFifa20.NET.Controllers
                 commentMatchMode = null;
             }
         }
+
 
 
 

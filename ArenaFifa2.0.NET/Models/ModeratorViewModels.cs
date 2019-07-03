@@ -352,6 +352,9 @@ namespace ArenaFifa20.NET.Models
         public int drawDoneUserTeam { get; set; }
         public List<UserTeamDetailsModel> listOfUserTeam { get; set; }
 
+        public CurrentSeasonMenuViewModel menuCurrentSeason { get; set; }
+        public List<ChampionshipMatchTableClashesByTeamModel> listOfClashes { get; set; }
+
         public string stageID_Round { get; set; }
         public string psnOperation { get; set; }
         public int idUserOperation { get; set; }
@@ -437,12 +440,15 @@ namespace ArenaFifa20.NET.Models
         public string psnID1 { get; set; }
         public string psnID2 { get; set; }
         public int totalRecordsOfHistoric { get; set; }
+        public Boolean launchResultReleased { get; set; }
         public List<ScorerDetails> listOfScorerTeamHome { get; set; }
         public List<ScorerDetails> listOfScorerTeamAway { get; set; }
         public List<ScorerMatchDetails> listOfScorerMatch { get; set; }
         public List<ChampionshipCommentMatchDetailsModel> listOfCommentMatch { get; set; }
         public List<ChampionshipCommentMatchUsersDetailsModel> listOfUsersCommentMatch { get; set; }
         public List<ChampionshipMatchTableDetailsModel> listOfMatch { get; set; }
+        public ChampionshipMatchTableClashesHistoryTotalswModel historyCoachClash { get; set; }
+        public ChampionshipMatchTableClashesHistoryTotalsByTeamswModel historyTeamClash { get; set; }
         public string sourceForm { get; set; }
         public string actionForm { get; set; }
         public string actionUser { get; set; }
