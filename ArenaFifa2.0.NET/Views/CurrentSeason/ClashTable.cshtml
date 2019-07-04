@@ -20,6 +20,17 @@
     int totalCountMatchStage = 0;
     string joinStageNONActive = String.Empty;
 
+    int totalMatchPerRound = 0;
+
+    if (Model.groupIDSelected > 0)
+    {
+        totalMatchPerRound = ((Model.listOfTeamTable.Count / Model.listOfGroup.Count) - 1);
+    }
+    else
+    {
+        totalMatchPerRound = Model.listOfTeamTable.Count - 1;
+    }
+    if (Model.twoTurns == true) { totalMatchPerRound = totalMatchPerRound * 2; }
 
     string onlyOnePlayOffGame = String.Empty;
     if (Model.twoLegs == false)
@@ -51,6 +62,8 @@
         }
     }
 
+    if (roundInitial == 0) { roundInitial = 1; }
+
 }
 
 <!-- page content -->
@@ -73,6 +86,7 @@
 
         <form action="" class="form-horizontal" id="registration-form" method="post" role="form">
             @Html.AntiForgeryToken()
+            @{ TempData["FullModel"] = Model; }
             <input type="hidden" id="actionType" name="actionType" value="" />
             <input type="hidden" id="actionForm" name="actionForm" value="" />
             <input type="hidden" id="currentModeTypeSeason" name="currentModeTypeSeason" value="" />
@@ -106,13 +120,29 @@
                     <div class="gentelella-col-md-8 gentelella-col-sm-8 gentelella-col-xs-14" id="fase0-1" style="padding-left:0px">
                         <div class="gentelella-x_panel">
                             <div class="gentelella-x_content">
+                                @if (Model.groupIDSelected > 0)
+                                {
+                                    <div class="gentelella-col-md-3 gentelella-col-sm-3 gentelella-col-xs-14">
+                                        <label class="gentelella-control-label" id="labelFirstCombobox">Escolha um Grupo </label><i style="color:red">*</i> :
+                                        <select id="cmbGroup" name="cmbGroup" class="gentelella-form-control" onChange="">
+                                            @foreach (var group in Model.listOfGroup)
+                                            {
+                                                <option value="@group.id">@group.name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <br><br><br>
+                                }
                                 <h1 class="" style="color:#2C3E4F;font-weight:bold">TABELA</h1>
                                 <center>
                                     <code>
                                         Legenda:&nbsp;&nbsp;
                                         <span class="gentelella-btn gentelella-btn-teamtable-qualified" width="20px" onmouseover="this.style.backgroundColor='steelblue'"></span>&nbsp;Classificados para a fase de playoff
-                                        &nbsp;&nbsp;/&nbsp;&nbsp;
-                                        <span class="gentelella-btn gentelella-btn-teamtable-relegated" width="20px"></span>&nbsp;Rebaixados
+                                        @if (indexRelegate > 0)
+                                        {
+                                            @("  /  ")
+                                            <span class="gentelella-btn gentelella-btn-teamtable-relegated" width="20px"></span>@(" Rebaixados")
+                                        }
                                     </code>
                                 </center>
 
@@ -134,7 +164,7 @@
                                     </thead>
                                     <tbody class="tableBodyContainer">
                                         @{countPos = 1; }
-                                        @foreach (var teamTable in Model.listOfTeamTable)
+                                        @foreach (var teamTable in Model.listOfTeamTable.Where(s => s.groupID == Model.groupIDSelected))
                                         {
                                             balanceOfGoals = teamTable.totalGoalsFOR - teamTable.totalGoalsAGainst;
                                             <tr>
@@ -238,12 +268,12 @@
                                         <div class="list box text-shadow" style="margin:0 2% 1em 2%">
                                             @{countPos = 0; }
                                             <!-- item 1 -->
-                                            @foreach (var match in Model.listOfMatch.Where(s => s.stageID == stage.id))
+                                            @foreach (var match in Model.listOfMatch.Where(s => s.stageID == stage.id && s.groupID == Model.groupIDSelected))
                                             {
                                                 if (countPos != match.round)
                                                 {
                                                     countPos = match.round;
-                                                    <input type="hidden" id="@("fase0-" + match.round)" name="@("fase0-" + match.round)" value="@(match.startDate.ToString("dd/MM") + " à " + match.endDate.ToString("dd/MM"))" />
+                                                    <input type="hidden" id="@("fase0-Round" + match.round)" name="@("fase0-" + match.round)" value="@(match.startDate.ToString("dd/MM") + " à " + match.endDate.ToString("dd/MM"))" />
                                                 }
                                                 <div class="list-item box border-identify-item-match" launchResult="@match.launchResultReleased.ToString().ToLower()" userIDHome="@match.userHomeID" userIDAway="@match.userAwayID">
                                                     <div class="gentelella-row ">
@@ -439,12 +469,14 @@
 
     function redirectLaunchResultPage(matchID) {
         $("#matchID").val(matchID);
+        $("#actionForm").val("SHOW_LAUNCH_SIMPLE_RESULT_DETAILS_CURRENT_SEASON");
         $("#registration-form").attr("action", "/CurrentSeason/LaunchSimpleResultCurrent");
         $("#registration-form").submit();
     }
 
     function redirectCommentPage(matchID) {
         $("#matchID").val(matchID);
+        $("#actionForm").val("SHOW_CHAMPIONSHIPMATCHTABLE_DETAILS");
         $("#registration-form").attr("action", "/CurrentSeason/CommentMatchCurrent");
         $("#registration-form").submit();
     }
@@ -506,7 +538,7 @@
         if ('@hasStage0' == 'True') {
 		    objPaginate = new paginateMatches({
 							    iCurrentPage : @roundInitial,
-							    iAmountTotalOfPages : @(Model.listOfTeamTable.Count - 1),
+							    iAmountTotalOfPages : @totalMatchPerRound,
 							    sObjectItemList : "div.list-item",
 							    sObjectRoundDropDown : "#idGoRoundSelected",
 							    sObjectMoveNextItem : "#idGoForward",
@@ -560,7 +592,14 @@
                 sHtml = "<span tabindex='0' class='button-tooltip'><span class='nextMatch'><img src='" + $(this).attr("pathNextTeamName") + "' title='" + $(this).attr("NextTeamName") + "' width='25'/><a href='' class='tooltipContainer linkable tooltip-link tooltip-right' role='tooltip'><span class='tooltip-content'><div class='matchAbridged'><span class='matchInfo'><b>Próximo Confronto</b><br>" + $(this).attr("round") + "</span><img src='" + $(this).attr("pathTeamName") + "' title='" + $(this).attr("teamName") + "' width='30'/>&nbsp;&nbsp;<time>-</time>&nbsp;&nbsp;<img src='" + $(this).attr("pathNextTeamName") + "' title='" + $(this).attr("nextTeamName") + "' width='30' onerror='" + imgNotFound + "'/></div></span></a></span></span>";
                 $(this).html(sHtml);
             });
+        }
 
+        if ('@Model.groupIDSelected' != '0') {
+            $("#cmbGroup").find("option[value='@Model.groupIDSelected']").attr("selected", "true");
+            $("#cmbGroup").on("change", function () {
+                $("#actionForm").val("SWAP_GROUP_ID_SELECTED");
+                $("#registration-form").submit();
+            });
         }
     });
 

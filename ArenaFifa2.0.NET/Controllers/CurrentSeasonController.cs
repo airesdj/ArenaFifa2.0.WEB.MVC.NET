@@ -135,9 +135,19 @@ namespace ArenaFifa20.NET.Controllers
                 }
                 else
                 {
+                    modelReturnJSON = (CurrentSeasonSummaryViewModel)Session["user.current.season.summary"];
+                    if (modeType != modelReturnJSON.modeType)
+                    {
+                        ModeratorMenuMode.actionUser = "summary";
+                        ModeratorMenuMode.modeType = modeType;
+                        ModeratorMenuMode.userID = Convert.ToInt32(Session["user.id"].ToString());
+                        response = GlobalVariables.WebApiClient.PostAsJsonAsync("CurrentSeason", ModeratorMenuMode).Result;
+                        modelReturnJSON = response.Content.ReadAsAsync<CurrentSeasonSummaryViewModel>().Result;
+                        Session["user.current.season.menu"] = null;
+                        Session["user.current.season.summary"] = null;
+                    }
                     modelReturnJSON.returnMessage = "CurrentSeasonSuccessfully";
                     response.StatusCode = HttpStatusCode.Created;
-                    modelReturnJSON = (CurrentSeasonSummaryViewModel)Session["user.current.season.summary"];
                 }
 
 
@@ -225,23 +235,31 @@ namespace ArenaFifa20.NET.Controllers
                 }
                 else if (actionForm == "swap_of_championship")
                 {
-                    ModeratorMenuMode2 = summaryModel;
+                    //ModeratorMenuMode2.menuCurrentSeason = summaryModel.menuCurrentSeason;
                     ModeratorMenuMode2.actionUser = "summary_update_team";
+                    ModeratorMenuMode2.modeType = summaryModel.modeType;
                     ModeratorMenuMode2.championshipID = Convert.ToInt16(formHTML["championshipID"]);
+                    ModeratorMenuMode2.userID = Convert.ToInt16(Session["user.id"].ToString());
+                    //ModeratorMenuMode2.menuCurrentSeason.currentChampionshipDetails = summaryModel.menuCurrentSeason.currentChampionshipDetails;
                     response = GlobalVariables.WebApiClient.PostAsJsonAsync("CurrentSeason", ModeratorMenuMode2).Result;
-                    summaryModel = response.Content.ReadAsAsync<CurrentSeasonSummaryViewModel>().Result;
+                    ModeratorMenuMode2 = response.Content.ReadAsAsync<CurrentSeasonSummaryViewModel>().Result;
 
                     modelReturnJSON = GlobalFunctions.ShowChampionshipDetails(formHTML["championshipID"], null, true,
                                                                                Convert.ToInt32(Session["user.id"].ToString()));
 
-                    modelReturnJSON.menuCurrentSeason = summaryModel.menuCurrentSeason;
+                    modelReturnJSON.menuCurrentSeason = ModeratorMenuMode2.menuCurrentSeason;
 
                     modelReturnJSON.menuCurrentSeason.currentChampionshipDetails.pathAvatar1 = getPathAvatar(modelReturnJSON.menuCurrentSeason.currentChampionshipDetails.psnID1);
                     modelReturnJSON.menuCurrentSeason.currentChampionshipDetails.pathAvatar2 = getPathAvatar(modelReturnJSON.menuCurrentSeason.currentChampionshipDetails.psnID2);
                     Session["user.current.season.menu"] = modelReturnJSON.menuCurrentSeason;
-                    Session["user.current.season.summary"] = summaryModel;
+                    Session["user.current.season.summary"] = ModeratorMenuMode2;
 
                     setViewBagVariablesList((CurrentSeasonMenuViewModel)Session["user.current.season.menu"]);
+                }
+                else if (actionForm == "swap_group_id_selected")
+                {
+                    modelReturnJSON = (ChampionshipDetailsModel)TempData["FullModel"];
+                    modelReturnJSON.groupIDSelected = Convert.ToInt16(formHTML["cmbGroup"]);
                 }
 
                 modelReturnJSON.actionUser = actionForm.ToUpper();
@@ -263,10 +281,18 @@ namespace ArenaFifa20.NET.Controllers
                 {
                     if (modelReturnJSON.forGroup == false && modelReturnJSON.twoTurns == false && modelReturnJSON.justOneTurn == false)
                         return View("ClashTablePlayoff", modelReturnJSON);
-                    else if (modelReturnJSON.forGroup == true)
-                        return View("ClashTableGroup", modelReturnJSON);
                     else
+                    {
+                        if (modelReturnJSON.forGroup == true && modelReturnJSON.groupIDSelected == 0)
+                        {
+                            modelReturnJSON.groupIDSelected = GlobalFunctions.getGroupIDUserLogged(modelReturnJSON.listOfTeamTable,
+                                                                                                   Convert.ToInt32(Session["user.id"].ToString()));
+                        }
+                        else if (modelReturnJSON.forGroup == false)
+                            modelReturnJSON.groupIDSelected = 0;
+
                         return View(modelReturnJSON);
+                    }
                 }
 
             }
@@ -556,12 +582,19 @@ namespace ArenaFifa20.NET.Controllers
                                 {
                                     if (modelReturnJSON2.forGroup == false && modelReturnJSON2.twoTurns == false && modelReturnJSON2.justOneTurn == false)
                                         return View("ClashTablePlayoff", modelReturnJSON2);
-                                    else if (modelReturnJSON2.forGroup == true)
-                                        return View("ClashTableGroup", modelReturnJSON2);
                                     else
-                                        return View("ClashTable", modelReturnJSON2);
-                                }
+                                    {
+                                        if (modelReturnJSON2.forGroup == true && modelReturnJSON2.groupIDSelected == 0)
+                                        {
+                                            modelReturnJSON2.groupIDSelected = GlobalFunctions.getGroupIDUserLogged(modelReturnJSON2.listOfTeamTable,
+                                                                                                                   Convert.ToInt32(Session["user.id"].ToString()));
+                                        }
+                                        else if (modelReturnJSON2.forGroup == false)
+                                            modelReturnJSON2.groupIDSelected = 0;
 
+                                        return View("ClashTable", modelReturnJSON2);
+                                    }
+                                }
                             }
                             else
                             {
@@ -1293,9 +1326,7 @@ namespace ArenaFifa20.NET.Controllers
             ChampionshipCalendarListViewModel modelReturnJSON2 = new ChampionshipCalendarListViewModel();
             ChampionshipDetailsModel ModeratorMenuMode = new ChampionshipDetailsModel();
 
-            string actionType = "H2H";
-            if (formHTML["actionType"] != null)
-                actionType = formHTML["actionType"].ToUpper();
+            string actionType = String.Empty;
 
             setViewBagVariables();
 
@@ -1303,7 +1334,7 @@ namespace ArenaFifa20.NET.Controllers
             {
                 modelReturnJSON2.menuCurrentSeason = (CurrentSeasonMenuViewModel)Session["user.current.season.menu"];
                 setViewBagVariablesList(modelReturnJSON2.menuCurrentSeason);
-
+                actionType = modelReturnJSON2.menuCurrentSeason.modeType;
                 ModeratorMenuMode.actionUser = "calendarAllActiveByType";
                 ModeratorMenuMode.modeType = actionType;
                 response = GlobalVariables.WebApiClient.PostAsJsonAsync("Championship", ModeratorMenuMode).Result;

@@ -358,6 +358,7 @@ namespace ArenaFifa20.NET.Models
         public string stageID_Round { get; set; }
         public string psnOperation { get; set; }
         public int idUserOperation { get; set; }
+        public int groupIDSelected { get; set; }
         public string actionUser { get; set; }
         public string returnMessage { get; set; }
     }

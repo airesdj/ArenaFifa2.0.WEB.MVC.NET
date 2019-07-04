@@ -52,7 +52,7 @@ this.paginateMatchesList = function(){
     });
 	this.validateControlsCurrentPage();
     if (vars.sObjectRoundDetails != "") {
-        $(vars.sObjectRoundDetails).html("Periodo: " + $("#fase0-" + vars.iCurrentPage).val());
+        $(vars.sObjectRoundDetails).html("Periodo: " + $("#fase0-Round" + vars.iCurrentPage).val());
     }
 }
 

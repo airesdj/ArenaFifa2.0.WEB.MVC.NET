@@ -178,7 +178,7 @@ namespace ArenaFifa20.NET
                 string pathTypeLogo = String.Empty;
                 string pathTeamLogo = String.Empty;
 
-                if (updateResult==false)
+                if (updateResult==false || modelReturnJSON.listOfGroup == null)
                 {
                     response = GlobalVariables.WebApiClient.GetAsync("ChampionshipGroup/" + championshipID).Result;
                     listOfGroup = response.Content.ReadAsAsync<ChampionshipGroupListViewModel>().Result;
@@ -1007,6 +1007,26 @@ namespace ArenaFifa20.NET
                 modelReturnJSON6 = null;
                 ModeratorMenuMode = null;
                 response = null;
+            }
+        }
+
+        public static int getGroupIDUserLogged(List<ChampionshipTeamTableDetailsModel> listOfTeamTable, int userID)
+        {
+            int GROUP_ID_INITIAL = 1;
+            int groupID = GROUP_ID_INITIAL;
+
+            try
+            {
+                foreach(var team in listOfTeamTable.Where(s => s.userID == userID))
+                {
+                    groupID = team.groupID;
+                }
+
+                return groupID;
+            }
+            catch
+            {
+                return GROUP_ID_INITIAL;
             }
         }
     }

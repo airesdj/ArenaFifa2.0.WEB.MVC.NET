@@ -256,6 +256,7 @@ function setSubmitMenuSummaryCurrentSeason(modeType, championshipID, actionForm)
     $("#currentModeTypeSeason").val(modeType);
     $("#actionType").val(modeType);
     $("#championshipID").val(championshipID);
+    if ($("#txtComment").length > 0) { $("#txtComment").val("."); }
     $("#registration-form").attr("action", "/CurrentSeason/" + actionForm);
     $("#registration-form").submit();
 }
