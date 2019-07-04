@@ -14,6 +14,7 @@
 <form action="" class="form-horizontal" id="registration-form" method="post" role="form">
 
     @Html.AntiForgeryToken()
+    <input type="hidden" id="actionForm" name="actionForm" value="" />
     <input type="hidden" id="actionType" name="actionType" value="" />
     <input type="hidden" id="currentModeTypeSeason" name="currentModeTypeSeason" value="" />
     <input type="hidden" id="championshipID" name="championshipID" value="" />
@@ -125,8 +126,12 @@
                                 {
                                     @("Nas fases seguintes os times se enfrentam em sistema de mata-mata, em jogos apenas de ida, sem qualquer tipo de vantagem para um dos times, conforme a regra abaixo.")
                                 }
+                                else if (mainModel.type == "MDCL")
+                                {
+                                    @("Na ÚNICA fase os times se enfrentam em sistema de mata-mata, em jogos apenas de ida, sem qualquer tipo de vantagem para um dos times.")
+                                }
                                 <br><br>
-                                @if (mainModel.totalQualify > 0 && mainModel.playoff)
+                                @if (mainModel.totalQualify > 0 && mainModel.playoff && mainModel.type != "MDCL")
                                 {
                                     <b>Os confrontos destas fases serão estabelecidos de acordo com a classificação da primeira fase, seguindo a seguinte ordem:</b>
                                     <br><br>
@@ -154,7 +159,7 @@
                                             @("7º X 10º")<br />
                                             @("8º X 9º")<br />
                                         }
-                                        else if (totalGroup == 8 && mainModel.totalQualify == 2 && mainModel.ChampionshipIDSource == 0)
+                                        else if (totalGroup == 8 && mainModel.totalQualify == 2 && mainModel.ChampionshipIDSource == 0 && mainModel.type != "CPDM")
                                         {
                                             @("1º X 16º")<br />
                                             @("2º X 15º")<br />
@@ -164,6 +169,17 @@
                                             @("6º X 11º")<br />
                                             @("7º X 10º")<br />
                                             @("8º X 9º")<br />
+                                        }
+                                        else if (totalGroup == 8 && mainModel.totalQualify == 2 && mainModel.type == "CPDM")
+                                        {
+                                            @("1º do Grupo 1 X 2º do Grupo 2")<br />
+                                            @("1º do Grupo 3 X 2º do Grupo 4")<br />
+                                            @("1º do Grupo 2 X 2º do Grupo 1")<br />
+                                            @("1º do Grupo 4 X 2º do Grupo 3")<br />
+                                            @("1º do Grupo 5 X 2º do Grupo 6")<br />
+                                            @("1º do Grupo 7 X 2º do Grupo 8")<br />
+                                            @("1º do Grupo 6 X 2º do Grupo 5")<br />
+                                            @("1º do Grupo 8 X 2º do Grupo 7")<br />
                                         }
                                         else if (totalGroup == 4 && mainModel.totalQualify == 2 && mainModel.ChampionshipIDSource > 0)
                                         {
@@ -194,6 +210,14 @@
                                             @("7º X 10º")<br />
                                             @("8º X 9º")<br />
                                         }
+                                    </center>
+                                }
+                                else
+                                {
+                                    <b>O confronto desta única fase será estabelecida de acordo com os campeonatos: Liga dos Campeões da Europa e Liga Europa, da seguinte forma:</b>
+                                    <br><br>
+                                    <center>
+                                        @("Campeão da Liga dos Campeões da Europa X Campeão da Liga Europa")<br />
                                     </center>
                                 }
                             </p>

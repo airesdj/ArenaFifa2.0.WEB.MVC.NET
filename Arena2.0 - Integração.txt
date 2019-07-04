@@ -25,10 +25,8 @@ Hi Guys, voltando o assunto do Arena 2.0, a integração já foi iniciada e est�
 
 
 *_Funcionalidade que está EM ANDAMENTO:_*
-- Todo Dashboard das Tela de Campeonatos (*_17/21_*) ==> *EM ANAMENTO: Chamada de outro de Campeonato dentro da Modalidade*
-      . Restam: = Lançamento de Resultado
-				= Tabela e Resultados Por Grupo
-				= Tabela e Resultados apenas Playoff
+- Todo Dashboard das Tela de Campeonatos (*_19/21_*) ==> *EM ANAMENTO: Tabela e Resultados Por Grupo*
+      . Restam: = Tabela e Resultados apenas Playoff
 				
 
 	*Observação: Temporadas anteriores não disponibilizada na 1a versão.*

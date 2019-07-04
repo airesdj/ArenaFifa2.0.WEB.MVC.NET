@@ -113,7 +113,7 @@ namespace ArenaFifa20.NET.Controllers
         public ActionResult Summary(FormCollection formHTML)
         {
 
-            HttpResponseMessage response = null;
+            HttpResponseMessage response = new HttpResponseMessage();
             CurrentSeasonSummaryViewModel modelReturnJSON = new CurrentSeasonSummaryViewModel();
             CurrentSeasonSummaryViewModel ModeratorMenuMode = new CurrentSeasonSummaryViewModel();
             string modeType = "H2H";
@@ -125,21 +125,34 @@ namespace ArenaFifa20.NET.Controllers
 
             try
             {
-                ModeratorMenuMode.actionUser = "summary";
-                ModeratorMenuMode.modeType = modeType;
-                ModeratorMenuMode.userID = Convert.ToInt32(Session["user.id"].ToString());
-                response = GlobalVariables.WebApiClient.PostAsJsonAsync("CurrentSeason", ModeratorMenuMode).Result;
-                modelReturnJSON = response.Content.ReadAsAsync<CurrentSeasonSummaryViewModel>().Result;
+                if (Session["user.current.season.menu"]==null)
+                {
+                    ModeratorMenuMode.actionUser = "summary";
+                    ModeratorMenuMode.modeType = modeType;
+                    ModeratorMenuMode.userID = Convert.ToInt32(Session["user.id"].ToString());
+                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("CurrentSeason", ModeratorMenuMode).Result;
+                    modelReturnJSON = response.Content.ReadAsAsync<CurrentSeasonSummaryViewModel>().Result;
+                }
+                else
+                {
+                    modelReturnJSON.returnMessage = "CurrentSeasonSuccessfully";
+                    response.StatusCode = HttpStatusCode.Created;
+                    modelReturnJSON = (CurrentSeasonSummaryViewModel)Session["user.current.season.summary"];
+                }
+
 
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.Created:
                         if (modelReturnJSON.returnMessage == "CurrentSeasonSuccessfully")
                         {
-                            modelReturnJSON.menuCurrentSeason.currentChampionshipDetails.pathAvatar1 = getPathAvatar(modelReturnJSON.menuCurrentSeason.currentChampionshipDetails.psnID1);
-                            modelReturnJSON.menuCurrentSeason.currentChampionshipDetails.pathAvatar2 = getPathAvatar(modelReturnJSON.menuCurrentSeason.currentChampionshipDetails.psnID2);
-                            Session["user.current.season.menu"] = modelReturnJSON.menuCurrentSeason;
-                            Session["user.current.season.summary"] = modelReturnJSON;
+                            if (Session["user.current.season.menu"] == null)
+                            {
+                                modelReturnJSON.menuCurrentSeason.currentChampionshipDetails.pathAvatar1 = getPathAvatar(modelReturnJSON.menuCurrentSeason.currentChampionshipDetails.psnID1);
+                                modelReturnJSON.menuCurrentSeason.currentChampionshipDetails.pathAvatar2 = getPathAvatar(modelReturnJSON.menuCurrentSeason.currentChampionshipDetails.psnID2);
+                                Session["user.current.season.menu"] = modelReturnJSON.menuCurrentSeason;
+                                Session["user.current.season.summary"] = modelReturnJSON;
+                            }
 
                             setViewBagVariablesList((CurrentSeasonMenuViewModel)Session["user.current.season.menu"]);
 
@@ -180,6 +193,8 @@ namespace ArenaFifa20.NET.Controllers
             ChampionshipDetailsModel modelReturnJSON = new ChampionshipDetailsModel();
             ChampionshipDetailsModel ModeratorMenuMode = new ChampionshipDetailsModel();
             CurrentSeasonSummaryViewModel summaryModel = new CurrentSeasonSummaryViewModel();
+            HttpResponseMessage response = new HttpResponseMessage();
+            CurrentSeasonSummaryViewModel ModeratorMenuMode2 = new CurrentSeasonSummaryViewModel();
 
             string actionForm = "show_championship_details";
 
@@ -194,9 +209,7 @@ namespace ArenaFifa20.NET.Controllers
             {
 
                 summaryModel = (CurrentSeasonSummaryViewModel)Session["user.current.season.summary"];
-
-                modelReturnJSON.menuCurrentSeason = (CurrentSeasonMenuViewModel)Session["user.current.season.menu"];
-                setViewBagVariablesList(modelReturnJSON.menuCurrentSeason);
+                setViewBagVariablesList(summaryModel.menuCurrentSeason);
 
                 modelReturnJSON.listOfStage = new List<StandardDetailsModel>();
                 modelReturnJSON.listOfGroup = new List<StandardDetailsModel>();
@@ -210,6 +223,26 @@ namespace ArenaFifa20.NET.Controllers
                                                                               summaryModel.menuCurrentSeason.currentChampionshipDetails, true,
                                                                                Convert.ToInt32(Session["user.id"].ToString()));
                 }
+                else if (actionForm == "swap_of_championship")
+                {
+                    ModeratorMenuMode2 = summaryModel;
+                    ModeratorMenuMode2.actionUser = "summary_update_team";
+                    ModeratorMenuMode2.championshipID = Convert.ToInt16(formHTML["championshipID"]);
+                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("CurrentSeason", ModeratorMenuMode2).Result;
+                    summaryModel = response.Content.ReadAsAsync<CurrentSeasonSummaryViewModel>().Result;
+
+                    modelReturnJSON = GlobalFunctions.ShowChampionshipDetails(formHTML["championshipID"], null, true,
+                                                                               Convert.ToInt32(Session["user.id"].ToString()));
+
+                    modelReturnJSON.menuCurrentSeason = summaryModel.menuCurrentSeason;
+
+                    modelReturnJSON.menuCurrentSeason.currentChampionshipDetails.pathAvatar1 = getPathAvatar(modelReturnJSON.menuCurrentSeason.currentChampionshipDetails.psnID1);
+                    modelReturnJSON.menuCurrentSeason.currentChampionshipDetails.pathAvatar2 = getPathAvatar(modelReturnJSON.menuCurrentSeason.currentChampionshipDetails.psnID2);
+                    Session["user.current.season.menu"] = modelReturnJSON.menuCurrentSeason;
+                    Session["user.current.season.summary"] = summaryModel;
+
+                    setViewBagVariablesList((CurrentSeasonMenuViewModel)Session["user.current.season.menu"]);
+                }
 
                 modelReturnJSON.actionUser = actionForm.ToUpper();
                 modelReturnJSON.menuCurrentSeason = (CurrentSeasonMenuViewModel)Session["user.current.season.menu"];
@@ -221,6 +254,8 @@ namespace ArenaFifa20.NET.Controllers
                 }
                 else if (modelReturnJSON.drawDoneMatchTable == 0)
                 {
+                    ViewBag.inLaunchResult = "0";
+                    ViewBag.inMyPaginateMatches = "0";
                     TempData["returnMessage"] = "A Funcionalidade não está disponível. O Sorteio, deste campeonato, ainda não foi gerado.";
                     return View("Summary", summaryModel);
                 }
@@ -247,6 +282,8 @@ namespace ArenaFifa20.NET.Controllers
                 modelReturnJSON = null;
                 ModeratorMenuMode = null;
                 summaryModel = null;
+                ModeratorMenuMode2 = null;
+                response = null;
             }
         }
 
@@ -425,6 +462,156 @@ namespace ArenaFifa20.NET.Controllers
             }
         }
 
+
+
+        // POST: MyMatches/LaunchSimpleResultCurrent
+        [SessionTimeout]
+        [HttpPost]
+        public ActionResult LaunchSimpleResultCurrent(FormCollection formHTML)
+        {
+            HttpResponseMessage response = new HttpResponseMessage();
+            ChampionshipMatchTableDetailsModel modelReturnJSON = new ChampionshipMatchTableDetailsModel();
+            ChampionshipDetailsModel modelReturnJSON2 = new ChampionshipDetailsModel();
+            ChampionshipDetailsModel ModeratorMenuMode = new ChampionshipDetailsModel();
+            CurrentSeasonSummaryViewModel summaryModel = new CurrentSeasonSummaryViewModel();
+
+            string actionForm = String.Empty;
+            string sourceForm = String.Empty;
+            string championshipID = "0";
+            string matchID = "0";
+            string returnMessage = String.Empty;
+
+
+            if (formHTML["actionForm"] == null)
+                actionForm = "show_launch_simple_result_details_current_season";
+            else
+                actionForm = formHTML["actionForm"].ToLower();
+
+            if (formHTML["sourceForm"] != null)
+                sourceForm = formHTML["sourceForm"];
+
+            if (formHTML["selectedID"] != null)
+                championshipID = formHTML["selectedID"];
+
+            if (formHTML["matchID"] != null)
+                matchID = formHTML["matchID"];
+
+            try
+            {
+                setViewBagVariables();
+                ViewBag.inLaunchResult = "1";
+
+                setViewBagVariablesList((CurrentSeasonMenuViewModel)Session["user.current.season.menu"]);
+
+                if (actionForm == "save_simple_result")
+                {
+                    modelReturnJSON = GlobalFunctions.getDetailsLaunchResult(actionForm, Session["user.id"].ToString(), championshipID,
+                                                                             matchID, formHTML["goalsTeamHome"], formHTML["goalsTeamAway"],
+                                                                             formHTML["scorersTeamHome"], formHTML["scorersTeamAway"], Session["user.psnID"].ToString(),
+                                                                             (ChampionshipMatchTableDetailsModel)TempData["FullModel"], out returnMessage);
+
+                    if (modelReturnJSON.returnMessage == "ModeratorSuccessfully" && returnMessage != String.Empty)
+                        TempData["actionSuccessfully"] = returnMessage;
+                    response.StatusCode = HttpStatusCode.Created;
+                }
+                else
+                {
+                    modelReturnJSON.returnMessage = "ModeratorSuccessfully";
+                    modelReturnJSON.actionUser = actionForm.ToUpper();
+                    response.StatusCode = HttpStatusCode.Created;
+                }
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
+                        {
+                            if (actionForm == "save_simple_result")
+                            {
+                                ViewBag.inMyPaginateMatches = "1";
+
+                                summaryModel = (CurrentSeasonSummaryViewModel)Session["user.current.season.summary"];
+                                setViewBagVariablesList(summaryModel.menuCurrentSeason);
+
+                                modelReturnJSON2.listOfStage = new List<StandardDetailsModel>();
+                                modelReturnJSON2.listOfGroup = new List<StandardDetailsModel>();
+                                modelReturnJSON2.listOfMatch = new List<ChampionshipMatchTableDetailsModel>();
+                                modelReturnJSON2.listOfTeamTable = new List<ChampionshipTeamTableDetailsModel>();
+                                modelReturnJSON2.listOfChampionship = new List<ChampionshipDetailsModel>();
+
+                                modelReturnJSON2 = GlobalFunctions.ShowChampionshipDetails(summaryModel.menuCurrentSeason.currentChampionshipID.ToString(),
+                                                                                            summaryModel.menuCurrentSeason.currentChampionshipDetails, true,
+                                                                                            Convert.ToInt32(Session["user.id"].ToString()), true);
+
+                                modelReturnJSON2.menuCurrentSeason = (CurrentSeasonMenuViewModel)Session["user.current.season.menu"];
+
+                                modelReturnJSON.actionUser = actionForm.ToUpper();
+
+                                if ((!String.IsNullOrEmpty(modelReturnJSON2.returnMessage) && modelReturnJSON2.returnMessage != "ModeratorSuccessfully"))
+                                {
+                                    TempData["returnMessage"] = modelReturnJSON2.returnMessage + " - " + actionForm + ". (" + modelReturnJSON2.returnMessage + ")";
+                                    return View(modelReturnJSON2);
+                                }
+                                else
+                                {
+                                    if (modelReturnJSON2.forGroup == false && modelReturnJSON2.twoTurns == false && modelReturnJSON2.justOneTurn == false)
+                                        return View("ClashTablePlayoff", modelReturnJSON2);
+                                    else if (modelReturnJSON2.forGroup == true)
+                                        return View("ClashTableGroup", modelReturnJSON2);
+                                    else
+                                        return View("ClashTable", modelReturnJSON2);
+                                }
+
+                            }
+                            else
+                            {
+                                ViewBag.inCalculateScore = "1";
+                                modelReturnJSON = GlobalFunctions.getDetailsLaunchResult(actionForm, Session["user.id"].ToString(), championshipID,
+                                                                                            matchID, formHTML["goalsTeamHome"], formHTML["goalsTeamAway"],
+                                                                                            formHTML["scorersTeamHome"], formHTML["scorersTeamAway"], Session["user.psnID"].ToString(),
+                                                                                            null, out returnMessage);
+                                modelReturnJSON.actionUser = actionForm.ToUpper();
+                                modelReturnJSON.sourceForm = "ClashTable";
+                                if (!String.IsNullOrEmpty(modelReturnJSON.returnMessage) && modelReturnJSON.returnMessage != "ModeratorSuccessfully")
+                                {
+                                    TempData["returnMessage"] = modelReturnJSON.returnMessage + " - " + actionForm + ". (" + modelReturnJSON.returnMessage + ")";
+                                    modelReturnJSON.listOfScorerTeamHome = new List<ScorerDetails>();
+                                    modelReturnJSON.listOfScorerTeamAway = new List<ScorerDetails>();
+                                    modelReturnJSON.championshipID = Convert.ToInt16(championshipID);
+                                }
+                                return View(modelReturnJSON);
+                            }
+                        }
+                        else
+                        {
+                            modelReturnJSON = (ChampionshipMatchTableDetailsModel)TempData["FullModel"];
+                            TempData["returnMessage"] = "Ocorreu algum erro na exibição do Meus Jogos - Lançar Resultado. (" + modelReturnJSON.returnMessage + ")";
+                            return View(modelReturnJSON);
+                        }
+                    default:
+                        modelReturnJSON = (ChampionshipMatchTableDetailsModel)TempData["FullModel"];
+                        TempData["returnMessage"] = "Ocorreu algum erro na exibição do Meus Jogos - Lançar Resultado. (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View(TempData["FullModel"]);
+                }
+            }
+            catch (Exception ex)
+            {
+                modelReturnJSON.listOfScorerTeamHome = new List<ScorerDetails>();
+                modelReturnJSON.listOfScorerTeamAway = new List<ScorerDetails>();
+                TempData["returnMessage"] = "Erro interno - Exibindo Menu de Meus Jogos - Lançar Resultado: (" + ex.Message + ")";
+                return View(modelReturnJSON);
+
+            }
+            finally
+            {
+                modelReturnJSON = null;
+                modelReturnJSON2 = null;
+                ModeratorMenuMode = null;
+                response = null;
+                summaryModel = null;
+            }
+        }
 
 
 

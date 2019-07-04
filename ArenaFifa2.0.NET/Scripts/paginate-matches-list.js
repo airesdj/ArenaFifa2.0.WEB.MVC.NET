@@ -10,6 +10,7 @@ sObjectItemList: "",
 sObjectRoundDropDown: "",
 sObjectMoveNextItem: "",
 sObjectMovePreviousItem: "",
+sObjectRoundDetails: "",
 sTitleMoveNextItem: "Ir para a Próxima Rodada",
 sTitleMovePreviousItem: "Ir para a Rodada Anterior",
 sTitleMoveNextItemDisabled: "Função desabilitada. Está Rodada já é a última.",
@@ -48,9 +49,11 @@ this.paginateMatchesList = function(){
 	$(vars.sObjectRoundDropDown).prop("selectedIndex", (vars.iCurrentPage-1));
 	$(vars.sObjectItemList).filter(function( index ) {
 		if (index>=(firstItemOfCurrentPage-1) && index<=(lastItemOfCurrentPage-1)) {$(this).show();} else {$(this).hide();}
-	});
+    });
 	this.validateControlsCurrentPage();
-
+    if (vars.sObjectRoundDetails != "") {
+        $(vars.sObjectRoundDetails).html("Periodo: " + $("#fase0-" + vars.iCurrentPage).val());
+    }
 }
 
 this.validateControlsCurrentPage = function(){

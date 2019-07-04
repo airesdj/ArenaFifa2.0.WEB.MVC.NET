@@ -8,6 +8,7 @@
 <form action="" class="form-horizontal" id="registration-form" method="post" role="form">
 
     @Html.AntiForgeryToken()
+    <input type="hidden" id="actionForm" name="actionForm" value="" />
     <input type="hidden" id="actionType" name="actionType" value="" />
     <input type="hidden" id="currentModeTypeSeason" name="currentModeTypeSeason" value="" />
     <input type="hidden" id="championshipID" name="championshipID" value="" />

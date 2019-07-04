@@ -5,7 +5,7 @@
         <!-- sidebar menu -->
         <div id="sidebar-menu" class="gentelella-main_menu_side gentelella-hidden-print gentelella-main_menu">
             <div class="gentelella-menu_section">
-                <a href="/CurrentSeason/Summary" title="Retornar para o Sumário"><h3>@ViewBag.inCurrentSeasonName</h3></a>
+                <a href="JAVASCRIPT: setSubmitMenuSummaryCurrentSeason('@ViewBag.inCurrentSeasonType', 0, 'Summary')" title="Retornar para o Sumário"><h3>@ViewBag.inCurrentSeasonName</h3></a>
                 <ul class="gentelella-nav gentelella-side-menu">
                     <li>
                         <a><i class="gentelella-fa gentelella-fa-table"></i> @ViewBag.inCurrentChampionshipNameName <span class="gentelella-fa gentelella-fa-chevron-down"></span></a>
@@ -38,7 +38,7 @@
                         <ul class="gentelella-nav gentelella-child_menu">
                             @foreach (var item in ViewBag.listOfActiveChampionship)
                             {
-                                <li><a href="JAVASCRIPT: setSubmitMenuSummaryCurrentSeason('@item.modeType', '@item.id', 'Summary')">@item.name</a></li>
+                                <li><a href="JAVASCRIPT: setSubmitMenuSwapChampionshipCurrentSeason('@item.modeType', '@item.id')">@item.name</a></li>
                             }
                         </ul>
                     </li>

@@ -221,6 +221,14 @@ namespace ArenaFifa20.NET.Models
         public string teamName { get; set; }
         public int nextMatchTeamID { get; set; }
         public string nextMatchTeamName { get; set; }
+        public string pathTeam { get; set; }
+        public string pathNextMatchTeam { get; set; }
+        public string pathPreviousMatch1_2 { get; set; }
+        public string pathPreviousMatch1_4 { get; set; }
+        public string pathPreviousMatch2_2 { get; set; }
+        public string pathPreviousMatch2_4 { get; set; }
+        public string pathPreviousMatch3_2 { get; set; }
+        public string pathPreviousMatch3_4 { get; set; }
         public string descriptionNextMatch { get; set; }
         public string descriptionPreviousMatch1_1 { get; set; }
         public string descriptionPreviousMatch1_2 { get; set; }

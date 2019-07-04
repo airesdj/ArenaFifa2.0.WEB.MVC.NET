@@ -73,17 +73,21 @@ namespace ArenaFifa20.NET
             return selectList;
         }
 
-        public static string getPathLogoTeam(string teamName)
+        public static string getPathLogoTeam(string teamName, string modeType = "PRO")
         {
             string realPathTeamLogo = String.Empty;
 
 
             string logoPath = ConfigurationManager.AppSettings["team.path.image"].ToString() + "/" + teamName + ".jpg";
 
-            if (System.IO.File.Exists(HttpContext.Current.Server.MapPath(logoPath)))
-            { realPathTeamLogo = logoPath; }
-            else { realPathTeamLogo = ConfigurationManager.AppSettings["team.path.image.default"].ToString(); }
-
+            if (modeType == "H2H")
+                realPathTeamLogo = logoPath;
+            else
+            {
+                if (System.IO.File.Exists(HttpContext.Current.Server.MapPath(logoPath)))
+                { realPathTeamLogo = logoPath; }
+                else { realPathTeamLogo = ConfigurationManager.AppSettings["team.path.image.default"].ToString(); }
+            }
 
             return realPathTeamLogo;
         }
@@ -152,7 +156,7 @@ namespace ArenaFifa20.NET
         }
 
         public static ChampionshipDetailsModel ShowChampionshipDetails(string championshipID, ChampionshipDetailsModel detailModel = null, 
-                                                                       Boolean isCurrentSeason = false, int userIDSession = 0)
+                                                                       Boolean isCurrentSeason = false, int userIDSession = 0, Boolean updateResult = false)
         {
             HttpResponseMessage response = new HttpResponseMessage();
             ChampionshipDetailsModel modelReturnJSON = new ChampionshipDetailsModel();
@@ -174,10 +178,13 @@ namespace ArenaFifa20.NET
                 string pathTypeLogo = String.Empty;
                 string pathTeamLogo = String.Empty;
 
-                response = GlobalVariables.WebApiClient.GetAsync("ChampionshipGroup/" + championshipID).Result;
-                listOfGroup = response.Content.ReadAsAsync<ChampionshipGroupListViewModel>().Result;
-                modelReturnJSON.listOfGroup = listOfGroup.listOfGroup;
-                modelReturnJSON.returnMessage = listOfGroup.returnMessage;
+                if (updateResult==false)
+                {
+                    response = GlobalVariables.WebApiClient.GetAsync("ChampionshipGroup/" + championshipID).Result;
+                    listOfGroup = response.Content.ReadAsAsync<ChampionshipGroupListViewModel>().Result;
+                    modelReturnJSON.listOfGroup = listOfGroup.listOfGroup;
+                    modelReturnJSON.returnMessage = listOfGroup.returnMessage;
+                }
 
                 if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
                 {
@@ -199,7 +206,7 @@ namespace ArenaFifa20.NET
                             {
                                 for (int i = 0; i < modelReturnJSON.listOfTeamTable.Count; i++)
                                 {
-                                    modelReturnJSON.listOfTeamTable[i].pathTeamLogo = getPathLogoTeam(modelReturnJSON.listOfTeamTable[i].teamName);
+                                    modelReturnJSON.listOfTeamTable[i].pathTeamLogo = getPathLogoTeam(modelReturnJSON.listOfTeamTable[i].teamName, modelReturnJSON.modeType);
                                 }
                                 if (modelReturnJSON.listOfTeamTable[0].groupID > 0)
                                     modelReturnJSON.drawDoneTeamTableGroup = 1;
@@ -210,7 +217,7 @@ namespace ArenaFifa20.NET
                             {
                                 for (int i = 0; i < modelReturnJSON.listOfTeam.Count; i++)
                                 {
-                                    modelReturnJSON.listOfTeam[i].pathImg = getPathLogoTeam(modelReturnJSON.listOfTeam[i].name);
+                                    modelReturnJSON.listOfTeam[i].pathImg = getPathLogoTeam(modelReturnJSON.listOfTeam[i].name, modelReturnJSON.modeType);
                                 }
                             }
                         }
@@ -226,7 +233,7 @@ namespace ArenaFifa20.NET
                 {
                     if (modelReturnJSON.listOfMatch.Count > 0) { modelReturnJSON.drawDoneMatchTable = 1; } else { modelReturnJSON.drawDoneMatchTable = 0; }
 
-                    if (isCurrentSeason==true)
+                    if (isCurrentSeason == true)
                     {
                         ChampionshipMatchTableDetailsModel model = new ChampionshipMatchTableDetailsModel();
                         ChampionshipMatchTableClashesListViewModel modelReturnJSONClashes = new ChampionshipMatchTableClashesListViewModel();
@@ -242,7 +249,30 @@ namespace ArenaFifa20.NET
                         if (modelReturnJSONClashes != null)
                         {
                             if (modelReturnJSONClashes.returnMessage == "ModeratorSuccessfully")
+                            {
                                 modelReturnJSON.listOfClashes = modelReturnJSONClashes.listOfClashes;
+                                for (int i = 0; i< modelReturnJSON.listOfClashes.Count; i++)
+                                {
+                                    modelReturnJSON.listOfClashes[i].pathTeam = getPathLogoTeam(modelReturnJSON.listOfClashes[i].teamName, modelReturnJSON.modeType);
+                                    if (!String.IsNullOrEmpty(modelReturnJSON.listOfClashes[i].nextMatchTeamName))
+                                        modelReturnJSON.listOfClashes[i].pathNextMatchTeam = getPathLogoTeam(modelReturnJSON.listOfClashes[i].nextMatchTeamName, modelReturnJSON.modeType);
+                                    if (!String.IsNullOrEmpty(modelReturnJSON.listOfClashes[i].descriptionPreviousMatch1_2))
+                                    {
+                                        modelReturnJSON.listOfClashes[i].pathPreviousMatch1_2 = getPathLogoTeam(modelReturnJSON.listOfClashes[i].descriptionPreviousMatch1_2, modelReturnJSON.modeType);
+                                        modelReturnJSON.listOfClashes[i].pathPreviousMatch1_4 = getPathLogoTeam(modelReturnJSON.listOfClashes[i].descriptionPreviousMatch1_4, modelReturnJSON.modeType);
+                                    }
+                                    if (!String.IsNullOrEmpty(modelReturnJSON.listOfClashes[i].descriptionPreviousMatch2_2))
+                                    {
+                                        modelReturnJSON.listOfClashes[i].pathPreviousMatch2_2 = getPathLogoTeam(modelReturnJSON.listOfClashes[i].descriptionPreviousMatch2_2, modelReturnJSON.modeType);
+                                        modelReturnJSON.listOfClashes[i].pathPreviousMatch2_4 = getPathLogoTeam(modelReturnJSON.listOfClashes[i].descriptionPreviousMatch2_4, modelReturnJSON.modeType);
+                                    }
+                                    if (!String.IsNullOrEmpty(modelReturnJSON.listOfClashes[i].descriptionPreviousMatch3_2))
+                                    {
+                                        modelReturnJSON.listOfClashes[i].pathPreviousMatch3_2 = getPathLogoTeam(modelReturnJSON.listOfClashes[i].descriptionPreviousMatch3_2, modelReturnJSON.modeType);
+                                        modelReturnJSON.listOfClashes[i].pathPreviousMatch3_4 = getPathLogoTeam(modelReturnJSON.listOfClashes[i].descriptionPreviousMatch3_4, modelReturnJSON.modeType);
+                                    }
+                                }
+                            }
                         }
                         modelReturnJSONClashes = null;
                         model = null;
@@ -593,8 +623,8 @@ namespace ArenaFifa20.NET
 
                                     modelReturnJSON.pathLogoChampionship = pathChampionshipLogo;
                                     modelReturnJSON.pathLogoType = pathTypeLogo.Replace("white", "beige");
-                                    modelReturnJSON.pathLogoTeamHome = getPathLogoTeam(modelReturnJSON.teamNameHome);
-                                    modelReturnJSON.pathLogoTeamAway = getPathLogoTeam(modelReturnJSON.teamNameAway);
+                                    modelReturnJSON.pathLogoTeamHome = getPathLogoTeam(modelReturnJSON.teamNameHome, modelReturnJSON.modeType);
+                                    modelReturnJSON.pathLogoTeamAway = getPathLogoTeam(modelReturnJSON.teamNameAway, modelReturnJSON.modeType);
                                 }
 
                                 scorersTeamHomeModel = null;
@@ -649,8 +679,8 @@ namespace ArenaFifa20.NET
 
                 if (modelReturnJSON.returnMessage == "ModeratorSuccessfully")
                 {
-                    modelReturnJSON.pathLogoTeamHome = getPathLogoTeam(modelReturnJSON.teamNameHome);
-                    modelReturnJSON.pathLogoTeamAway = getPathLogoTeam(modelReturnJSON.teamNameAway);
+                    modelReturnJSON.pathLogoTeamHome = getPathLogoTeam(modelReturnJSON.teamNameHome, modelReturnJSON.modeType);
+                    modelReturnJSON.pathLogoTeamAway = getPathLogoTeam(modelReturnJSON.teamNameAway, modelReturnJSON.modeType);
                     string pathChampionshipLogo = string.Empty;
                     string pathTypeLogo = string.Empty;
 

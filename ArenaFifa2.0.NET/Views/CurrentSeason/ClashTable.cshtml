@@ -21,6 +21,16 @@
     string joinStageNONActive = String.Empty;
 
 
+    string onlyOnePlayOffGame = String.Empty;
+    if (Model.twoLegs == false)
+    {
+        onlyOnePlayOffGame = "Fase com Apenas jogos de 'IDA' - Período: ";
+    }
+    else
+    {
+        onlyOnePlayOffGame = "Fase com jogos de 'IDA' e 'VOLTA' - Período: ";
+    }
+
     if (Model.totalRelegation > 0)
     {
         indexRelegate = (Model.totalTeam - Model.totalRelegation) - 1;
@@ -64,6 +74,7 @@
         <form action="" class="form-horizontal" id="registration-form" method="post" role="form">
             @Html.AntiForgeryToken()
             <input type="hidden" id="actionType" name="actionType" value="" />
+            <input type="hidden" id="actionForm" name="actionForm" value="" />
             <input type="hidden" id="currentModeTypeSeason" name="currentModeTypeSeason" value="" />
             <input type="hidden" id="championshipID" name="championshipID" value="" />
             <input type="hidden" id="selectedID" name="selectedID" value="@Model.menuCurrentSeason.currentChampionshipID" />
@@ -168,7 +179,9 @@
                                                                        item.descriptionPreviousMatch1_1 + ";" +
                                                                        item.descriptionPreviousMatch1_2 + ";" +
                                                                        item.descriptionPreviousMatch1_3 + ";" +
-                                                                       item.descriptionPreviousMatch1_4;
+                                                                       item.descriptionPreviousMatch1_4 + ";" +
+                                                                       item.pathPreviousMatch1_2 + ";" +
+                                                                       item.pathPreviousMatch1_4;
                                                     }
                                                     if (!String.IsNullOrEmpty(item.statusPreviousMatch2))
                                                     {
@@ -176,7 +189,9 @@
                                                                        item.descriptionPreviousMatch2_1 + ";" +
                                                                        item.descriptionPreviousMatch2_2 + ";" +
                                                                        item.descriptionPreviousMatch2_3 + ";" +
-                                                                       item.descriptionPreviousMatch2_4;
+                                                                       item.descriptionPreviousMatch2_4 + ";" +
+                                                                       item.pathPreviousMatch2_2 + ";" +
+                                                                       item.pathPreviousMatch2_4;
                                                     }
                                                     if (!String.IsNullOrEmpty(item.statusPreviousMatch3))
                                                     {
@@ -184,10 +199,12 @@
                                                                        item.descriptionPreviousMatch3_1 + ";" +
                                                                        item.descriptionPreviousMatch3_2 + ";" +
                                                                        item.descriptionPreviousMatch3_3 + ";" +
-                                                                       item.descriptionPreviousMatch3_4;
+                                                                       item.descriptionPreviousMatch3_4 + ";" +
+                                                                       item.pathPreviousMatch3_2 + ";" +
+                                                                       item.pathPreviousMatch3_4;
                                                     }
                                                     <td class="form hideMed gentelella-a-center prevMatch" description1="@description1" description2="@description2" description3="@description3" style="vertical-align:middle"></td>
-                                                    <td class="gentelella-a-center nextMatch" style="vertical-align:middle" pathTeamName="/images/team-logo/@(item.teamName).jpg" teamName="@item.teamName" pathNextTeamName="/images/team-logo/@(item.nextMatchTeamName).jpg" nextTeamName="@item.nextMatchTeamName" round="@item.descriptionNextMatch"></td>
+                                                    <td class="gentelella-a-center nextMatch" style="vertical-align:middle" pathTeamName="@item.pathTeam" teamName="@item.teamName" pathNextTeamName="@item.pathNextMatchTeam" nextTeamName="@item.nextMatchTeamName" round="@item.descriptionNextMatch"></td>
                                                 }
                                             </tr>
                                             countPos = countPos + 1;
@@ -212,16 +229,22 @@
                                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                             <a id="idGoForward" class="gentelella-btn gentelella-btn-xs" title="Ir para a Próxima Rodada" style="background-color:#2C3E4F"><i class="fa fa-arrow-right" style="color:white;"></i></a>
                                             <br>
-                                            <span id="idRoundTime">Período: 26/02 à 05/03</span>
+                                            <span id="idRoundTime">Período: -</span>
                                         </div>
                                     </center>
 
                                     <!-- data -->
                                     <div class="gentelella-col-md-10 gentelella-col-sm-10 gentelella-col-xs-14">
                                         <div class="list box text-shadow" style="margin:0 2% 1em 2%">
+                                            @{countPos = 0; }
                                             <!-- item 1 -->
                                             @foreach (var match in Model.listOfMatch.Where(s => s.stageID == stage.id))
                                             {
+                                                if (countPos != match.round)
+                                                {
+                                                    countPos = match.round;
+                                                    <input type="hidden" id="@("fase0-" + match.round)" name="@("fase0-" + match.round)" value="@(match.startDate.ToString("dd/MM") + " à " + match.endDate.ToString("dd/MM"))" />
+                                                }
                                                 <div class="list-item box border-identify-item-match" launchResult="@match.launchResultReleased.ToString().ToLower()" userIDHome="@match.userHomeID" userIDAway="@match.userAwayID">
                                                     <div class="gentelella-row ">
                                                         <p class="date text-1 color-lightgray p-b-15 block text-right" style="color:#969696"><b>JOGO No.: @match.matchID</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
@@ -283,7 +306,7 @@
 
                                         <center>
                                             <div class="" width="100%" style="background-color:#2C3E4F;color:white">
-                                                <span id="idRoundTime">Fase com Apenas jogos de 'IDA' - Período: 26/02 à 05/03</span>
+                                                <span id="idRoundTime">@(onlyOnePlayOffGame + " " + objTeste.ElementAt(0).startDate.ToString("dd/MM") + " à " + objTeste.ElementAt(0).endDate.ToString("dd/MM"))</span>
                                             </div>
                                         </center>
                                         <br>
@@ -412,6 +435,7 @@
     var classPrevMarchE = "gentelella-bg-gray";
     var classPrevMarchD = "gentelella-bg-red";
     var i = 0;
+    var imgNotFound = "this.src = ''/images/notfound.png'';";
 
     function redirectLaunchResultPage(matchID) {
         $("#matchID").val(matchID);
@@ -429,8 +453,11 @@
         if ('@TempData["returnMessage"]' != '')
             toastr.error('Aviso: @TempData["returnMessage"].');
 
+        if ('@TempData["actionSuccessfully"]' != '')
+            toastr.success('@TempData["actionSuccessfully"].');
+
         if (detectMobileDevice() == 0) {
-            activeSidebarMenu(window.location.pathname);
+            activeSidebarMenu("/CurrentSeason/ClashTable");
         }
 
         $("code").attr("style", "height:0px;background-color:#fff");
@@ -483,7 +510,8 @@
 							    sObjectItemList : "div.list-item",
 							    sObjectRoundDropDown : "#idGoRoundSelected",
 							    sObjectMoveNextItem : "#idGoForward",
-							    sObjectMovePreviousItem : "#idGoBack"});
+							    sObjectMovePreviousItem : "#idGoBack", 
+							    sObjectRoundDetails : "#idRoundTime"});
 		    objPaginate.initializePaginateMatches();
 
             $("div.list-item").filter(function (index) {
@@ -521,7 +549,7 @@
                             classPrevMarch = classPrevMarchE;
                         else if (arrayDescription[0] == "D")
                             classPrevMarch = classPrevMarchD;
-                        sHtml += "&nbsp;<li tabindex='0' class='win button-tooltip' id='Tooltip'><span class='gentelella-badge " + classPrevMarch + "'>" + arrayDescription[0] + "</span><a href='' class='tooltipContainer linkable tooltip-link tooltip-right' role='tooltip'><span class='tooltip-content'><div class='matchAbridged'><span class='matchInfo'><b>Confronto Recente</b><br>" + arrayDescription[1] + "</span><img src='/images/team-logo/" + arrayDescription[2] + ".jpg' title='" + arrayDescription[2] + "' width='30' onerror='this.src = ''/images/notfound.png'';'/>&nbsp;&nbsp;<span class='score'>" + arrayDescription[3] + "</span>&nbsp;&nbsp;<img src='/images/team-logo/" + arrayDescription[4] + ".jpg' title='" + arrayDescription[4] + "' width='30' onerror='this.src = ''/images/notfound.png'';'/></div></span></a></li>";
+                        sHtml += "&nbsp;<li tabindex='0' class='win button-tooltip' id='Tooltip'><span class='gentelella-badge " + classPrevMarch + "'>" + arrayDescription[0] + "</span><a href='' class='tooltipContainer linkable tooltip-link tooltip-right' role='tooltip'><span class='tooltip-content'><div class='matchAbridged'><span class='matchInfo'><b>Confronto Recente</b><br>" + arrayDescription[1] + "</span><img src='" + arrayDescription[5] + "' title='" + arrayDescription[2] + "' width='30'/>&nbsp;&nbsp;<span class='score'>" + arrayDescription[3] + "</span>&nbsp;&nbsp;<img src='" + arrayDescription[6] + "' title='" + arrayDescription[4] + "' width='30'/></div></span></a></li>";
                     }
                 }
                 sHtml += "</ul>";
@@ -529,7 +557,7 @@
             });
 
             $("tbody.tableBodyContainer").find("td.nextMatch").each(function (index, value) {
-                sHtml = "<span tabindex='0' class='button-tooltip'><span class='nextMatch'><img src='" + $(this).attr("pathNextTeamName") + "' title='" + $(this).attr("NextTeamName") + "' width='25' onerror='this.src = ''/images/notfound.png'';'/><a href='' class='tooltipContainer linkable tooltip-link tooltip-right' role='tooltip'><span class='tooltip-content'><div class='matchAbridged'><span class='matchInfo'><b>Próximo Confronto</b><br>" + $(this).attr("round") + "</span><img src='" + $(this).attr("pathTeamName") + "' title='" + $(this).attr("teamName") + "' width='30' onerror='this.src = ''/images/notfound.png'';'/>&nbsp;&nbsp;<time>-</time>&nbsp;&nbsp;<img src='" + $(this).attr("pathNextTeamName") + "' title='" + $(this).attr("nextTeamName") + "' width='30' onerror='this.src = ''/images/notfound.png'';'/></div></span></a></span></span>";
+                sHtml = "<span tabindex='0' class='button-tooltip'><span class='nextMatch'><img src='" + $(this).attr("pathNextTeamName") + "' title='" + $(this).attr("NextTeamName") + "' width='25'/><a href='' class='tooltipContainer linkable tooltip-link tooltip-right' role='tooltip'><span class='tooltip-content'><div class='matchAbridged'><span class='matchInfo'><b>Próximo Confronto</b><br>" + $(this).attr("round") + "</span><img src='" + $(this).attr("pathTeamName") + "' title='" + $(this).attr("teamName") + "' width='30'/>&nbsp;&nbsp;<time>-</time>&nbsp;&nbsp;<img src='" + $(this).attr("pathNextTeamName") + "' title='" + $(this).attr("nextTeamName") + "' width='30' onerror='" + imgNotFound + "'/></div></span></a></span></span>";
                 $(this).html(sHtml);
             });
 

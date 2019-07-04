@@ -259,3 +259,12 @@ function setSubmitMenuSummaryCurrentSeason(modeType, championshipID, actionForm)
     $("#registration-form").attr("action", "/CurrentSeason/" + actionForm);
     $("#registration-form").submit();
 }
+
+function setSubmitMenuSwapChampionshipCurrentSeason(modeType, championshipID) {
+    $("#currentModeTypeSeason").val(modeType);
+    $("#actionType").val(modeType);
+    $("#championshipID").val(championshipID);
+    $("#actionForm").val("SWAP_OF_CHAMPIONSHIP");
+    $("#registration-form").attr("action", "/CurrentSeason/ClashTable");
+    $("#registration-form").submit();
+}

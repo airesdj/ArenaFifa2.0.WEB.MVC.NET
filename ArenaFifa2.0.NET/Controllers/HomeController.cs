@@ -30,7 +30,8 @@ namespace ArenaFifa20.NET.Controllers
                     case HttpStatusCode.Created:
                         if (modelReturnJSON.returnMessage == "subscribeBenchSuccessfully")
                         {
-
+                            Session["user.current.season.menu"] = null;
+                            Session["user.current.season.summary"] = null;
                             homeMode.seasonID = modelReturnJSON.id;
                             homeMode.seasonName = modelReturnJSON.name;
                             ViewBag.inGentelella = "0";
