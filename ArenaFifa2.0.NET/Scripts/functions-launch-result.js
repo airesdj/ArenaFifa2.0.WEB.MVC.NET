@@ -34,7 +34,7 @@ function setVariablesDataTable(totalQualify, indexRelegate, stageInitial, roundI
                 tableStage0.page(tableStage0.page.info().pages - 1).draw('page');
             }
             showRoundDetails($('#datatable-responsive-stage1'));
-            markSituationTeamOnTable(totalQualify, indexRelegate);
+            markSituationTeamOnTable(totalQualify, indexRelegate, 0);
         }
     }
     else {
@@ -172,7 +172,7 @@ function setVariablesDataTable(totalQualify, indexRelegate, stageInitial, roundI
 
 }
 
-function markSituationTeamOnTable(totalQualify, indexRelegate) {
+function markSituationTeamOnTable(totalQualify, indexRelegate, indexJustOnePlace) {
     if (tableStage0 != null) {
         $("tbody.tableBodyContainer").find("tr").filter(function (index) {
             if (index < parseInt(totalQualify)) { return true; } else { return false; }
@@ -181,6 +181,11 @@ function markSituationTeamOnTable(totalQualify, indexRelegate) {
         if (parseInt(indexRelegate) > 0) {
             $("tbody.tableBodyContainer").find("tr").filter(function (index) {
                 if (index > parseInt(indexRelegate)) { return true; } else { return false; }
+            }).addClass("gentelella-teamtable-relegated");
+        }
+        if (parseInt(indexJustOnePlace) > 0) {
+            $("tbody.tableBodyContainer").find("tr").filter(function (index) {
+                if (index == parseInt(indexJustOnePlace)) { return true; } else { return false; }
             }).addClass("gentelella-teamtable-relegated");
         }
     }

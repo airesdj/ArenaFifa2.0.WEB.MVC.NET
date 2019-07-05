@@ -19,6 +19,7 @@
     Boolean hasStage0 = false;
     int totalCountMatchStage = 0;
     string joinStageNONActive = String.Empty;
+    int inJustOnePlaceQualifiedToEuropeLeague = 0;
 
     int totalMatchPerRound = 0;
 
@@ -63,6 +64,11 @@
     }
 
     if (roundInitial == 0) { roundInitial = 1; }
+
+    if (indexRelegate == 0 && Model.menuCurrentSeason.currentChampionshipDetails.forGroup == true && Model.menuCurrentSeason.currentChampionshipDetails.ChampionshipIDDestiny > 0)
+    {
+        inJustOnePlaceQualifiedToEuropeLeague = Model.menuCurrentSeason.currentChampionshipDetails.sourcePlaceFromChampionshipSource - 1;
+    }
 
 }
 
@@ -142,6 +148,11 @@
                                         {
                                             @("  /  ")
                                             <span class="gentelella-btn gentelella-btn-teamtable-relegated" width="20px"></span>@(" Rebaixados")
+                                        }
+                                        else if (inJustOnePlaceQualifiedToEuropeLeague > 0)
+                                        {
+                                            @("  /  ")
+                                            <span class="gentelella-btn gentelella-btn-teamtable-relegated" width="20px"></span>@(" Classificado para Liga Europa")
                                         }
                                     </code>
                                 </center>
@@ -533,12 +544,13 @@
 
         tableStage0 = $('#datatable-responsive-table');
 
-        markSituationTeamOnTable(@Model.totalQualify, @indexRelegate);
+        markSituationTeamOnTable(@Model.totalQualify, @indexRelegate, @inJustOnePlaceQualifiedToEuropeLeague);
 
         if ('@hasStage0' == 'True') {
 		    objPaginate = new paginateMatches({
 							    iCurrentPage : @roundInitial,
 							    iAmountTotalOfPages : @totalMatchPerRound,
+							    iGroupIDSelected : @Model.groupIDSelected,
 							    sObjectItemList : "div.list-item",
 							    sObjectRoundDropDown : "#idGoRoundSelected",
 							    sObjectMoveNextItem : "#idGoForward",

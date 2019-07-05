@@ -15,6 +15,7 @@ sTitleMoveNextItem: "Ir para a Próxima Rodada",
 sTitleMovePreviousItem: "Ir para a Rodada Anterior",
 sTitleMoveNextItemDisabled: "Função desabilitada. Está Rodada já é a última.",
 sTitleMovePreviousItemDisabled: "Função desabilitada. Está Rodada já é a primeira.",
+iGroupIDSelected: 0,
 iTotalItemsList: 0
 
 }
@@ -52,7 +53,10 @@ this.paginateMatchesList = function(){
     });
 	this.validateControlsCurrentPage();
     if (vars.sObjectRoundDetails != "") {
-        $(vars.sObjectRoundDetails).html("Periodo: " + $("#fase0-Round" + vars.iCurrentPage).val());
+        if (vars.iGroupIDSelected > 0) 
+            $(vars.sObjectRoundDetails).html("Grupo " + vars.iGroupIDSelected + " - Periodo: " + $("#fase0-Round" + vars.iCurrentPage).val());
+        else
+            $(vars.sObjectRoundDetails).html("Periodo: " + $("#fase0-Round" + vars.iCurrentPage).val());
     }
 }
 
