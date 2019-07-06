@@ -279,20 +279,15 @@ namespace ArenaFifa20.NET.Controllers
                 }
                 else
                 {
-                    if (modelReturnJSON.forGroup == false && modelReturnJSON.twoTurns == false && modelReturnJSON.justOneTurn == false)
-                        return View("ClashTablePlayoff", modelReturnJSON);
-                    else
+                    if (modelReturnJSON.forGroup == true && modelReturnJSON.groupIDSelected == 0)
                     {
-                        if (modelReturnJSON.forGroup == true && modelReturnJSON.groupIDSelected == 0)
-                        {
-                            modelReturnJSON.groupIDSelected = GlobalFunctions.getGroupIDUserLogged(modelReturnJSON.listOfTeamTable,
-                                                                                                   Convert.ToInt32(Session["user.id"].ToString()));
-                        }
-                        else if (modelReturnJSON.forGroup == false)
-                            modelReturnJSON.groupIDSelected = 0;
-
-                        return View(modelReturnJSON);
+                        modelReturnJSON.groupIDSelected = GlobalFunctions.getGroupIDUserLogged(modelReturnJSON.listOfTeamTable,
+                                                                                                Convert.ToInt32(Session["user.id"].ToString()));
                     }
+                    else if (modelReturnJSON.forGroup == false)
+                        modelReturnJSON.groupIDSelected = 0;
+
+                    return View(modelReturnJSON);
                 }
 
             }
@@ -580,20 +575,15 @@ namespace ArenaFifa20.NET.Controllers
                                 }
                                 else
                                 {
-                                    if (modelReturnJSON2.forGroup == false && modelReturnJSON2.twoTurns == false && modelReturnJSON2.justOneTurn == false)
-                                        return View("ClashTablePlayoff", modelReturnJSON2);
-                                    else
+                                    if (modelReturnJSON2.forGroup == true && modelReturnJSON2.groupIDSelected == 0)
                                     {
-                                        if (modelReturnJSON2.forGroup == true && modelReturnJSON2.groupIDSelected == 0)
-                                        {
-                                            modelReturnJSON2.groupIDSelected = GlobalFunctions.getGroupIDUserLogged(modelReturnJSON2.listOfTeamTable,
-                                                                                                                   Convert.ToInt32(Session["user.id"].ToString()));
-                                        }
-                                        else if (modelReturnJSON2.forGroup == false)
-                                            modelReturnJSON2.groupIDSelected = 0;
-
-                                        return View("ClashTable", modelReturnJSON2);
+                                        modelReturnJSON2.groupIDSelected = GlobalFunctions.getGroupIDUserLogged(modelReturnJSON2.listOfTeamTable,
+                                                                                                                Convert.ToInt32(Session["user.id"].ToString()));
                                     }
+                                    else if (modelReturnJSON2.forGroup == false)
+                                        modelReturnJSON2.groupIDSelected = 0;
+
+                                    return View("ClashTable", modelReturnJSON2);
                                 }
                             }
                             else

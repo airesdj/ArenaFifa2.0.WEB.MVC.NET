@@ -33,16 +33,6 @@
     }
     if (Model.twoTurns == true) { totalMatchPerRound = totalMatchPerRound * 2; }
 
-    string onlyOnePlayOffGame = String.Empty;
-    if (Model.twoLegs == false)
-    {
-        onlyOnePlayOffGame = "Fase com Apenas jogos de 'IDA' - Período: ";
-    }
-    else
-    {
-        onlyOnePlayOffGame = "Fase com jogos de 'IDA' e 'VOLTA' - Período: ";
-    }
-
     if (Model.totalRelegation > 0)
     {
         indexRelegate = (Model.totalTeam - Model.totalRelegation) - 1;
@@ -332,111 +322,128 @@
                     </div>
 
                 }
-                else
+                else if (Model.twoLegs == false)
                 {
-                    <div class="gentelella-col-md-10 gentelella-col-sm-10 gentelella-col-xs-14" id="@("fase" + stage.id + "-1")" style="padding-left:0px">
-                        <div class="gentelella-x_panel">
-                            <div class="gentelella-x_content">
-                                @{totalCountMatchStage = Model.listOfMatch.Where(s => s.stageID == stage.id).Count(); }
-                                @{var objTeste = Model.listOfMatch.Where(s => s.stageID == stage.id); }
-                                @{countPos = 0; }
+                    <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-14" id="@("fase" + stage.id + "-1")" style="padding-left:0px">
+                        <div class="gentelella-xxx_panel">
+                            <div class="gentelella-xxx_content">
+                                @{totalCountMatchStage = Model.listOfMatch.Where(s => s.stageID == stage.id && s.round == 1).Count(); }
+                                @{var objTeste = Model.listOfMatch.Where(s => s.stageID == stage.id && s.round == 1); }
                                 @if (totalCountMatchStage > 0)
                                 {
-                                    <h1 class="" style="color:#2C3E4F;font-weight:bold">JOGOS</h1>
-                                    <div id="demo" class="box jplist">
+                                    <h1 class="gentelella-x_panel" style="color:#2C3E4F;font-weight:bold">FASE DE @stage.name.ToUpper() - JOGOS APENAS DE IDA</h1>
+                                    <div class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-14 " style="padding-left:0px">
+                                        <div class="gentelella-x_panel">
+                                            <div class="gentelella-x_content">
+                                                <div id="demo" class="box jplist">
 
-                                        <center>
-                                            <div class="" width="100%" style="background-color:#2C3E4F;color:white">
-                                                <span id="idRoundTime">@(onlyOnePlayOffGame + " " + objTeste.ElementAt(0).startDate.ToString("dd/MM") + " à " + objTeste.ElementAt(0).endDate.ToString("dd/MM"))</span>
-                                            </div>
-                                        </center>
-                                        <br>
-
-                                        <div class="list box text-shadow" style="margin:0 2% 1em 2%">
-                                            @for (int i = 0; i < totalCountMatchStage; i++)
-                                            {
-                                                <div class="gentelella-row ">
-                                                    <div class="gentelella-col-md-5 gentelella-col-sm-5 gentelella-col-xs-14">
-                                                        <div class="list-item-@(stage.id) box border-identify-item-match" launchResult="@objTeste.ElementAt(i).launchResultReleased.ToString().ToLower()" userIDHome="@objTeste.ElementAt(i).userHomeID" userIDAway="@objTeste.ElementAt(i).userAwayID">
-                                                            <div class="gentelella-row ">
-                                                                <p class="date text-1 color-lightgray p-b-15 block text-right" style="color:#969696"><b>JOGO No.: @objTeste.ElementAt(i).matchID</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
-                                                            </div>
-
-                                                            <!-- match -->
-                                                            <div class="gentelella-row text-center">
-                                                                <span class='tooltip-content'>
-                                                                    <a class="gentelella-btn gentelella-btn-xs gentelella-btn-success gentelella-fa gentelella-fa-soccer-ball-o" target="" rel="" matchID="@objTeste.ElementAt(i).matchID">
-                                                                        &nbsp;Lançar Resultado
-                                                                    </a>
-                                                                    <div class='matchAbridged' onmouseover="this.style.backgroundColor='transparent'" style="background-color:transparent">
-                                                                        <img src="/images/team-logo/@(objTeste.ElementAt(i).teamNameHome).jpg" title="@objTeste.ElementAt(i).teamNameHome" onerror="this.src='/images/notfound.png';" width="40" />
-                                                                        &nbsp;&nbsp;
-                                                                        @if (!String.IsNullOrEmpty(objTeste.ElementAt(i).totalGoalsHome))
-                                                                        {
-                                                                            <span class='score-done'>@objTeste.ElementAt(i).totalGoalsHome&nbsp;<span>-</span>&nbsp;@objTeste.ElementAt(i).totalGoalsAway</span>
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            <span class='score'>@objTeste.ElementAt(i).totalGoalsHome&nbsp;<span>-</span>&nbsp;@objTeste.ElementAt(i).totalGoalsAway</span>
-                                                                        }
-                                                                        &nbsp;&nbsp;
-                                                                        <img src="/images/team-logo/@(objTeste.ElementAt(i).teamNameAway).jpg" title="@objTeste.ElementAt(i).teamNameAway" onerror="this.src='/images/notfound.png';" width="40" />
-                                                                    </div>
-                                                                </span>
-                                                                <span class="date text-1 color-lightgray p-b-15 block gentelella-a-right" style="color:#969696">@objTeste.ElementAt(i).psnIDHome - @objTeste.ElementAt(i).psnIDAway&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                                                                <a title="Click para marcar o jogo com seu adversário&#013; ou realizar qualquer outro comentário." class="gentelella-btn gentelella-btn-xs gentelella-btn-primary gentelella-fa gentelella-fa-commenting-o gentelella-fa-1" target="_blank" rel="" matchID="@objTeste.ElementAt(i).matchID">
-                                                                    &nbsp;Comentar no Jogo
-                                                                </a>
-                                                            </div>
+                                                    <center>
+                                                        <div class="" width="100%" style="background-color:#2C3E4F;color:white">
+                                                            <span id="idRoundTime">@("Jogos Somente 'IDA' - Período: " + objTeste.ElementAt(0).startDate.ToString("dd/MM") + " à " + objTeste.ElementAt(0).endDate.ToString("dd/MM"))</span>
                                                         </div>
-                                                    </div>
+                                                    </center>
+                                                    <br>
 
-                                                    <div class="gentelella-col-md-1 gentelella-col-sm-1 gentelella-col-xs-14">&nbsp;</div>
-
-                                                    i = i + 1;
-
-                                                    <div class="gentelella-col-md-5 gentelella-col-sm-5 gentelella-col-xs-14">
-                                                        <div class="gentelella-col-md-5 gentelella-col-sm-5 gentelella-col-xs-14">
-                                                            <div class="list-item-@(stage.id) box border-identify-item-match" launchResult="@objTeste.ElementAt(i).launchResultReleased.ToString().ToLower()" userIDHome="@objTeste.ElementAt(i).userHomeID" userIDAway="@objTeste.ElementAt(i).userAwayID">
+                                                    <div class="list box text-shadow" style="margin:0 2% 1em 2%">
+                                                        @for (int i = 0; i < totalCountMatchStage; i++)
+                                                        {
+                                                            <div class="gentelella-col-md-5 gentelella-col-sm-5 gentelella-col-xs-14">
                                                                 <div class="gentelella-row ">
-                                                                    <p class="date text-1 color-lightgray p-b-15 block text-right" style="color:#969696"><b>JOGO No.: @objTeste.ElementAt(i).matchID</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
-                                                                </div>
-
-                                                                <!-- match -->
-                                                                <div class="gentelella-row text-center">
-                                                                    <span class='tooltip-content'>
-                                                                        <a class="gentelella-btn gentelella-btn-xs gentelella-btn-success gentelella-fa gentelella-fa-soccer-ball-o" target="" rel="" matchID="@objTeste.ElementAt(i).matchID">
-                                                                            &nbsp;Lançar Resultado
-                                                                        </a>
-                                                                        <div class='matchAbridged' onmouseover="this.style.backgroundColor='transparent'" style="background-color:transparent">
-                                                                            <img src="/images/team-logo/@(objTeste.ElementAt(i).teamNameHome).jpg" title="@objTeste.ElementAt(i).teamNameHome" onerror="this.src='/images/notfound.png';" width="40" />
-                                                                            &nbsp;&nbsp;
-                                                                            <span class='score-done'>@objTeste.ElementAt(i).totalGoalsHome&nbsp;<span>-</span>&nbsp;@objTeste.ElementAt(i).totalGoalsAway</span>
-                                                                            &nbsp;&nbsp;
-                                                                            <img src="/images/team-logo/@(objTeste.ElementAt(i).teamNameAway).jpg" title="@objTeste.ElementAt(i).teamNameAway" onerror="this.src='/images/notfound.png';" width="40" />
+                                                                    <div class="list-item-@(stage.id) box border-identify-item-match" launchResult="match.launchResultReleased.ToString().ToLower()" userIDHome="@objTeste.ElementAt(i).userHomeID" userIDAway="@objTeste.ElementAt(i).userAwayID">
+                                                                        <div class="gentelella-row ">
+                                                                            <p class="date text-1 color-lightgray p-b-15 block text-right" style="color:#969696"><b>JOGO No.: @objTeste.ElementAt(i).matchID</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
                                                                         </div>
-                                                                    </span>
-                                                                    <span class="date text-1 color-lightgray p-b-15 block gentelella-a-right" style="color:#969696">@objTeste.ElementAt(i).psnIDHome - @objTeste.ElementAt(i).psnIDAway&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                                                                    <a title="Click para marcar o jogo com seu adversário&#013; ou realizar qualquer outro comentário." class="gentelella-btn gentelella-btn-xs gentelella-btn-primary gentelella-fa gentelella-fa-commenting-o gentelella-fa-1" target="_blank" rel="" matchID="@objTeste.ElementAt(i).matchID">
-                                                                        &nbsp;Comentar no Jogo
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
 
+                                                                        <!-- match -->
+                                                                        <div class="gentelella-row text-center">
+                                                                            <span class='tooltip-content'>
+                                                                                <a class="gentelella-btn gentelella-btn-xs gentelella-btn-success gentelella-fa gentelella-fa-soccer-ball-o" target="" rel="" matchID="@objTeste.ElementAt(i).matchID">
+                                                                                    &nbsp;Lançar Resultado
+                                                                                </a>
+                                                                                <div class='matchAbridged' onmouseover="this.style.backgroundColor='transparent'" style="background-color:transparent">
+                                                                                    <img src="/images/team-logo/@(objTeste.ElementAt(i).teamNameHome).jpg" title="@objTeste.ElementAt(i).teamNameHome" onerror="this.src='/images/notfound.png';" width="40" />
+                                                                                    &nbsp;&nbsp;
+                                                                                    @if (!String.IsNullOrEmpty(objTeste.ElementAt(i).totalGoalsHome))
+                                                                                    {
+                                                                                        <span class='score-done'>@objTeste.ElementAt(i).totalGoalsHome&nbsp;<span>-</span>&nbsp;@objTeste.ElementAt(i).totalGoalsAway</span>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <span class='score'>@objTeste.ElementAt(i).totalGoalsHome&nbsp;<span>-</span>&nbsp;@objTeste.ElementAt(i).totalGoalsAway</span>
+                                                                                    }
+                                                                                    &nbsp;&nbsp;
+                                                                                    <img src="/images/team-logo/@(objTeste.ElementAt(i).teamNameAway).jpg" title="@objTeste.ElementAt(i).teamNameAway" onerror="this.src='/images/notfound.png';" width="40" />
+                                                                                </div>
+                                                                            </span>
+                                                                            <span class="date text-1 color-lightgray p-b-15 block gentelella-a-right" style="color:#969696">@objTeste.ElementAt(i).psnIDHome - @objTeste.ElementAt(i).psnIDAway&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                                            <a title="Click para marcar o jogo com seu adversário&#013; ou realizar qualquer outro comentário." class="gentelella-btn gentelella-btn-xs gentelella-btn-primary gentelella-fa gentelella-fa-commenting-o gentelella-fa-1" target="_blank" rel="" matchID="@objTeste.ElementAt(i).matchID">
+                                                                                &nbsp;Comentar no Jogo
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    @{i = i + 1;}
+
+                                                                </div>
+                                                                <br />
+
+                                                            </div>
+
+                                                            <div class="gentelella-col-md-1 gentelella-col-sm-1 gentelella-col-xs-14">&nbsp;</div>
+
+                                                            <div class="gentelella-col-md-5 gentelella-col-sm-5 gentelella-col-xs-14">
+                                                                <div class="gentelella-row ">
+                                                                    <div class="list-item-@(stage.id) box border-identify-item-match" launchResult="match.launchResultReleased.ToString().ToLower()" userIDHome="@objTeste.ElementAt(i).userHomeID" userIDAway="@objTeste.ElementAt(i).userAwayID">
+                                                                        <div class="gentelella-row ">
+                                                                            <p class="date text-1 color-lightgray p-b-15 block text-right" style="color:#969696"><b>JOGO No.: @objTeste.ElementAt(i).matchID</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                                                                        </div>
+
+                                                                        <!-- match -->
+                                                                        <div class="gentelella-row text-center">
+                                                                            <span class='tooltip-content'>
+                                                                                <a class="gentelella-btn gentelella-btn-xs gentelella-btn-success gentelella-fa gentelella-fa-soccer-ball-o" target="" rel="" matchID="@objTeste.ElementAt(i).matchID">
+                                                                                    &nbsp;Lançar Resultado
+                                                                                </a>
+                                                                                <div class='matchAbridged' onmouseover="this.style.backgroundColor='transparent'" style="background-color:transparent">
+                                                                                    <img src="/images/team-logo/@(objTeste.ElementAt(i).teamNameHome).jpg" title="@objTeste.ElementAt(i).teamNameHome" onerror="this.src='/images/notfound.png';" width="40" />
+                                                                                    &nbsp;&nbsp;
+                                                                                    @if (!String.IsNullOrEmpty(objTeste.ElementAt(i).totalGoalsHome))
+                                                                                    {
+                                                                                        <span class='score-done'>@objTeste.ElementAt(i).totalGoalsHome&nbsp;<span>-</span>&nbsp;@objTeste.ElementAt(i).totalGoalsAway</span>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <span class='score'>@objTeste.ElementAt(i).totalGoalsHome&nbsp;<span>-</span>&nbsp;@objTeste.ElementAt(i).totalGoalsAway</span>
+                                                                                    }
+                                                                                    &nbsp;&nbsp;
+                                                                                    <img src="/images/team-logo/@(objTeste.ElementAt(i).teamNameAway).jpg" title="@objTeste.ElementAt(i).teamNameAway" onerror="this.src='/images/notfound.png';" width="40" />
+                                                                                </div>
+                                                                            </span>
+                                                                            <span class="date text-1 color-lightgray p-b-15 block gentelella-a-right" style="color:#969696">@objTeste.ElementAt(i).psnIDHome - @objTeste.ElementAt(i).psnIDAway&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                                            <a title="Click para marcar o jogo com seu adversário&#013; ou realizar qualquer outro comentário." class="gentelella-btn gentelella-btn-xs gentelella-btn-primary gentelella-fa gentelella-fa-commenting-o gentelella-fa-1" target="_blank" rel="" matchID="@objTeste.ElementAt(i).matchID">
+                                                                                &nbsp;Comentar no Jogo
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                                <br />
+                                                            </div>
+
+                                                        }
                                                     </div>
                                                 </div>
-                                            }
-                                        </div>
 
+                                            </div>
+                                        </div>
                                     </div>
 
                                 }
                                 else
                                 {
                                     joinStageNONActive = joinStageNONActive + "fase" + stage.id.ToString();
-                                    <div class="gentelella-col-md-8 gentelella-col-sm-8 gentelella-col-xs-14" style="padding-left:0px">
-                                        <code><b>Fase NÃO gerada.  Aguarde finalizar as fases anteriores.</b></code>
+                                    <div class="gentelella-x_panel gentelella-col-md-8 gentelella-col-sm-8 gentelella-col-xs-14" style="padding-left:0px">
+                                        <code><b>A Fase @stage.name.ToUpper() não está gerada.  Aguarde finalizar as fases anteriores.</b></code>
                                     </div>
                                 }
 
@@ -444,7 +451,247 @@
                         </div>
                     </div>
                 }
+                else if (Model.twoLegs == true)
+                {
+                    <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-14" id="@("fase" + stage.id + "-1")" style="padding-left:0px">
+                        <div class="gentelella-xxx_panel">
+                            <div class="gentelella-xxx_content">
+                                @{totalCountMatchStage = Model.listOfMatch.Where(s => s.stageID == stage.id && s.round == 1).Count(); }
+                                @{var objTeste = Model.listOfMatch.Where(s => s.stageID == stage.id && s.round == 1); }
+                                @if (totalCountMatchStage > 0)
+                                {
+                                    <center><h1 class="gentelella-x_panel" style="color:#2C3E4F;font-weight:bold;">FASE DE @stage.name.ToUpper() - JOGOS DE 'IDA' & 'VOLTA'</h1></center>
+                                    <div class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-14" style="padding-left:0px">
+                                        <div class="gentelella-x_panel">
+                                            <div class="gentelella-x_content">
+                                                <div id="demo" class="box jplist">
 
+                                                    <center>
+                                                        <div class="" width="100%" style="background-color:#2C3E4F;color:white">
+                                                            <span id="idRoundTime">@("Jogos de 'IDA' - Período: " + objTeste.ElementAt(0).startDate.ToString("dd/MM") + " à " + objTeste.ElementAt(0).endDate.ToString("dd/MM"))</span>
+                                                        </div>
+                                                    </center>
+                                                    <br>
+
+                                                    <div class="list box text-shadow" style="margin:0 2% 1em 2%">
+                                                        @for (int i = 0; i < totalCountMatchStage; i++)
+                                                        {
+                                                            <div class="gentelella-row ">
+
+                                                                <div class="gentelella-col-md-5 gentelella-col-sm-5 gentelella-col-xs-14">
+                                                                    <div class="gentelella-row ">
+                                                                        <div class="list-item-@(stage.id) box border-identify-item-match" launchResult="match.launchResultReleased.ToString().ToLower()" userIDHome="@objTeste.ElementAt(i).userHomeID" userIDAway="@objTeste.ElementAt(i).userAwayID">
+                                                                            <div class="gentelella-row ">
+                                                                                <p class="date text-1 color-lightgray p-b-15 block text-right" style="color:#969696"><b>JOGO No.: @objTeste.ElementAt(i).matchID</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                                                                            </div>
+
+                                                                            <!-- match -->
+                                                                            <div class="gentelella-row text-center">
+                                                                                <span class='tooltip-content'>
+                                                                                    <a class="gentelella-btn gentelella-btn-xs gentelella-btn-success gentelella-fa gentelella-fa-soccer-ball-o" target="" rel="" matchID="@objTeste.ElementAt(i).matchID">
+                                                                                        &nbsp;Lançar Resultado
+                                                                                    </a>
+                                                                                    <div class='matchAbridged' onmouseover="this.style.backgroundColor='transparent'" style="background-color:transparent">
+                                                                                        <img src="/images/team-logo/@(objTeste.ElementAt(i).teamNameHome).jpg" title="@objTeste.ElementAt(i).teamNameHome" onerror="this.src='/images/notfound.png';" width="40" />
+                                                                                        &nbsp;&nbsp;
+                                                                                        @if (!String.IsNullOrEmpty(objTeste.ElementAt(i).totalGoalsHome))
+                                                                                        {
+                                                                                            <span class='score-done'>@objTeste.ElementAt(i).totalGoalsHome&nbsp;<span>-</span>&nbsp;@objTeste.ElementAt(i).totalGoalsAway</span>
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            <span class='score'>@objTeste.ElementAt(i).totalGoalsHome&nbsp;<span>-</span>&nbsp;@objTeste.ElementAt(i).totalGoalsAway</span>
+                                                                                        }
+                                                                                        &nbsp;&nbsp;
+                                                                                        <img src="/images/team-logo/@(objTeste.ElementAt(i).teamNameAway).jpg" title="@objTeste.ElementAt(i).teamNameAway" onerror="this.src='/images/notfound.png';" width="40" />
+                                                                                    </div>
+                                                                                </span>
+                                                                                <span class="date text-1 color-lightgray p-b-15 block gentelella-a-right" style="color:#969696">@objTeste.ElementAt(i).psnIDHome - @objTeste.ElementAt(i).psnIDAway&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                                                <a title="Click para marcar o jogo com seu adversário&#013; ou realizar qualquer outro comentário." class="gentelella-btn gentelella-btn-xs gentelella-btn-primary gentelella-fa gentelella-fa-commenting-o gentelella-fa-1" target="_blank" rel="" matchID="@objTeste.ElementAt(i).matchID">
+                                                                                    &nbsp;Comentar no Jogo
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        @{i = i + 1;}
+
+                                                                    </div>
+                                                                    <br />
+                                                                </div>
+
+                                                                <div class="gentelella-col-md-1 gentelella-col-sm-1 gentelella-col-xs-14">&nbsp;</div>
+
+                                                                <div class="gentelella-col-md-5 gentelella-col-sm-5 gentelella-col-xs-14">
+                                                                    <div class="gentelella-row ">
+                                                                        <div class="list-item-@(stage.id) box border-identify-item-match" launchResult="match.launchResultReleased.ToString().ToLower()" userIDHome="@objTeste.ElementAt(i).userHomeID" userIDAway="@objTeste.ElementAt(i).userAwayID">
+                                                                            <div class="gentelella-row ">
+                                                                                <p class="date text-1 color-lightgray p-b-15 block text-right" style="color:#969696"><b>JOGO No.: @objTeste.ElementAt(i).matchID</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                                                                            </div>
+
+                                                                            <!-- match -->
+                                                                            <div class="gentelella-row text-center">
+                                                                                <span class='tooltip-content'>
+                                                                                    <a class="gentelella-btn gentelella-btn-xs gentelella-btn-success gentelella-fa gentelella-fa-soccer-ball-o" target="" rel="" matchID="@objTeste.ElementAt(i).matchID">
+                                                                                        &nbsp;Lançar Resultado
+                                                                                    </a>
+                                                                                    <div class='matchAbridged' onmouseover="this.style.backgroundColor='transparent'" style="background-color:transparent">
+                                                                                        <img src="/images/team-logo/@(objTeste.ElementAt(i).teamNameHome).jpg" title="@objTeste.ElementAt(i).teamNameHome" onerror="this.src='/images/notfound.png';" width="40" />
+                                                                                        &nbsp;&nbsp;
+                                                                                        @if (!String.IsNullOrEmpty(objTeste.ElementAt(i).totalGoalsHome))
+                                                                                        {
+                                                                                            <span class='score-done'>@objTeste.ElementAt(i).totalGoalsHome&nbsp;<span>-</span>&nbsp;@objTeste.ElementAt(i).totalGoalsAway</span>
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            <span class='score'>@objTeste.ElementAt(i).totalGoalsHome&nbsp;<span>-</span>&nbsp;@objTeste.ElementAt(i).totalGoalsAway</span>
+                                                                                        }
+                                                                                        &nbsp;&nbsp;
+                                                                                        <img src="/images/team-logo/@(objTeste.ElementAt(i).teamNameAway).jpg" title="@objTeste.ElementAt(i).teamNameAway" onerror="this.src='/images/notfound.png';" width="40" />
+                                                                                    </div>
+                                                                                </span>
+                                                                                <span class="date text-1 color-lightgray p-b-15 block gentelella-a-right" style="color:#969696">@objTeste.ElementAt(i).psnIDHome - @objTeste.ElementAt(i).psnIDAway&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                                                <a title="Click para marcar o jogo com seu adversário&#013; ou realizar qualquer outro comentário." class="gentelella-btn gentelella-btn-xs gentelella-btn-primary gentelella-fa gentelella-fa-commenting-o gentelella-fa-1" target="_blank" rel="" matchID="@objTeste.ElementAt(i).matchID">
+                                                                                    &nbsp;Comentar no Jogo
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                    <br />
+                                                                </div>
+
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {objTeste = Model.listOfMatch.Where(s => s.stageID == stage.id && s.round == 2); }
+
+                                    <div class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-14" style="padding-left:0px">
+                                        <div class="gentelella-x_panel">
+                                            <div class="gentelella-x_content">
+                                                <div id="demo" class="box jplist">
+
+                                                    <center>
+                                                        <div class="" width="100%" style="background-color:#2C3E4F;color:white">
+                                                            <span id="idRoundTime">@("Jogos de 'VOLTA' - Período: " + objTeste.ElementAt(0).startDate.ToString("dd/MM") + " à " + objTeste.ElementAt(0).endDate.ToString("dd/MM"))</span>
+                                                        </div>
+                                                    </center>
+                                                    <br>
+
+                                                    <div class="list box text-shadow" style="margin:0 2% 1em 2%">
+                                                        @for (int i = 0; i < totalCountMatchStage; i++)
+                                                        {
+                                                            <div class="gentelella-row ">
+
+                                                                <div class="gentelella-col-md-5 gentelella-col-sm-5 gentelella-col-xs-14">
+                                                                    <div class="gentelella-row ">
+                                                                        <div class="list-item-@(stage.id) box border-identify-item-match" launchResult="match.launchResultReleased.ToString().ToLower()" userIDHome="@objTeste.ElementAt(i).userHomeID" userIDAway="@objTeste.ElementAt(i).userAwayID">
+                                                                            <div class="gentelella-row ">
+                                                                                <p class="date text-1 color-lightgray p-b-15 block text-right" style="color:#969696"><b>JOGO No.: @objTeste.ElementAt(i).matchID</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                                                                            </div>
+
+                                                                            <!-- match -->
+                                                                            <div class="gentelella-row text-center">
+                                                                                <span class='tooltip-content'>
+                                                                                    <a class="gentelella-btn gentelella-btn-xs gentelella-btn-success gentelella-fa gentelella-fa-soccer-ball-o" target="" rel="" matchID="@objTeste.ElementAt(i).matchID">
+                                                                                        &nbsp;Lançar Resultado
+                                                                                    </a>
+                                                                                    <div class='matchAbridged' onmouseover="this.style.backgroundColor='transparent'" style="background-color:transparent">
+                                                                                        <img src="/images/team-logo/@(objTeste.ElementAt(i).teamNameHome).jpg" title="@objTeste.ElementAt(i).teamNameHome" onerror="this.src='/images/notfound.png';" width="40" />
+                                                                                        &nbsp;&nbsp;
+                                                                                        @if (!String.IsNullOrEmpty(objTeste.ElementAt(i).totalGoalsHome))
+                                                                                        {
+                                                                                            <span class='score-done'>@objTeste.ElementAt(i).totalGoalsHome&nbsp;<span>-</span>&nbsp;@objTeste.ElementAt(i).totalGoalsAway</span>
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            <span class='score'>@objTeste.ElementAt(i).totalGoalsHome&nbsp;<span>-</span>&nbsp;@objTeste.ElementAt(i).totalGoalsAway</span>
+                                                                                        }
+                                                                                        &nbsp;&nbsp;
+                                                                                        <img src="/images/team-logo/@(objTeste.ElementAt(i).teamNameAway).jpg" title="@objTeste.ElementAt(i).teamNameAway" onerror="this.src='/images/notfound.png';" width="40" />
+                                                                                    </div>
+                                                                                </span>
+                                                                                <span class="date text-1 color-lightgray p-b-15 block gentelella-a-right" style="color:#969696">@objTeste.ElementAt(i).psnIDHome - @objTeste.ElementAt(i).psnIDAway&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                                                <a title="Click para marcar o jogo com seu adversário&#013; ou realizar qualquer outro comentário." class="gentelella-btn gentelella-btn-xs gentelella-btn-primary gentelella-fa gentelella-fa-commenting-o gentelella-fa-1" target="_blank" rel="" matchID="@objTeste.ElementAt(i).matchID">
+                                                                                    &nbsp;Comentar no Jogo
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        @{i = i + 1;}
+
+                                                                    </div>
+                                                                    <br />
+                                                                </div>
+
+                                                                <div class="gentelella-col-md-1 gentelella-col-sm-1 gentelella-col-xs-14">&nbsp;</div>
+
+                                                                <div class="gentelella-col-md-5 gentelella-col-sm-5 gentelella-col-xs-14">
+                                                                    <div class="gentelella-row ">
+                                                                        <div class="list-item-@(stage.id) box border-identify-item-match" launchResult="match.launchResultReleased.ToString().ToLower()" userIDHome="@objTeste.ElementAt(i).userHomeID" userIDAway="@objTeste.ElementAt(i).userAwayID">
+                                                                            <div class="gentelella-row ">
+                                                                                <p class="date text-1 color-lightgray p-b-15 block text-right" style="color:#969696"><b>JOGO No.: @objTeste.ElementAt(i).matchID</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                                                                            </div>
+
+                                                                            <!-- match -->
+                                                                            <div class="gentelella-row text-center">
+                                                                                <span class='tooltip-content'>
+                                                                                    <a class="gentelella-btn gentelella-btn-xs gentelella-btn-success gentelella-fa gentelella-fa-soccer-ball-o" target="" rel="" matchID="@objTeste.ElementAt(i).matchID">
+                                                                                        &nbsp;Lançar Resultado
+                                                                                    </a>
+                                                                                    <div class='matchAbridged' onmouseover="this.style.backgroundColor='transparent'" style="background-color:transparent">
+                                                                                        <img src="/images/team-logo/@(objTeste.ElementAt(i).teamNameHome).jpg" title="@objTeste.ElementAt(i).teamNameHome" onerror="this.src='/images/notfound.png';" width="40" />
+                                                                                        &nbsp;&nbsp;
+                                                                                        @if (!String.IsNullOrEmpty(objTeste.ElementAt(i).totalGoalsHome))
+                                                                                        {
+                                                                                            <span class='score-done'>@objTeste.ElementAt(i).totalGoalsHome&nbsp;<span>-</span>&nbsp;@objTeste.ElementAt(i).totalGoalsAway</span>
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            <span class='score'>@objTeste.ElementAt(i).totalGoalsHome&nbsp;<span>-</span>&nbsp;@objTeste.ElementAt(i).totalGoalsAway</span>
+                                                                                        }
+                                                                                        &nbsp;&nbsp;
+                                                                                        <img src="/images/team-logo/@(objTeste.ElementAt(i).teamNameAway).jpg" title="@objTeste.ElementAt(i).teamNameAway" onerror="this.src='/images/notfound.png';" width="40" />
+                                                                                    </div>
+                                                                                </span>
+                                                                                <span class="date text-1 color-lightgray p-b-15 block gentelella-a-right" style="color:#969696">@objTeste.ElementAt(i).psnIDHome - @objTeste.ElementAt(i).psnIDAway&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                                                <a title="Click para marcar o jogo com seu adversário&#013; ou realizar qualquer outro comentário." class="gentelella-btn gentelella-btn-xs gentelella-btn-primary gentelella-fa gentelella-fa-commenting-o gentelella-fa-1" target="_blank" rel="" matchID="@objTeste.ElementAt(i).matchID">
+                                                                                    &nbsp;Comentar no Jogo
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                    <br />
+                                                                </div>
+
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                }
+                                else
+                                {
+                                    joinStageNONActive = joinStageNONActive + "fase" + stage.id.ToString();
+                                    <div class="gentelella-x_panel gentelella-col-md-8 gentelella-col-sm-8 gentelella-col-xs-14" style="padding-left:0px">
+                                        <code><b>A Fase @stage.name.ToUpper() não está gerada.  Aguarde finalizar as fases anteriores.</b></code>
+                                    </div>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                }
             }
 
         </form>
