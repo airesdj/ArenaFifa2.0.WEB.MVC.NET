@@ -234,8 +234,8 @@
                                                                        item.pathPreviousMatch3_2 + ";" +
                                                                        item.pathPreviousMatch3_4;
                                                     }
-                                                    <td class="form hideMed gentelella-a-center prevMatch" description1="@description1" description2="@description2" description3="@description3" style="vertical-align:middle"></td>
-                                                    <td class="gentelella-a-center nextMatch" style="vertical-align:middle" pathTeamName="@item.pathTeam" teamName="@item.teamName" pathNextTeamName="@item.pathNextMatchTeam" nextTeamName="@item.nextMatchTeamName" round="@item.descriptionNextMatch"></td>
+                                                    <td class="form hideMed gentelella-a-center prevMatch" description1="@description1" description2="@description2" description3="@description3" style="vertical-align:middle" prevMatchID1="@item.prevMatchID1" prevMatchID2="@item.prevMatchID2" prevMatchID3="@item.prevMatchID3"></td>
+                                                    <td class="gentelella-a-center nextMatch" style="vertical-align:middle" pathTeamName="@item.pathTeam" teamName="@item.teamName" pathNextTeamName="@item.pathNextMatchTeam" nextTeamName="@item.nextMatchTeamName" round="@item.descriptionNextMatch" matchID="@item.nextMatchID"></td>
                                                 }
                                             </tr>
                                             countPos = countPos + 1;
@@ -718,6 +718,7 @@
     var sHtml = "";
     var arrayDescription;
     var arrayAttrPreMatch = String("description1;description2;description3").split(";");
+    var arrayAttrPreMatchID = String("prevMatchID1;prevMatchID2;prevMatchID3").split(";");
     var classPrevMarch = "";
     var classPrevMarchV = "gentelella-bg-green";
     var classPrevMarchE = "gentelella-bg-gray";
@@ -840,7 +841,7 @@
                             classPrevMarch = classPrevMarchE;
                         else if (arrayDescription[0] == "D")
                             classPrevMarch = classPrevMarchD;
-                        sHtml += "&nbsp;<li tabindex='0' class='win button-tooltip' id='Tooltip'><span class='gentelella-badge " + classPrevMarch + "'>" + arrayDescription[0] + "</span><a href='' class='tooltipContainer linkable tooltip-link tooltip-right' role='tooltip'><span class='tooltip-content'><div class='matchAbridged'><span class='matchInfo'><b>Confronto Recente</b><br>" + arrayDescription[1] + "</span><img src='" + arrayDescription[5] + "' title='" + arrayDescription[2] + "' width='30'/>&nbsp;&nbsp;<span class='score'>" + arrayDescription[3] + "</span>&nbsp;&nbsp;<img src='" + arrayDescription[6] + "' title='" + arrayDescription[4] + "' width='30'/></div></span></a></li>";
+                        sHtml += "&nbsp;<li tabindex='0' class='win button-tooltip' id='Tooltip'><span class='gentelella-badge " + classPrevMarch + "'>" + arrayDescription[0] + "</span><a href='JAVASCRIPT: redirectCommentPage(" + $(this).attr(arrayAttrPreMatchID[i]) + ")' class='tooltipContainer linkable tooltip-link tooltip-right' role='tooltip'><span class='tooltip-content'><div class='matchAbridged'><span class='matchInfo'><b>Confronto Recente</b><br>" + arrayDescription[1] + "</span><img src='" + arrayDescription[5] + "' title='" + arrayDescription[2] + "' width='30'/>&nbsp;&nbsp;<span class='score'>" + arrayDescription[3] + "</span>&nbsp;&nbsp;<img src='" + arrayDescription[6] + "' title='" + arrayDescription[4] + "' width='30'/></div></span></a></li>";
                     }
                 }
                 sHtml += "</ul>";
@@ -848,7 +849,7 @@
             });
 
             $("tbody.tableBodyContainer").find("td.nextMatch").each(function (index, value) {
-                sHtml = "<span tabindex='0' class='button-tooltip'><span class='nextMatch'><img src='" + $(this).attr("pathNextTeamName") + "' title='" + $(this).attr("NextTeamName") + "' width='25'/><a href='' class='tooltipContainer linkable tooltip-link tooltip-right' role='tooltip'><span class='tooltip-content'><div class='matchAbridged'><span class='matchInfo'><b>Próximo Confronto</b><br>" + $(this).attr("round") + "</span><img src='" + $(this).attr("pathTeamName") + "' title='" + $(this).attr("teamName") + "' width='30'/>&nbsp;&nbsp;<time>-</time>&nbsp;&nbsp;<img src='" + $(this).attr("pathNextTeamName") + "' title='" + $(this).attr("nextTeamName") + "' width='30' onerror='" + imgNotFound + "'/></div></span></a></span></span>";
+                sHtml = "<span tabindex='0' class='button-tooltip'><span class='nextMatch'><img src='" + $(this).attr("pathNextTeamName") + "' title='" + $(this).attr("NextTeamName") + "' width='25'/><a href='JAVASCRIPT: redirectCommentPage(" + $(this).attr("matchID") + ")' class='tooltipContainer linkable tooltip-link tooltip-right' role='tooltip'><span class='tooltip-content'><div class='matchAbridged'><span class='matchInfo'><b>Próximo Confronto</b><br>" + $(this).attr("round") + "</span><img src='" + $(this).attr("pathTeamName") + "' title='" + $(this).attr("teamName") + "' width='30'/>&nbsp;&nbsp;<time>-</time>&nbsp;&nbsp;<img src='" + $(this).attr("pathNextTeamName") + "' title='" + $(this).attr("nextTeamName") + "' width='30' onerror='" + imgNotFound + "'/></div></span></a></span></span>";
                 $(this).html(sHtml);
             });
         }
