@@ -21,18 +21,22 @@ Hi Guys, voltando o assunto do Arena 2.0, a integração já foi iniciada e est�
 - TODO Dashboard do Hall da Fama
 - TODO Dashboard do Ranking do Arena
 - TODO Dashboard do Menu Moderador
-- TODO Dashboard do Meus Jogos (*_NOVO_*)
+- TODO Dashboard do Meus Jogos
+- Todo Dashboard das Tela de Campeonatos (*_NOVO_*)
 
 
 *_Funcionalidade que está EM ANDAMENTO:_*
-- Todo Dashboard das Tela de Campeonatos (*_20/21_*) ==> *EM ANAMENTO: Tabela e Resultados apenas Playoff*
-      . Restam: N/A
+- Todos Processos Liberação da Renovação (*_0/6_*) ==> *EM ANDAMENTO: Elaboração da Estrutura*
+      . Restam: = Geração das Listas de Renovação
+				= Validar da tela de Lista Renovações
+				= Validar da tela de alteração dos dados de renovação no modulo Moderador
+				= Validar a Renovação feita pelo Usuário na tela principal do site
+				= Gerar o Spooler de Email para aviso da Renovação.
 				
 
 	*Observação: Temporadas anteriores não disponibilizada na 1a versão.*
 
 *_Funcionalidades que AINDA NÃO começaram o processo de integração:_*
-- Todos Processos Liberação da Renovação
 - Todos Processos Geração da Nova Temporada
 - Todos Processos Batch:
 	. Aviso de liberação Novas Rodadas

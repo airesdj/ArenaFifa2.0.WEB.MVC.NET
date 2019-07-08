@@ -473,7 +473,7 @@ namespace ArenaFifa20.NET.Controllers
                     modelReturnJSON.seasonID = Convert.ToUInt16(formHTML["seasonID"]);
                     modelReturnJSON.userID = Convert.ToUInt16(formHTML["cmbTecnico"]);
                     modelReturnJSON.championshipID = Convert.ToUInt16(formHTML["cmbCampeonato"]);
-
+                    //modelReturnJSON.dataBaseName = "";
                     modelReturnJSON.actionUser = actionForm;
                     modelReturnJSON.teamName = formHTML["txtTime"];
                     modelReturnJSON.confirmation = formHTML["cmbConfirma"];
