@@ -187,54 +187,54 @@ function submeteModerator(actionName, actionForm, itemSelected) {
     $("#actionForm").val(actionForm);
     if (itemSelected != "") { $("#selectedID").val(itemSelected); }
     if (actionForm == "VOLTAR") {
-        $("#comeback-form").attr("action", "/Moderator/" + actionName);
+        $("#comeback-form").attr("action", "/Arena20/Moderator/" + actionName);
         $("#comeback-form").submit();
     }
     else if (actionForm == "VOLTAR_DECREE") {
         $("#actionForm").val("SHOW_CHAMPIONSHIP_DETAILS");
         $("#cmbMessageDecree").find("option[value='Placar decretado de 0x0 devido a omissão total dos dois técnicos.']").attr("selected", "true");
-        $("#registration-form").attr("action", "/Moderator/" + actionName);
+        $("#registration-form").attr("action", "/Arena20/Moderator/" + actionName);
         $("#registration-form").submit();
     }
     else if (actionForm == "VOLTAR_COMMENT") {
         $("#actionForm").val("SHOW_CHAMPIONSHIP_DETAILS");
         $("#txtComment").val(".");
         checkFormValid(0);
-        $("#registration-form").attr("action", "/Moderator/" + actionName);
+        $("#registration-form").attr("action", "/Arena20/Moderator/" + actionName);
         $("#registration-form").submit();
     }
     else if (actionForm == "DELETE_BLACKLIST" || actionForm == "ADD_BLACKLIST") {
         $("#txtComment").val(".");
         checkFormValid(0);
-        $("#registration-form").attr("action", "/Moderator/" + actionName);
+        $("#registration-form").attr("action", "/Arena20/Moderator/" + actionName);
         $("#registration-form").submit();
     }
     else if (actionForm == "SHOW_CHAMPIONSHIPMATCHTABLE_DETAILS" && actionName != "CommentMatch" && actionName != "DecreeResult") {
-        $("#registration-form").attr("action", "/MyMatches/" + actionName);
+        $("#registration-form").attr("action", "/Arena20/MyMatches/" + actionName);
         $("#registration-form").submit();
     }
     else if (actionForm == "SHOW_LAUNCH_SIMPLE_RESULT_DETAILS" && actionName != "LaunchSimpleResult") {
-        $("#registration-form").attr("action", "/MyMatches/" + actionName);
+        $("#registration-form").attr("action", "/Arena20/MyMatches/" + actionName);
         $("#registration-form").submit();
     }
     else if (actionForm == "VOLTAR_MY_MATCHES") {
         $("#actionForm").val("SHOW_CHAMPIONSHIP_DETAILS");
         $("#txtComment").val(".");
-        $("#registration-form").attr("action", "/MyMatches/" + actionName);
+        $("#registration-form").attr("action", "/Arena20/MyMatches/" + actionName);
         $("#registration-form").submit();
     }
     else if (String(actionForm).indexOf("_MY_MATCHES") > -1) {
         $("#txtComment").val(".");
-        $("#registration-form").attr("action", "/MyMatches/" + actionName);
+        $("#registration-form").attr("action", "/Arena20/MyMatches/" + actionName);
         $("#registration-form").submit();
     }
     else if (String(actionForm).indexOf("_CURRENT_SEASON") > -1) {
         $("#txtComment").val(".");
-        $("#registration-form").attr("action", "/CurrentSeason/" + actionName);
+        $("#registration-form").attr("action", "/Arena20/CurrentSeason/" + actionName);
         $("#registration-form").submit();
     }
     else {
-        $("#registration-form").attr("action", "/Moderator/" + actionName);
+        $("#registration-form").attr("action", "/Arena20/Moderator/" + actionName);
         $("#registration-form").submit();
     }
 }
@@ -257,7 +257,7 @@ function setSubmitMenuSummaryCurrentSeason(modeType, championshipID, actionForm)
     $("#actionType").val(modeType);
     $("#championshipID").val(championshipID);
     if ($("#txtComment").length > 0) { $("#txtComment").val("."); }
-    $("#registration-form").attr("action", "/CurrentSeason/" + actionForm);
+    $("#registration-form").attr("action", "/Arena20/CurrentSeason/" + actionForm);
     $("#registration-form").submit();
 }
 
@@ -266,6 +266,6 @@ function setSubmitMenuSwapChampionshipCurrentSeason(modeType, championshipID) {
     $("#actionType").val(modeType);
     $("#championshipID").val(championshipID);
     $("#actionForm").val("SWAP_OF_CHAMPIONSHIP");
-    $("#registration-form").attr("action", "/CurrentSeason/ClashTable");
+    $("#registration-form").attr("action", "/Arena20/CurrentSeason/ClashTable");
     $("#registration-form").submit();
 }

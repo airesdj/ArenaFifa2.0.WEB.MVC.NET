@@ -8,7 +8,6 @@ namespace ArenaFifa20.NET
 {
     public static class GlobalVariables
     {
-
         public static string STAGE_QUALIFY2 = "-2";
         public static string STAGE_QUALIFY1 = "-1";
         public static string STAGE_TEAM_TABLE = "0";
@@ -35,7 +34,6 @@ namespace ArenaFifa20.NET
             WebApiClient.DefaultRequestHeaders.Clear();
             WebApiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
-
     }
 
 }

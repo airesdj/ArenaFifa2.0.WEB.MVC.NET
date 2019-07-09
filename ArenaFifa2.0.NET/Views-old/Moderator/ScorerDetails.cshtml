@@ -1,0 +1,147 @@
+﻿@using ArenaFifa20.NET.Models
+@model ScorerDetails
+@{
+    ViewBag.Title = "Moderator Menu - Scorer Details";
+    string scorerType = Model.scorerType;
+    if (scorerType == "PRO") { scorerType = "PRO CLUB"; }
+    string actionBack = "Scorer" + Model.scorerType;
+}
+
+
+<!-- page content -->
+<div class="gentelella-right_col" role="main" style="padding-left:20px">
+    <div class="gentelella-page-title">
+        <div class="gentelella-title">
+            <h3>CADASTRO DE ARTILHEIROS - @scorerType - @Model.actionUser</h3>
+        </div>
+    </div>
+    <br>
+
+    <div class="gentelella-col-md-14 gentelella-col-sm-14 gentelella-col-xs-14" style="background-color:#F7F7F7">
+        <div class="gentelella-x_panel">
+            <div class="gentelella-x_content">
+
+                @Html.Partial("_MessageValidate")
+
+                <form id="comeback-form" action=""></form>
+
+                <form action="/Arena20/Moderator/ScorerDetails" class="form-horizontal" id="registration-form" method="post" role="form" data-parsley-validate>
+
+
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="actionForm" name="actionForm" value="SAVE" />
+                    <input type="hidden" id="selectedID" name="selectedID" value="@Model.id" />
+                    <input type="hidden" id="scorerType" name="scorerType" value="@Model.scorerType" />
+                    <p>
+                        <code style="background-color:#fff">Todos os campos com (*) são de preenchimento obrigatório.</code>
+                    </p>
+                    <br />
+                    <div class="gentelella-row ">
+                        <div class="gentelella-col-md-1 gentelella-col-sm-12 gentelella-col-xs-12">
+                            <label for="idSofifa">ID Jogador :</label>
+                            <input type="text" id="txtId" name="txtId" size="1000" class="gentelella-form-control" data-parsley-type="integer" value="@Model.id" />
+                        </div>
+                    </div>
+                    <br>
+                    <div class="gentelella-row">
+                        <div class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-12">
+                            <label for="nome">Nome Abreviado <i style="color:red">*</i> :</label>
+                            <input type="text" id="txtNomeAbrev" class="gentelella-form-control" name="txtNomeAbrev" data-parsley-maxlength="50" required value="@Model.nickname" />
+                        </div>
+                        <div class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-12">
+                            <label for="url">Nome Completo<i style="color:red">*</i> :</label>
+                            <input type="text" id="txtNomeCompl" class="gentelella-form-control" name="txtNomeCompl" data-parsley-maxlength="100" required value="@Model.name" />
+                            <br>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="gentelella-row">
+                        <div class="gentelella-col-md-6 gentelella-col-sm-12 gentelella-col-xs-12">
+                            <label for="url">Link Sofifa<i style="color:red">*</i> :</label>
+                            <input type="text" id="txtUrl" class="gentelella-form-control" name="txtUrl" data-parsley-maxlength="200" data-parsley-type="url" required value="@Model.link" />
+                        </div>
+                        <div class="gentelella-col-md-1 gentelella-col-sm-1 gentelella-col-xs-12">
+                            <label for="idSofifa">ID Sofifa<i style="color:red">*</i> :</label>
+                            <input type="text" id="txtIdSofifa" class="gentelella-form-control" name="txtIdSofifa" data-parsley-type="integer" required value="@Model.sofifaTeamID" />
+                        </div>
+                        <div class="gentelella-col-md-5 gentelella-col-sm-5 gentelella-col-xs-12">
+                            <label class="gentelella-control-label" for="tipo">Time<i style="color:red">*</i> :</label>
+                            <select id="cmbTime" name="cmbTime" class="gentelella-form-control" required>
+                                @if (Model.actionUser.ToUpper() == "ADD")
+                                {
+                                    <option value="">Selecione..</option>
+                                }
+                                @foreach (var item in Model.listOfTeam)
+                                {
+                                    if (scorerType == "H2H") { <option value="@item.id">@(item.name + " - " + item.typeMode)</option> }
+                                    else { <option value="@item.id">@item.name</option> }
+                                        
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <br>
+
+                    <div id="rowImage" class="gentelella-row">
+                        <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                            <label for="idSofifa">Imagem:</label><br>
+                            <img width="60" height="60" src="@Model.imagePath">
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="gentelella-form-group gentelella-a-right">
+                        <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                            <br>
+                            <div class="gentelella-ln_solid"></div>
+                            <input type="button" class="gentelella-btn gentelella-btn-primary" onClick="JAVASCRIPT: submeteModerator('@actionBack', 'VOLTAR', '');" value="Voltar" />
+                            <input type="submit" class="gentelella-btn gentelella-btn-success" value="Salvar Dados" />
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+@section Scripts {
+<script>
+        $(function () {
+            if (detectMobileDevice() == 1) {
+                //$("#includedContentMenuMobile").load("/arena20/includes/menu-logged-mobile.html");
+                //$("#includedContentMenuRankingMobile").load("menu-my-matches-mobile.html");
+                hidden_show_ObjectMobile("footerMobile", "block");
+            }
+        });
+
+        $(document).ready(function () {
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+
+            activateRegistrationForm("ScorerDetails", '@Model.actionUser');
+
+            if (detectMobileDevice() == 0)
+                activeSidebarMenu(window.location.pathname.replace("Details", "") + '@Model.scorerType');
+
+            $("#cmbTime").find("option[value='@Model.teamID']").attr("selected", "true");
+
+            if ('@Model.actionUser' == 'EDIT') {
+                $("#txtId").addClass("disabled");
+                $("#txtId").attr("disabled", "true");
+            }
+            else if ('@Model.actionUser' == 'ADD') {
+                $("#txtId").val("");
+                $("#rowImage").hide();
+            }
+
+            if ('@Model.scorerType' == 'PRO') {
+                $("#txtUrl").removeAttr("data-parsley-type");
+            }
+
+            if ($("#selectedID").val() == "") { $("#selectedID").val("0"); }
+        });
+
+</script>
+}
+

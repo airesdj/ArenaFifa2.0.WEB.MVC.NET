@@ -1,0 +1,516 @@
+﻿@using ArenaFifa20.NET.Models
+@model AchievementViewModel
+    @{
+        ViewBag.Title = "Hall Of Fame - Achievements H2H";
+        string nameImgCurrentFifa = HttpContext.Current.Application["fifa.codImgCurrent"].ToString() + ".jpg";
+        string nameTeam = String.Empty;
+    }
+
+    <!-- page content -->
+    <div class="gentelella-right_col" role="main" style="padding-left:50px">
+        <div class="gentelella-page-title">
+            <div class="gentelella-col-md-12 gentelella-col-sm-6 gentelella-col-xs-12">
+                <h3>CONQUISTAS POR CAMPEONATO - H2H</h3>
+            </div>
+        </div>
+
+        <div class="gentelella-x_content">
+
+            <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                <div class="gentelella-x_panel">
+                    <div class="gentelella-x_title">
+                        <center>
+                            <img src="/Arena20/images/logo-H2H-white.jpg" width="150" />
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <img src="/Arena20/images/@nameImgCurrentFifa" width="180" />
+                        </center>
+                        <br><br>
+                        <div class="gentelella-clearfix"></div>
+                    </div>
+
+                    <div class="gentelella-x_content">
+                        <div class="gallery-filter">
+                            <div class="portfolioFilter my-3 clearfix">
+                                <a href="#" data-filter=".firstItemSelected" class="current fables-forth-text-color fables-second-hover-color">SÉRIE A</a>
+                                <a href="#" data-filter=".serieb" class="fables-forth-text-color fables-second-hover-color">SÉRIE B</a>
+                                <a href="#" data-filter=".seriec" class="fables-forth-text-color fables-second-hover-color">SÉRIE C</a>
+                                <a href="#" data-filter=".seried" class="fables-forth-text-color fables-second-hover-color">SÉRIE D</a>
+                                <a href="#" data-filter=".campeoes" class="fables-forth-text-color fables-second-hover-color">LIGA CAMPEÕES</a>
+                                <a href="#" data-filter=".europa" class="fables-forth-text-color fables-second-hover-color">LIGA EUROPA</a>
+                                <a href="#" data-filter=".copa" class="fables-forth-text-color fables-second-hover-color">COPA UEFA</a>
+                                <a href="#" data-filter=".super" class="fables-forth-text-color fables-second-hover-color">SUPER COPA</a>
+                                <a href="#" data-filter=".mundo" class="fables-forth-text-color fables-second-hover-color">COPA MUNDO</a>
+                                <a href="#" data-filter=".euro" class="fables-forth-text-color fables-second-hover-color">EUROCOPA</a>
+                            </div>
+                            <div class="portfolioContainer gentelella-row filter-masonry" style="padding-left:15px">
+
+                                <div class="firstItemSelected circle-effect">
+                                    <div class="gentelella-row">
+
+                                        <center>
+                                            <br>
+                                            <img src="/Arena20/images/trophy/H2H  -  Série A.bmp" width="180" />
+                                            <br>
+                                            <span style="color:rgb(243,161,0);font-weight:bold;font-size:18px">SÉRIE A</span>
+                                        </center>
+
+                                        <br>
+                                        <div class="gentelella-table-responsive">
+                                            <table class="gentelella-table gentelella-table-striped gentelella-jambo_table bulk_action">
+                                                <thead style="background-color:#2C3E4F">
+                                                    <tr class="gentelella-headings">
+                                                        <th class="gentelella-column-title" width="25%">Temporada </th>
+                                                        <th class="gentelella-column-title" width="45%">Técnico </th>
+                                                        <th class="gentelella-column-title" width="30%">Time </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in Model.listOfAchievement)
+                                                    {
+                                                        if (item.championshipType == "DIV1")
+                                                        {
+                                                            <tr class="gentelella-even gentelella-pointer">
+                                                                <td class=" ">@Html.DisplayFor(modelItem => item.seasonName)</td>
+                                                                <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.userName)</td>
+                                                                <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.teamName)</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+
+                                <div class="serieb circle-effect">
+                                    <div class="gentelella-row">
+
+                                        <center>
+                                            <br>
+                                            <img src="/Arena20/images/trophy/H2H  -  Série B.bmp" width="80" />
+                                            <br>
+                                            <span style="color:rgb(243,161,0);font-weight:bold;font-size:18px">SÉRIE B</span>
+                                        </center>
+
+                                        <br>
+                                        <div class="gentelella-table-responsive">
+                                            <table class="gentelella-table gentelella-table-striped gentelella-jambo_table bulk_action">
+                                                <thead style="background-color:#2C3E4F">
+                                                    <tr class="gentelella-headings">
+                                                        <th class="gentelella-column-title" width="25%">Temporada </th>
+                                                        <th class="gentelella-column-title" width="45%">Técnico </th>
+                                                        <th class="gentelella-column-title" width="30%">Time </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in Model.listOfAchievement)
+                                                    {
+                                                        if (item.championshipType == "DIV2")
+                                                        {
+                                                            <tr class="gentelella-even gentelella-pointer">
+                                                                <td class=" ">@Html.DisplayFor(modelItem => item.seasonName)</td>
+                                                                <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.userName)</td>
+                                                                <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.teamName)</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+
+                                    </div>
+
+
+                                </div><!--fim-->
+
+                                <div class="seriec circle-effect">
+                                    <div class="gentelella-row">
+
+                                        <center>
+                                            <br>
+                                            <img src="/Arena20/images/trophy/H2H  -  Série C.bmp" width="80" />
+                                            <br>
+                                            <span style="color:rgb(243,161,0);font-weight:bold;font-size:18px">SÉRIE C</span>
+                                        </center>
+
+                                        <br>
+                                        <div class="gentelella-table-responsive">
+                                            <table class="gentelella-table gentelella-table-striped gentelella-jambo_table bulk_action">
+                                                <thead style="background-color:#2C3E4F">
+                                                    <tr class="gentelella-headings">
+                                                        <th class="gentelella-column-title" width="25%">Temporada </th>
+                                                        <th class="gentelella-column-title" width="45%">Técnico </th>
+                                                        <th class="gentelella-column-title" width="30%">Time </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in Model.listOfAchievement)
+                                                    {
+                                                        if (item.championshipType == "DIV3")
+                                                        {
+                                                            <tr class="gentelella-even gentelella-pointer">
+                                                                <td class=" ">@Html.DisplayFor(modelItem => item.seasonName)</td>
+                                                                <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.userName)</td>
+                                                                <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.teamName)</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+
+                                    </div>
+
+
+                                </div>	<!--fim-->
+
+                                <div class="seried circle-effect">
+                                    <div class="gentelella-row">
+
+                                        <center>
+                                            <br>
+                                            <img src="/Arena20/images/trophy/H2H  -  Série D.bmp" width="120" />
+                                            <br>
+                                            <span style="color:rgb(243,161,0);font-weight:bold;font-size:18px">SÉRIE D</span>
+                                        </center>
+
+                                        <br>
+                                        <div class="gentelella-table-responsive">
+                                            <table class="gentelella-table gentelella-table-striped gentelella-jambo_table bulk_action">
+                                                <thead style="background-color:#2C3E4F">
+                                                    <tr class="gentelella-headings">
+                                                        <th class="gentelella-column-title" width="25%">Temporada </th>
+                                                        <th class="gentelella-column-title" width="45%">Técnico </th>
+                                                        <th class="gentelella-column-title" width="30%">Time </th>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in Model.listOfAchievement)
+                                                    {
+                                                        if (item.championshipType == "DIV4")
+                                                        {
+                                                            <tr class="gentelella-even gentelella-pointer">
+                                                                <td class=" ">@Html.DisplayFor(modelItem => item.seasonName)</td>
+                                                                <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.userName)</td>
+                                                                <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.teamName)</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+
+                                    </div>
+
+
+                                </div>	<!--fim-->
+
+                                <div class="campeoes circle-effect">
+                                    <div class="gentelella-row">
+
+                                        <center>
+                                            <br>
+                                            <img src="/Arena20/images/trophy/LIGA  DOS  CAMPEÕES  DA  EUROPA.bmp" width="160" />
+                                            <br>
+                                            <span style="color:rgb(243,161,0);font-weight:bold;font-size:18px">LIGA DOS CAMPEÕES DA EUROPA</span>
+                                        </center>
+
+                                        <br>
+                                        <div class="gentelella-table-responsive">
+                                            <table class="gentelella-table gentelella-table-striped gentelella-jambo_table bulk_action">
+                                                <thead style="background-color:#2C3E4F">
+                                                    <tr class="gentelella-headings">
+                                                        <th class="gentelella-column-title" width="25%">Temporada </th>
+                                                        <th class="gentelella-column-title" width="45%">Técnico </th>
+                                                        <th class="gentelella-column-title" width="30%">Time </th>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in Model.listOfAchievement)
+                                                    {
+                                                        if (item.championshipType == "CPGL" && item.inGroup)
+                                                        {
+                                                            <tr class="gentelella-even gentelella-pointer">
+                                                                <td class=" ">@Html.DisplayFor(modelItem => item.seasonName)</td>
+                                                                <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.userName)</td>
+                                                                <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.teamName)</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+
+                                    </div>
+
+
+                                </div>	<!--fim-->
+
+
+                                <div class="europa circle-effect">
+                                    <div class="gentelella-row">
+
+                                        <center>
+                                            <br>
+                                            <img src="/Arena20/images/trophy/LIGA  EUROPA.bmp" width="120" />
+                                            <br>
+                                            <span style="color:rgb(243,161,0);font-weight:bold;font-size:18px">LIGA EUROPA</span>
+                                        </center>
+
+                                        <br>
+                                        <div class="gentelella-table-responsive">
+                                            <table class="gentelella-table gentelella-table-striped gentelella-jambo_table bulk_action">
+                                                <thead style="background-color:#2C3E4F">
+                                                    <tr class="gentelella-headings">
+                                                        <th class="gentelella-column-title" width="25%">Temporada </th>
+                                                        <th class="gentelella-column-title" width="45%">Técnico </th>
+                                                        <th class="gentelella-column-title" width="30%">Time </th>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in Model.listOfAchievement)
+                                                    {
+                                                        if (item.championshipType == "CPSA")
+                                                        {
+                                                            <tr class="gentelella-even gentelella-pointer">
+                                                                <td class=" ">@Html.DisplayFor(modelItem => item.seasonName)</td>
+                                                                <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.userName)</td>
+                                                                <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.teamName)</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+
+                                    </div>
+
+
+                                </div>	<!--fim-->
+
+                                <div class="copa circle-effect">
+                                    <div class="gentelella-row">
+
+                                        <center>
+                                            <br>
+                                            <img src="/Arena20/images/trophy/COPA  DA  UEFA.bmp" width="40" />
+                                            <br>
+                                            <span style="color:rgb(243,161,0);font-weight:bold;font-size:18px">COPA DA UEFA</span>
+                                        </center>
+
+                                        <br>
+                                        <div class="gentelella-table-responsive">
+                                            <table class="gentelella-table gentelella-table-striped gentelella-jambo_table bulk_action">
+                                                <thead style="background-color:#2C3E4F">
+                                                    <tr class="gentelella-headings">
+                                                        <th class="gentelella-column-title" width="25%">Temporada </th>
+                                                        <th class="gentelella-column-title" width="45%">Técnico </th>
+                                                        <th class="gentelella-column-title" width="30%">Time </th>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in Model.listOfAchievement)
+                                                    {
+                                                        if (item.championshipType == "CPGL" && !item.inGroup)
+                                                        {
+                                                            <tr class="gentelella-even gentelella-pointer">
+                                                                <td class=" ">@Html.DisplayFor(modelItem => item.seasonName)</td>
+                                                                <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.userName)</td>
+                                                                <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.teamName)</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+
+                                    </div>
+
+
+                                </div>	<!--fim-->
+
+                                <div class="super circle-effect">
+                                    <div class="gentelella-row">
+
+                                        <center>
+                                            <br>
+                                            <img src="/Arena20/images/trophy/SUPER  COPA  EUROPA.bmp" width="100" />
+                                            <br>
+                                            <span style="color:rgb(243,161,0);font-weight:bold;font-size:18px">SUPER COPA DA EUROPA</span>
+                                        </center>
+
+                                        <br>
+                                        <div class="gentelella-table-responsive">
+                                            <table class="gentelella-table gentelella-table-striped gentelella-jambo_table bulk_action">
+                                                <thead style="background-color:#2C3E4F">
+                                                    <tr class="gentelella-headings">
+                                                        <th class="gentelella-column-title" width="25%">Temporada </th>
+                                                        <th class="gentelella-column-title" width="45%">Técnico </th>
+                                                        <th class="gentelella-column-title" width="30%">Time </th>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in Model.listOfAchievement)
+                                                    {
+                                                        if (item.championshipType == "MDCL")
+                                                        {
+                                                            <tr class="gentelella-even gentelella-pointer">
+                                                                <td class=" ">@Html.DisplayFor(modelItem => item.seasonName)</td>
+                                                                <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.userName)</td>
+                                                                <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.teamName)</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+
+                                    </div>
+
+
+                                </div>	<!--fim-->
+                                <div class="mundo circle-effect">
+                                    <div class="gentelella-row">
+
+                                        <center>
+                                            <br>
+                                            <img src="/Arena20/images/trophy/Copa  Do  Mundo  Do  Arena.bmp" width="160" />
+                                            <br>
+                                            <span style="color:rgb(243,161,0);font-weight:bold;font-size:18px">COPA DO MUNDO DO ARENA</span>
+                                        </center>
+
+                                        <br>
+                                        <div class="gentelella-table-responsive">
+                                            <table class="gentelella-table gentelella-table-striped gentelella-jambo_table bulk_action">
+                                                <thead style="background-color:#2C3E4F">
+                                                    <tr class="gentelella-headings">
+                                                        <th class="gentelella-column-title" width="25%">Temporada </th>
+                                                        <th class="gentelella-column-title" width="45%">Técnico </th>
+                                                        <th class="gentelella-column-title" width="30%">Seleção </th>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in Model.listOfAchievement)
+                                                    {
+                                                        if (item.championshipType == "CPDM")
+                                                        {
+                                                            nameTeam = item.teamName;
+                                                            <tr class="gentelella-even gentelella-pointer">
+                                                                <td class=" ">@Html.DisplayFor(modelItem => item.seasonName)</td>
+                                                                <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.userName)</td>
+                                                                <td class=" " style="vertical-align:middle">@nameTeam.Replace("-", "")</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+
+                                    </div>
+
+
+                                </div>	<!--fim-->
+
+                                <div class="euro circle-effect">
+                                    <div class="gentelella-row">
+
+                                        <center>
+                                            <br>
+                                            <img src="/Arena20/images/trophy/Eurocopa Do Arena.bmp" width="160" />
+                                            <br>
+                                            <span style="color:rgb(243,161,0);font-weight:bold;font-size:18px">EUROCOPA DO ARENA</span>
+                                        </center>
+
+                                        <br>
+                                        <div class="gentelella-table-responsive">
+                                            <table class="gentelella-table gentelella-table-striped gentelella-jambo_table bulk_action">
+                                                <thead style="background-color:#2C3E4F">
+                                                    <tr class="gentelella-headings">
+                                                        <th class="gentelella-column-title" width="25%">Temporada </th>
+                                                        <th class="gentelella-column-title" width="45%">Técnico </th>
+                                                        <th class="gentelella-column-title" width="30%">Seleção </th>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in Model.listOfAchievement)
+                                                    {
+                                                        if (item.championshipType == "ERCP")
+                                                        {
+                                                            nameTeam = item.teamName;
+                                                            <tr class="gentelella-even gentelella-pointer">
+                                                                <td class=" ">@Html.DisplayFor(modelItem => item.seasonName)</td>
+                                                                <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.userName)</td>
+                                                                <td class=" " style="vertical-align:middle">@nameTeam.Replace("-","")</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+
+                                    </div>
+
+
+                                </div>	<!--fim-->
+
+
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- /page content -->
+
+    @section Scripts {
+        <script>
+        $(function () {
+            if (detectMobileDevice() == 1) {
+                //$("#includedContentMenuMobile").load("/arena20/includes/menu-logged-mobile.html");
+                //$("#includedContentMenuRankingMobile").load("menu-my-matches-mobile.html");
+                hidden_show_ObjectMobile("footerMobile", "block");
+            }
+            if ('@ViewBag.inRenewNextSeason' == '1')
+                $("#liRenewNextSeason").show();
+            else
+                $("#liRenewNextSeason").hide();
+        });
+
+        $(document).ready(function () {
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+
+            if (detectMobileDevice() == 0)
+                activeSidebarMenu(window.location.pathname);
+        });
+
+        </script>
+    }
+

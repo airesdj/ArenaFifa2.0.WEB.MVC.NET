@@ -1,0 +1,31 @@
+﻿@using ArenaFifa20.NET.Models
+@model LoginViewModel
+@{
+    ViewBag.Title = "Register - Confirmation";
+}
+
+<!-- Start Breadcrumbs -->
+<div class="fables-light-background-color">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="fables-breadcrumb breadcrumb px-0 py-3">
+                <li class="breadcrumb-item"><a href="/Arena20/" class="fables-second-text-color">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="/Arena20/Account/Signin" class="fables-second-text-color">Login</a></li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- /End Breadcrumbs -->
+<div class="container">
+    <div class="row my-4 my-lg-5">
+        <p>
+            <font color="red">Sua cadastro foi efetuado com sucesso. Aguarde que logo receberá um e-mail de confirmação do seu cadastro.</font> <br /><br />
+            Você agora poderá realizar sua inscrição no Banco de Reservas dos campeonatos disponibilizados pelo Arena. 
+            Primeiro precisa realizar o login e na página principal você poderar realizar a inscrição, sendo técnico poderá se inscrever nas modalidades H2H (X1) e FUT (Ultimate Team), 
+            mas se for manager de algum clube poderá realizar a inscrição do seu clube na modalidade PRO CLUB.<br /><br />
+
+            Por favor @Html.ActionLink("click aqui", "Signin", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" }) para fazer o login pela primeira vez.
+        </p>
+    </div>
+    <br /><br /><br />
+</div>

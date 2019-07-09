@@ -1,0 +1,605 @@
+﻿@using ArenaFifa20.NET.Models
+@model ChampionshipDetailsModel
+@{
+    ViewBag.Title = "Moderator Menu - Launch Result";
+    int count = 0;
+    int countAux = 0;
+    int countPos = 0;
+    int balanceOfGoals = 0;
+    string stageCurrent = String.Empty;
+    string divStageNamePlayOff = String.Empty;
+    int indexRelegate = 0;
+    int stageIDInitial = -99;
+    int roundInitial = 0;
+    int forGroup = 0;
+    int teamsForGroup = 0;
+
+    if (Model.forGroup) { forGroup = 1; teamsForGroup = (Model.totalTeam / Model.totalGroup); }
+
+
+    if (Model.totalRelegation > 0)
+    {
+        indexRelegate = (Model.totalTeam - Model.totalRelegation) - 1;
+    }
+
+    string onlyOnePlayOffGame = String.Empty;
+    string roundDetailsPlayOff = String.Empty;
+    if (Model.twoLegs == false)
+    {
+        onlyOnePlayOffGame = "Jogo Único";
+    }
+
+    int totalListOfStages = Model.listOfStage.Count;
+    int totalListOfGroups = Model.listOfGroup.Count;
+
+    Boolean hasStage0 = false;
+
+    if (!String.IsNullOrEmpty(Model.stageID_Round))
+    {
+        string[] stageRound = Model.stageID_Round.Split(Convert.ToChar(";"));
+        string[] arrayStage = stageRound[0].Split(Convert.ToChar("="));
+        string[] arrayRound = stageRound[1].Split(Convert.ToChar("="));
+        if (!String.IsNullOrEmpty(arrayStage[1]))
+        {
+            stageIDInitial = Convert.ToInt16(arrayStage[1]);
+        }
+        if (!String.IsNullOrEmpty(arrayRound[1]))
+        {
+            roundInitial = Convert.ToInt16(arrayRound[1]);
+        }
+    }
+
+}
+
+
+<!-- page content -->
+<div class="gentelella-right_col" role="main" style="padding-left:20px">
+    <div class="gentelella-page-title">
+        <div class="gentelella-title">
+            <h3>LANÇAR RESULTADOS DOS CAMPEONATOS ATIVOS DA TEMPORADA - LAUNCH</h3>
+        </div>
+    </div>
+    <br>
+
+    <div class="gentelella-col-md-14 gentelella-col-sm-14 gentelella-col-xs-14" style="background-color:#F7F7F7">
+        <div class="gentelella-x_panel">
+            <div class="gentelella-x_content">
+
+                <form id="comeback-form" action=""></form>
+
+                <form action="/Arena20/Moderator/LaunchResultDetails" class="form-horizontal" id="registration-form" method="post" role="form">
+
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="actionForm" name="actionForm" value="SAVE" />
+                    <input type="hidden" id="selectedID" name="selectedID" value="@Model.id" />
+                    <input type="hidden" id="matchID" name="matchID" value="" />
+                    <input type="hidden" id="teamHomeID" name="teamHomeID" value="" />
+                    <input type="hidden" id="teamAwayID" name="teamAwayID" value="" />
+                    <input type="hidden" id="onlyOnePlayOffGame" name="onlyOnePlayOffGame" value="@onlyOnePlayOffGame" />
+                    <input type="hidden" id="forGroup" name="forGroup" value="@forGroup" />
+                    <input type="hidden" id="groupID" name="groupID" value="1" />
+                    <input type="hidden" id="totalGroups" name="totalGroups" value="@Model.totalGroup" />
+                    <center>
+                        <img src="@Model.pathLogoChampionship" width="90" />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <img src="@Model.pathLogoType" width="110" />
+                    </center>
+
+                    <br>
+                    <center><code><h4>Fases da @Model.name.ToUpper():</h4></code></center>
+                    <div class="gentelella-row gentelella-a-center my-3 clearfix">
+                        @{count = 1; }
+                        @foreach (var item in Model.listOfStage)
+                        {
+                            if (count > 1)
+                            {@Html.Raw("&nbsp;|&nbsp;");
+                        }
+                        <button onClick="displayDatailsStages('@count', @totalListOfStages, @totalListOfGroups); return false;" class="@(Html.Raw("stage") + count.ToString()) gentelella-btn gentelella-btn-round @if (count == 1) { @Html.Raw("gentelella-btn-dark"); } ">@item.name.ToUpper()</button>
+                        count = count + 1;
+                    }
+                    </div>
+
+                    <br /><br />
+
+                    <div class="gentelella-row gentelella-a-center my-3 clearfix">
+                        @{count = 1; }
+                        @foreach (var item in Model.listOfStage)
+                        {
+                            if (item.id == 0 && forGroup == 0)
+                            {
+                                hasStage0 = true;
+                                <div id="stage1" stageID="@item.id">
+
+                                    <div class="gentelella-row gentelella-a-center my-3 clearfix">
+                                        <button onClick="displayDatailsStage1('matchTable', @totalListOfGroups); return false;" class="matchTable gentelella-btn gentelella-btn-round gentelella-btn-success">TABELA DE JOGOS</button>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <button onClick="displayDatailsStage1('teamTable', @totalListOfGroups); return false;" class="teamTable gentelella-btn gentelella-btn-round gentelella-btn-default">TABELA DE CLASSIFICAÇÃO</button>
+                                    </div>
+
+                                    <div id="matchTable">
+                                        <div class="gentelella-row" style="height:200px">
+                                            <br>
+                                            <center><code>Legenda:  <span class="gentelella-fa gentelella-fa-commenting-o">&nbsp;&nbsp;&nbsp;(Realizar Algum Comentário no Jogo)&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;<span class="gentelella-fa gentelella-fa-pencil">&nbsp;&nbsp;&nbsp;(Decretar um Jogo)&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;<span class="gentelella-fa gentelella-fa-save">&nbsp;&nbsp;&nbsp;(Apenas Salvar o Resultado de um Jogo)</span></code></center>
+                                            <br />
+                                            <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                                                <center><h4><code>Fase de @item.name - <span id="stageID-0-roundDetails">Aguarde processamento...</span></code></h4></center>
+                                                <div class="gentelella-ln_solid"></div>
+                                                <input type="hidden" id="totalMatchesPerRoundStage0" value="@(Model.listOfTeamTable.Count / 2)" />
+                                                <table id="datatable-responsive-stage1" class="display gentelella-table gentelella-table-striped gentelella-table-bordered gentelella-dt-responsive gentelella-nowrap" cellspacing="0" width="100%">
+                                                    <thead style="background-color:#2C3E4F;color:white">
+                                                        <tr>
+                                                            <th width="0" style="display:none">Round Details</th>
+                                                            <th width="30%" class="gentelella-a-right">Time Casa</th>
+                                                            <th width="12%" class="gentelella-a-center"><span class="gentelella-fa gentelella-fa-soccer-ball-o gentelella-fa-1-2x"></span></th>
+                                                            <th width="30%" class="">Time Visitante</th>
+                                                            <th width="23%" class="gentelella-a-center">Ação</th>
+                                                            <th width="5%" class="gentelella-a-center">#</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="ListOfMatches">
+                                                        @{countAux = 1; }
+                                                        @foreach (var match in Model.listOfMatch.Where(s => s.stageID == item.id))
+                                                        {
+                                                            <tr id="@("tr" + countAux.ToString())" matchID="@match.matchID" teamHome="@match.teamNameHome" goalsHome="@match.totalGoalsHome" teamAway="@match.teamNameAway" goalsAway="@match.totalGoalsAway">
+                                                                <td width="0" style="display:none">@match.roundDetails</td>
+                                                                <td width="35%" class="gentelella-a-right">@match.teamNameHome&nbsp;&nbsp;<img listMatchTeamID="@match.teamHomeID" src="" width="20" /></td>
+                                                                <td width="12%" class="gentelella-a-center">
+                                                                    <input type="textAmount" id="txtQtGoalsHome" class="gentelella-form-control" TeamName="@match.teamNameHome" value="@match.totalGoalsHome" style="width:42px;height:20px" maxlength="2" />
+                                                                    x
+                                                                    <input type="textAmount" id="txtQtGoalsAway" class="gentelella-form-control" TeamName="@match.teamNameAway" value="@match.totalGoalsAway" style="width:42px;height:20px" maxlength="2" />
+                                                                </td>
+                                                                <td width="35%" style="text-align:left"><img listMatchTeamID="@match.teamAwayID" src="" width="20" />&nbsp;&nbsp;@match.teamNameAway</td>
+                                                                <td style="text-align:left;padding-left:15px;cursor:pointer">
+                                                                    <span title="Click para realizar algum comentário no jogo." class="gentelella-btn gentelella-btn-primary gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-commenting-o gentelella-fa-1-2x"></i></span>
+                                                                    @if (item.id >= stageIDInitial)
+                                                                    {
+                                                                        if (String.IsNullOrEmpty(match.totalGoalsHome))
+                                                                        {
+                                                                            Html.Raw("  ");
+                                                                            <span title="Click para decretar o jogo." class="gentelella-btn gentelella-btn-warning gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-pencil gentelella-fa-1-2x"></i></span>
+                                                                        }
+                                                                        if (String.IsNullOrEmpty(match.typeBlackList))
+                                                                        {
+                                                                            Html.Raw("&nbsp; &nbsp;");
+                                                                            <a href="JAVASCRIPT: $('#matchID').val(@match.matchID);submeteModerator('LaunchSimpleResult', 'SHOW_LAUNCH_SIMPLE_RESULT_DETAILS', '');" title="Click para informar o resultado do jogo." class="gentelella-btn gentelella-btn-success gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-save gentelella-fa-1-2x"></i></a>
+                                                                        }
+                                                                        if (!String.IsNullOrEmpty(match.totalGoalsHome))
+                                                                        {
+                                                                            Html.Raw("  ");
+                                                                            <span title="Click para excluir o resultado lançado." class="gentelella-btn gentelella-btn-danger gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-trash gentelella-fa-1-2x"></i></span>
+                                                                        }
+                                                                    }
+                                                                </td>
+                                                                <td class="gentelella-a-center" title="">@match.typeBlackList</td>
+                                                            </tr>
+                                                            countAux = countAux + 1;
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div id="teamTable">
+                                        <div class="gentelella-row" style="height:400px">
+                                            <br>
+                                            <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                                                <table id="datatable-responsive-stage1-teamtable" class="gentelella-table gentelella-table-striped gentelella-jambo_table gentelella-bulk_action" cellspacing="0" width="100%">
+                                                    <thead style="background-color:#2C3E4F;color:white">
+                                                        <tr>
+                                                            <th class="gentelella-a-center" width="5%"># </th>
+                                                            <th class="gentelella-column-title" width="45%">Time </th>
+                                                            <th class="gentelella-a-center" title="Total de Pontos Ganhos" width="5%">PT</th>
+                                                            <th class="gentelella-a-center" title="Qtde. de Jogos" width="5%">J</th>
+                                                            <th class="gentelella-a-center" title="Qtde. de Vitórias" width="5%">V</th>
+                                                            <th class="gentelella-a-center" title="Qtde. de Empates" width="5%">E</th>
+                                                            <th class="gentelella-a-center" title="Qtde. de Derrotas" width="5%">D</th>
+                                                            <th class="gentelella-a-center" title="Total de Gols a Favor" width="5%">GP</th>
+                                                            <th class="gentelella-a-center" title="Total de Gols Sofridos" width="5%">GC</th>
+                                                            <th class="gentelella-a-center" title="Saldo de Gols: GP - GC" width="5%">SG</th>
+                                                            <th class="gentelella-a-center" title="Percentual de Aproveitamento: Percentual de Pontos Ganhos em Relação ao Total de Pontos geral" width="10%">AP%</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="tableBodyContainer">
+                                                        @{countPos = 1; }
+                                                        @foreach (var teamTable in Model.listOfTeamTable)
+                                                        {
+                                                            balanceOfGoals = teamTable.totalGoalsFOR - teamTable.totalGoalsAGainst;
+                                                            <tr class="">
+                                                                <td class="gentelella-a-center ">@(countPos.ToString("00"))º</td>
+                                                                <td style="text-align:left"><img id="@teamTable.teamID" src="@teamTable.pathTeamLogo" width="20" />&nbsp;&nbsp;@teamTable.teamName</td>
+                                                                <td class="gentelella-a-center">@teamTable.totalPoint.ToString("00")</td>
+                                                                <td class="gentelella-a-center">@teamTable.totalPlayed.ToString("00")</td>
+                                                                <td class="gentelella-a-center">@teamTable.totalWon.ToString("00")</td>
+                                                                <td class="gentelella-a-center">@teamTable.totalDraw.ToString("00")</td>
+                                                                <td class="gentelella-a-center">@teamTable.totalLost.ToString("00")</td>
+                                                                <td class="gentelella-a-center">@teamTable.totalGoalsFOR.ToString("00")</td>
+                                                                <td class="gentelella-a-center">@teamTable.totalGoalsAGainst.ToString("00")</td>
+                                                                <td class="gentelella-a-center">@balanceOfGoals.ToString("00")</td>
+                                                                <td class="gentelella-a-center">...</td>
+                                                            </tr>
+                                                            countPos = countPos + 1;
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            }
+                            else if (item.id == 0 && forGroup == 1)
+                            {
+                                hasStage0 = true;
+                                <div id="stage1" stageID="@item.id">
+
+                                    <div class="gentelella-row gentelella-a-center my-3 clearfix">
+                                        @{countAux = 1; }
+                                        @foreach (var group in Model.listOfGroup)
+                                        {
+                                            if (countAux > 1)
+                                            {@Html.Raw("&nbsp;|&nbsp;");
+                                        }
+                                        <button onClick="$('#groupID').val('@group.id');displayDatailsGroupsStage('@countAux', @totalListOfGroups); return false;" class="@(Html.Raw("group") + countAux.ToString()) gentelella-btn gentelella-btn-round @if (countAux == 1) { @Html.Raw("gentelella-btn-dark"); } ">@group.name.ToUpper()</button>
+                                        countAux = countAux + 1;
+                                    }
+                                    </div>
+                                    <br />
+                                    <div class="gentelella-row gentelella-a-center my-3 clearfix">
+                                        <button onClick="displayDatailsGroupStage1('matchTable'); return false;" class="matchTable gentelella-btn gentelella-btn-round gentelella-btn-success">TABELA DE JOGOS</button>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <button onClick="displayDatailsGroupStage1('teamTable'); return false;" class="teamTable gentelella-btn gentelella-btn-round gentelella-btn-default">TABELA DE CLASSIFICAÇÃO</button>
+                                    </div>
+
+
+                                    @{countAux = 1; }
+                                    @foreach (var group in Model.listOfGroup)
+                                    {
+                                        <div id="matchTable" groupID="@group.id">
+                                            <div class="gentelella-row" style="height:200px">
+                                                <br>
+                                                <center><code>Legenda:  <span class="gentelella-fa gentelella-fa-commenting-o">&nbsp;&nbsp;&nbsp;(Realizar Algum Comentário no Jogo)&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;<span class="gentelella-fa gentelella-fa-pencil">&nbsp;&nbsp;&nbsp;(Decretar um Jogo)&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;<span class="gentelella-fa gentelella-fa-save">&nbsp;&nbsp;&nbsp;(Apenas Salvar o Resultado de um Jogo)</span></code></center>
+                                                <br />
+                                                <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                                                    <center><h4><code>Fase de @item.name - <span id="stageID-0-roundDetails-@group.id.ToString()">Aguarde processamento...</span></code></h4></center>
+                                                    <div class="gentelella-ln_solid"></div>
+                                                    <table id="datatable-responsive-stage1-@group.id.ToString()" class="display gentelella-table gentelella-table-striped gentelella-table-bordered gentelella-dt-responsive gentelella-nowrap" cellspacing="0" width="100%">
+                                                        <thead style="background-color:#2C3E4F;color:white">
+                                                            <tr>
+                                                                <th width="0" style="display:none">Round Details</th>
+                                                                <th width="30%" class="gentelella-a-right">Time Casa</th>
+                                                                <th width="12%" class="gentelella-a-center"><span class="gentelella-fa gentelella-fa-soccer-ball-o gentelella-fa-1-2x"></span></th>
+                                                                <th width="30%" class="">Time Visitante</th>
+                                                                <th width="23%" class="gentelella-a-center">Ação</th>
+                                                                <th width="5%" class="gentelella-a-center">#</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="ListOfMatches">
+                                                            @{countAux = 1; }
+                                                            @foreach (var match in Model.listOfMatch.Where(s => s.stageID == item.id && s.groupID == group.id))
+                                                            {
+                                                                <tr id="@("tr" + countAux.ToString())" matchID="@match.matchID" teamHome="@match.teamNameHome" goalsHome="@match.totalGoalsHome" teamAway="@match.teamNameAway" goalsAway="@match.totalGoalsAway">
+                                                                    <td width="0" style="display:none">@match.roundDetails</td>
+                                                                    <td width="35%" class="gentelella-a-right">@match.teamNameHome&nbsp;&nbsp;<img listMatchTeamID="@match.teamHomeID" src="" width="20" /></td>
+                                                                    <td width="12%" class="gentelella-a-center">
+                                                                        <input type="textAmount" id="txtQtGoalsHome" class="gentelella-form-control" TeamName="@match.teamNameHome" value="@match.totalGoalsHome" style="width:42px;height:20px" maxlength="2" />
+                                                                        x
+                                                                        <input type="textAmount" id="txtQtGoalsAway" class="gentelella-form-control" TeamName="@match.teamNameAway" value="@match.totalGoalsAway" style="width:42px;height:20px" maxlength="2" />
+                                                                    </td>
+                                                                    <td width="35%" style="text-align:left"><img listMatchTeamID="@match.teamAwayID" src="" width="20" />&nbsp;&nbsp;@match.teamNameAway</td>
+                                                                    <td style="text-align:left;padding-left:15px;cursor:pointer">
+                                                                        <span title="Click para realizar algum comentário no jogo." class="gentelella-btn gentelella-btn-primary gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-commenting-o gentelella-fa-1-2x"></i></span>
+                                                                        @if (item.id >= stageIDInitial)
+                                                                        {
+                                                                            if (String.IsNullOrEmpty(match.totalGoalsHome))
+                                                                            {
+                                                                                Html.Raw("  ");
+                                                                                <span title="Click para decretar o jogo." class="gentelella-btn gentelella-btn-warning gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-pencil gentelella-fa-1-2x"></i></span>
+                                                                            }
+                                                                            if (String.IsNullOrEmpty(match.typeBlackList))
+                                                                            {
+                                                                                Html.Raw("&nbsp; &nbsp;");
+                                                                                <a href="JAVASCRIPT: $('#matchID').val(@match.matchID);submeteModerator('LaunchSimpleResult', 'SHOW_LAUNCH_SIMPLE_RESULT_DETAILS', '');" title="Click para informar o resultado do jogo." class="gentelella-btn gentelella-btn-success gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-save gentelella-fa-1-2x"></i></a>
+                                                                            }
+                                                                            if (!String.IsNullOrEmpty(match.totalGoalsHome))
+                                                                            {
+                                                                                Html.Raw("  ");
+                                                                                <span title="Click para excluir o resultado lançado." class="gentelella-btn gentelella-btn-danger gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-trash gentelella-fa-1-2x"></i></span>
+                                                                            }
+                                                                        }
+                                                                    </td>
+                                                                    <td class="gentelella-a-center" title="">@match.typeBlackList</td>
+                                                                </tr>
+                                                                countAux = countAux + 1;
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div id="teamTable" groupID="@group.id">
+                                            <div class="gentelella-row" style="height:400px">
+                                                <br>
+                                                <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                                                    <table id="datatable-responsive-stage1-@group.id.ToString()-teamtable" class="gentelella-table gentelella-table-striped gentelella-jambo_table gentelella-bulk_action" cellspacing="0" width="100%">
+                                                        <thead style="background-color:#2C3E4F;color:white">
+                                                            <tr>
+                                                                <th class="gentelella-a-center" width="5%"># </th>
+                                                                <th class="gentelella-column-title" width="45%">Time </th>
+                                                                <th class="gentelella-a-center" title="Total de Pontos Ganhos" width="5%">PT</th>
+                                                                <th class="gentelella-a-center" title="Qtde. de Jogos" width="5%">J</th>
+                                                                <th class="gentelella-a-center" title="Qtde. de Vitórias" width="5%">V</th>
+                                                                <th class="gentelella-a-center" title="Qtde. de Empates" width="5%">E</th>
+                                                                <th class="gentelella-a-center" title="Qtde. de Derrotas" width="5%">D</th>
+                                                                <th class="gentelella-a-center" title="Total de Gols a Favor" width="5%">GP</th>
+                                                                <th class="gentelella-a-center" title="Total de Gols Sofridos" width="5%">GC</th>
+                                                                <th class="gentelella-a-center" title="Saldo de Gols: GP - GC" width="5%">SG</th>
+                                                                <th class="gentelella-a-center" title="Percentual de Aproveitamento: Percentual de Pontos Ganhos em Relação ao Total de Pontos geral" width="10%">AP%</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="tableBodyContainer-@group.id.ToString()">
+                                                            @{countPos = 1; }
+                                                            @foreach (var teamTable in Model.listOfTeamTable.Where(s => s.groupID == group.id))
+                                                            {
+                                                                balanceOfGoals = teamTable.totalGoalsFOR - teamTable.totalGoalsAGainst;
+                                                                <tr class="">
+                                                                    <td class="gentelella-a-center ">@(countPos.ToString("00"))º</td>
+                                                                    <td style="text-align:left"><img id="@teamTable.teamID" src="@teamTable.pathTeamLogo" width="20" />&nbsp;&nbsp;@teamTable.teamName</td>
+                                                                    <td class="gentelella-a-center">@teamTable.totalPoint.ToString("00")</td>
+                                                                    <td class="gentelella-a-center">@teamTable.totalPlayed.ToString("00")</td>
+                                                                    <td class="gentelella-a-center">@teamTable.totalWon.ToString("00")</td>
+                                                                    <td class="gentelella-a-center">@teamTable.totalDraw.ToString("00")</td>
+                                                                    <td class="gentelella-a-center">@teamTable.totalLost.ToString("00")</td>
+                                                                    <td class="gentelella-a-center">@teamTable.totalGoalsFOR.ToString("00")</td>
+                                                                    <td class="gentelella-a-center">@teamTable.totalGoalsAGainst.ToString("00")</td>
+                                                                    <td class="gentelella-a-center">@balanceOfGoals.ToString("00")</td>
+                                                                    <td class="gentelella-a-center">...</td>
+                                                                </tr>
+                                                                countPos = countPos + 1;
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        countAux = countAux + 1;
+                                    }
+                                    <input type="hidden" id="totalMatchesPerRoundStage0" value="@((countPos - 1) / 2)" />
+                                </div>
+                            }
+                            else
+                            {
+                                if (count == 1)
+                                {
+                                    countPos = 0;
+                                    <table id="" style="display:none" class="" cellspacing="0" width="100%">
+                                        <tbody class="tableBodyContainer">
+                                            @foreach (var team in Model.listOfTeam)
+                                            {
+                                                <tr class="">
+                                                    <td style="text-align:left"><img id="@team.id" src="@team.pathImg" width="20" /></td>
+                                                </tr>
+                                                countPos = countPos + 1;
+                                            }
+                                        </tbody>
+                                    </table>
+                                }
+                                stageCurrent = "stage" + count;
+                                divStageNamePlayOff = "datatable-responsive-stageplayoff" + item.id.ToString();
+                                <div id="@stageCurrent" stageID="@item.id">
+                                    <br>
+                                    <center><code>Legenda:  <span class="gentelella-fa gentelella-fa-commenting-o">&nbsp;&nbsp;&nbsp;(Realizar Algum Comentário no Jogo)&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-pencil"> (Decretar um Jogo)&nbsp;&nbsp;/&nbsp;&nbsp;<span class="glyphicon glyphicon-floppy-save"> (Apenas Salvar o Resultado de um Jogo)</span></code></center>
+                                    <br />
+                                    <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12" style="height:400px">
+                                        <center><h4><code>@item.name - <span id="@("stageplayoff" + item.id.ToString() + "-roundDetails")">Aguarde processamento...</span></code></h4></center>
+                                        <div class="gentelella-ln_solid"></div>
+
+                                        <table id="@divStageNamePlayOff" class="display gentelella-table gentelella-table-striped gentelella-table-bordered gentelella-dt-responsive gentelella-nowrap" cellspacing="0" width="100%">
+                                            <thead style="background-color:#2C3E4F;color:white">
+                                                <tr>
+                                                    <th width="0" style="display:none">Round Details</th>
+                                                    <th width="30%" class="gentelella-a-right">Time Casa</th>
+                                                    <th width="12%" class="gentelella-a-center"><span class="gentelella-fa gentelella-fa-soccer-ball-o gentelella-fa-1-2x"></span></th>
+                                                    <th width="30%" class="">Time Visitante</th>
+                                                    <th width="23%" class="gentelella-a-center">Ação</th>
+                                                    <th width="5%" class="gentelella-a-center">#</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="ListOfMatches">
+                                                @{countAux = 1; }
+                                                @foreach (var itemPlayoff in Model.listOfMatch.Where(s => s.stageID == item.id))
+                                                {
+                                                    roundDetailsPlayOff = itemPlayoff.roundDetails;
+                                                    if (onlyOnePlayOffGame != String.Empty)
+                                                    {
+                                                        roundDetailsPlayOff = onlyOnePlayOffGame + " - " + roundDetailsPlayOff;
+                                                    }
+                                                    else
+                                                    {
+                                                        roundDetailsPlayOff = "<roundLegNum> - " + roundDetailsPlayOff;
+                                                    }
+
+                                                    <tr id="@("trstageplayoff" + item.id.ToString() + "-" + countAux.ToString())" matchID="@itemPlayoff.matchID" teamHome="@itemPlayoff.teamNameHome" goalsHome="@itemPlayoff.totalGoalsHome" teamAway="@itemPlayoff.teamNameAway" goalsAway="@itemPlayoff.totalGoalsAway">
+                                                        <td width="0" style="display:none">@roundDetailsPlayOff</td>
+                                                        <td width="35%" class="gentelella-a-right">@itemPlayoff.teamNameHome&nbsp;&nbsp;<img listMatchTeamID="@itemPlayoff.teamHomeID" src="" width="20" /></td>
+                                                        <td width="12%" class="gentelella-a-center">
+                                                            <input type="textAmount" id="txtQtGoalsHome" class="gentelella-form-control" TeamName="@itemPlayoff.teamNameHome" value="@itemPlayoff.totalGoalsHome" style="width:42px;height:20px" maxlength="2" />
+                                                            x
+                                                            <input type="textAmount" id="txtQtGoalsAway" class="gentelella-form-control" TeamName="@itemPlayoff.teamNameAway" value="@itemPlayoff.totalGoalsAway" style="width:42px;height:20px" maxlength="2" />
+                                                        </td>
+                                                        <td width="35%" style="text-align:left"><img listMatchTeamID="@itemPlayoff.teamAwayID" src="" width="20" />&nbsp;&nbsp;@itemPlayoff.teamNameAway</td>
+                                                        <td width="13%" style="text-align:left;padding-left:15px;cursor:pointer">
+                                                            <span title="Click para realizar algum comentário no jogo." class="gentelella-btn gentelella-btn-primary gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-commenting-o gentelella-fa-1-2x"></i></span>
+                                                            @if (item.id >= stageIDInitial)
+                                                            {
+                                                                if (String.IsNullOrEmpty(itemPlayoff.totalGoalsHome))
+                                                                {
+                                                                    Html.Raw("  ");
+                                                                    <span title="Click para decretar o jogo." class="gentelella-btn gentelella-btn-warning gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-pencil gentelella-fa-1-2x"></i></span>
+                                                                }
+                                                                if (String.IsNullOrEmpty(itemPlayoff.typeBlackList))
+                                                                {
+                                                                    Html.Raw("&nbsp; &nbsp;");
+                                                                    <a href="JAVASCRIPT: $('#matchID').val(@itemPlayoff.matchID);submeteModerator('LaunchSimpleResult', 'SHOW_LAUNCH_SIMPLE_RESULT_DETAILS', '');" title="Click para informar o resultado do jogo." class="gentelella-btn gentelella-btn-success gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-save gentelella-fa-1-2x"></i></a>
+                                                                }
+                                                                if (!String.IsNullOrEmpty(itemPlayoff.totalGoalsHome))
+                                                                {
+                                                                    Html.Raw("  ");
+                                                                    <span title="Click para excluir o resultado lançado." class="gentelella-btn gentelella-btn-danger gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-trash gentelella-fa-1-2x"></i></span>
+                                                                }
+                                                            }
+                                                        </td>
+                                                        <td class="gentelella-a-center" title="">@itemPlayoff.typeBlackList</td>
+                                                    </tr>
+                                                    countAux = countAux + 1;
+                                                }
+                                            </tbody>
+                                        </table>
+                                        @{countAux = countAux - 1; }
+                                        @if (Model.twoLegs == true && countAux > 1)
+                                        {
+                                            <input type="hidden" id="@("totalMatchesPerRoundstageplayoff" + item.id.ToString())" value="@(countAux / 2)" />
+                                        }
+                                        else
+                                        {
+                                            <input type="hidden" id="@("totalMatchesPerRoundstageplayoff" + item.id.ToString())" value="@(countAux)" />
+                                        }
+                                    </div>
+                                </div>
+                            }
+                            count = count + 1;
+                        }
+                    </div>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="gentelella-form-group gentelella-a-right">
+        <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+            <div class="gentelella-ln_solid"></div>
+            <input type="button" class="gentelella-btn gentelella-btn-primary" onClick="JAVASCRIPT: submeteModerator('LaunchResult', 'VOLTAR', '');" value="Voltar" />
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+@Html.Partial("_QuestionModalv2")
+@section Scripts {
+    <script>
+    $(function () {
+        if (detectMobileDevice() == 1) {
+            //$("#includedContentMenuMobile").load("/arena20/includes/menu-logged-mobile.html");
+            //$("#includedContentMenuRankingMobile").load("menu-my-matches-mobile.html");
+            hidden_show_ObjectMobile("footerMobile", "block");
+        }
+    });
+
+    function includeFileScreenModalGeneralQuestionDeleteResult() {
+        $("#modalScreeenMsgTitle").html("");
+        $("#modalScreeenMsgSubTitle").html("");
+        $("#modalScreeenMsgQuestion").html("");
+    }
+
+    function deleteOnClick() {
+        $("span.gentelella-btn-danger").on("click", function () {
+            $(this).attr("data-toggle", "modal");
+            $(this).attr("data-target", "#bs-message-general-modal-sm");
+            var closestTR = $(this).closest("tr");
+            var descptionMatch = closestTR.attr("teamHome") + " " + closestTR.attr("goalsHome") +
+                                " vs " +
+                                closestTR.attr("goalsAway") + " " + closestTR.attr("teamAway");
+
+            $("#matchID").val(closestTR.attr("matchID"));
+
+            $("#modalScreeenMsgTitle").html("EXCLUIR RESULTADO DA PARTIDA");
+            $("#modalScreeenMsgButton").on("click", function () { submeteModerator('LaunchResultDetails', 'DELETE_ALL_BY_MATCH', ''); });
+            $("#modalScreeenMsgQuestion").html("Deseja realmente EXCLUIR o resultado completo da partida:<br/><b>" + descptionMatch + "</b>?");
+
+            $('#bs-message-general-modal-sm').modal('show');
+            $(this).attr("data-toggle", "");
+            $(this).attr("data-target", "");
+
+        });
+    }
+
+    function decreeOnClick() {
+        $("span.gentelella-btn-warning").on("click", function () {
+            var closestTR = $(this).closest("tr");
+            $("#matchID").val(closestTR.attr("matchID"));
+            submeteModerator('DecreeResult', 'SHOW_CHAMPIONSHIPMATCHTABLE_DETAILS', '');
+        });
+    }
+
+    function commentOnClick() {
+        $("span.gentelella-btn-primary").on("click", function () {
+            var closestTR = $(this).closest("tr");
+            $("#matchID").val(closestTR.attr("matchID"));
+            submeteModerator('CommentMatch', 'SHOW_CHAMPIONSHIPMATCHTABLE_DETAILS', '');
+
+        });
+    }
+
+    $(document).ready(function () {
+        if ('@TempData["returnMessage"]' != '')
+            toastr.error('Aviso: @TempData["returnMessage"].');
+
+        if ('@TempData["actionSuccessfully"]' != '')
+            toastr.success('@TempData["actionSuccessfully"].');
+
+        if (detectMobileDevice() == 0) {
+            if (window.location.pathname.indexOf("Details")>-1)
+                activeSidebarMenu(window.location.pathname.replace("Details", ""));
+            else
+                activeSidebarMenu(window.location.pathname.replace("Simple", ""));
+        }
+
+        activateRegistrationForm("LaunchResultDetails", '@Model.actionUser');
+
+        setVariablesDataTable(@Model.totalQualify, @indexRelegate, @stageIDInitial, @roundInitial, @totalListOfStages, @totalListOfGroups, @teamsForGroup);
+
+        $('.dataTables_paginate').on('click', function () {
+            if ('@forGroup' == '0' || $(this).attr("id").indexOf("stage1") == -1) {
+                showRoundDetails($(this));
+                if ('@forGroup' == '0') { setSourceImgTeamLogo(); }
+                else { setSourceImgTeamLogoForGroup(); }
+            }
+            else {
+                showRoundDetailsForGroup(parseInt($("#groupID").val()) - 1);
+                setSourceImgTeamLogoForGroup();
+            }
+            deleteOnClick();
+            decreeOnClick();
+            commentOnClick();
+        });
+
+        $("h4").attr("style", "height:3px")
+        $("code").attr("style", "height:0px;background-color:#fff")
+
+        if ('@hasStage0' == 'False') {
+            setSourceImgTeamLogo();
+            var contTeam = parseInt('@countPos');
+            if (contTeam > 24) { contTeam = contTeam * 1.8; }
+            $(".gentelella-x_panel").height($(".gentelella-x_panel").height() + $("#stage1").height() + (contTeam * 5));
+        }
+        else if ('@forGroup' == '0') {
+            setSourceImgTeamLogo();
+            displayDatailsStage1("matchTable");
+        }
+        else if ('@forGroup' == '1') {
+            setSourceImgTeamLogoForGroup();
+            displayDatailsGroupStage1("matchTable");
+            $(".gentelella-x_panel").height($(".gentelella-x_panel").height() + $("#stage5").height());
+        }
+        includeFileScreenModalGeneralQuestionDeleteResult();
+        deleteOnClick();
+        decreeOnClick();
+        commentOnClick();
+    });
+    </script>
+}
+

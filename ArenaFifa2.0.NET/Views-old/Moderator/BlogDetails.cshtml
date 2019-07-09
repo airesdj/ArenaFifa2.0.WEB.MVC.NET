@@ -1,0 +1,195 @@
+﻿@using ArenaFifa20.NET.Models
+@model BlogDetailsModel
+@{
+    ViewBag.Title = "Moderator Menu - Team Details";
+    string actionBack = "Blog";
+}
+
+
+<!-- page content -->
+<div class="gentelella-right_col" role="main" style="padding-left:20px">
+    <div class="gentelella-page-title">
+        <div class="gentelella-title">
+            <h3>CADASTRO DE MATÉRIAS DE BLOGS DOS MODERADORES - @Model.actionUser</h3>
+        </div>
+    </div>
+    <br>
+
+    <div class="gentelella-col-md-14 gentelella-col-sm-14 gentelella-col-xs-14" style="background-color:#F7F7F7">
+        <div class="gentelella-x_panel">
+            <div class="gentelella-x_content">
+
+                @Html.Partial("_MessageValidate")
+
+                <form id="comeback-form" action=""></form>
+
+                <form action="/Arena20/Moderator/BlogDetails" class="form-horizontal" id="registration-form" method="post" role="form" data-parsley-validate>
+
+
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="actionForm" name="actionForm" value="SAVE" />
+                    <input type="hidden" id="selectedID" name="selectedID" value="@Model.id" />
+                    <p>
+                        <code style="background-color:#fff">Todos os campos com (*) são de preenchimento obrigatório.</code>
+                    </p>
+                    <br />
+                    <div class="gentelella-row ">
+                        <div class="gentelella-col-md-1 gentelella-col-sm-12 gentelella-col-xs-12">
+                            <label for="idSofifa">ID :</label>
+                            <input type="text" id="txtId" name="txtId" size="1000" class="gentelella-form-control" data-parsley-type="integer" value="@Model.id" />
+                        </div>
+                        <div class="gentelella-col-md-2 gentelella-col-sm-12 gentelella-col-xs-12">
+                            <label for="idSofifa">Data/Hora :</label>
+                            <input type="text" id="txtData" name="txtData" size="1000" class="gentelella-form-control" value="@(Model.registerDateFormatted + " " + Model.registerTime)" />
+                        </div>
+                        <div class="gentelella-col-md-5 gentelella-col-sm-12 gentelella-col-xs-12">
+                            <label for="nome">Moderador Responsável <i style="color:red">*</i> :</label>
+                            <select id="cmbTecnico" name="cmbTecnico" class="gentelella-form-control" required>
+                                @if (Model.actionUser.ToUpper() == "ADD")
+                                {
+                                    <option value="">Selecione..</option>
+                                }
+                                @foreach (var item in Model.listOfUser)
+                                {
+                                    <option value="@item.id">@(item.name + " (" + item.psnID + ")")</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="gentelella-row">
+                        <div class="gentelella-col-md-7 gentelella-col-sm-7 gentelella-col-xs-12">
+                            <label for="deacricao">Título da Matéria <i style="color:red">*</i> :</label>
+                            <input type="text" id="txtTitulo" class="gentelella-form-control" name="txtTitulo" data-parsley-maxlength="50" required value="@Model.title" />
+                        </div>
+                    </div>
+                    <br>
+
+
+                    <div class="gentelella-row">
+                        <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                            <label for="deacricao">Conteúdo da Matéria <i style="color:red">*</i> :</label>
+
+                            <div id="alerts"></div>
+                            <div class="gentelella-btn-toolbar gentelella-editor" data-role="editor-toolbar" data-target="#editor-one">
+                                <div class="gentelella-btn-group">
+                                    <a class="gentelella-btn gentelella-dropdown-toggle" data-toggle="dropdown" title="Font"><i class="gentelella-fa gentelella-fa-font"></i><b class="gentelella-caret"></b></a>
+                                    <ul class="dropdown-menu"></ul>
+                                </div>
+                                <div class="gentelella-btn-group">
+                                    <a class="gentelella-btn gentelella-dropdown-toggle" data-toggle="dropdown" title="Font Size"><i class="gentelella-fa gentelella-fa-text-height"></i>&nbsp;<b class="gentelella-caret"></b></a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a data-edit="fontSize 5">
+                                                <p style="font-size:17px">Huge</p>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a data-edit="fontSize 3">
+                                                <p style="font-size:14px">Normal</p>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a data-edit="fontSize 1">
+                                                <p style="font-size:11px">Small</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="gentelella-btn-group">
+                                    <a class="gentelella-btn" data-edit="bold" title="Bold (Ctrl/Cmd+B)"><i class="gentelella-fa gentelella-fa-bold"></i></a>
+                                    <a class="gentelella-btn" data-edit="italic" title="Italic (Ctrl/Cmd+I)"><i class="gentelella-fa gentelella-fa-italic"></i></a>
+                                    <a class="gentelella-btn" data-edit="strikethrough" title="Strikethrough"><i class="gentelella-fa gentelella-fa-strikethrough"></i></a>
+                                    <a class="gentelella-btn" data-edit="underline" title="Underline (Ctrl/Cmd+U)"><i class="gentelella-fa gentelella-fa-underline"></i></a>
+                                </div>
+                                <div class="gentelella-btn-group">
+                                    <a class="gentelella-btn" data-edit="insertunorderedlist" title="Bullet list"><i class="gentelella-fa gentelella-fa-list-ul"></i></a>
+                                    <a class="gentelella-btn" data-edit="insertorderedlist" title="Number list"><i class="gentelella-fa gentelella-fa-list-ol"></i></a>
+                                    <a class="gentelella-btn" data-edit="outdent" title="Reduce indent (Shift+Tab)"><i class="gentelella-fa gentelella-fa-dedent"></i></a>
+                                    <a class="gentelella-btn" data-edit="indent" title="Indent (Tab)"><i class="gentelella-fa gentelella-fa-indent"></i></a>
+                                </div>
+                                <div class="gentelella-btn-group">
+                                    <a class="gentelella-btn" data-edit="justifyleft" title="Align Left (Ctrl/Cmd+L)"><i class="gentelella-fa gentelella-fa-align-left"></i></a>
+                                    <a class="gentelella-btn" data-edit="justifycenter" title="Center (Ctrl/Cmd+E)"><i class="gentelella-fa gentelella-fa-align-center"></i></a>
+                                    <a class="gentelella-btn" data-edit="justifyright" title="Align Right (Ctrl/Cmd+R)"><i class="gentelella-fa gentelella-fa-align-right"></i></a>
+                                    <a class="gentelella-btn" data-edit="justifyfull" title="Justify (Ctrl/Cmd+J)"><i class="gentelella-fa gentelella-fa-align-justify"></i></a>
+                                </div>
+                                <div class="gentelella-btn-group">
+                                    <a class="gentelella-btn gentelella-dropdown-toggle" data-toggle="dropdown" title="Hyperlink"><i class="gentelella-fa gentelella-fa-link"></i></a>
+                                    <div class="dropdown-menu input-append">
+                                        <input class="span2" placeholder="URL" type="text" data-edit="createLink" />
+                                        <button class="gentelella-btn" type="button">Add</button>
+                                    </div>
+                                    <a class="gentelella-btn" data-edit="unlink" title="Remove Hyperlink"><i class="gentelella-fa gentelella-fa-cut"></i></a>
+                                </div>
+                                <div class="gentelella-btn-group">
+                                    <a class="gentelella-btn" title="Insert picture (or just drag & drop)" id="pictureBtn"><i class="gentelella-fa gentelella-fa-picture-o"></i></a>
+                                    <input type="file" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage" />
+                                </div>
+                                <div class="gentelella-btn-group">
+                                    <a class="gentelella-btn" data-edit="undo" title="Undo (Ctrl/Cmd+Z)"><i class="gentelella-fa gentelella-fa-undo"></i></a>
+                                    <a class="gentelella-btn" data-edit="redo" title="Redo (Ctrl/Cmd+Y)"><i class="gentelella-fa gentelella-fa-repeat"></i></a>
+                                </div>
+                            </div>
+                            <div id="editor-one" class="gentelella-editor-wrapper" style="height:500px">@Html.DisplayFor(modelitem => Model.text)</div>
+                            <textarea name="txtConteudo" id="txtConteudo" style="display:none;" class="gentelella-form-control" required></textarea>
+
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="gentelella-form-group gentelella-a-right">
+                        <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                            <br>
+                            <div class="gentelella-ln_solid"></div>
+                            <input type="button" class="gentelella-btn gentelella-btn-primary" onClick="JAVASCRIPT: submeteModerator('@actionBack', 'VOLTAR', '');" value="Voltar" />
+                            <input type="submit" class="gentelella-btn gentelella-btn-success" value="Salvar Dados" onClick="JAVASCRIPT: $('#txtConteudo').val($('#editor-one').html());" />
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+@section Scripts {
+    <script>
+        $(function () {
+            if (detectMobileDevice() == 1) {
+                //$("#includedContentMenuMobile").load("/arena20/includes/menu-logged-mobile.html");
+                //$("#includedContentMenuRankingMobile").load("menu-my-matches-mobile.html");
+                hidden_show_ObjectMobile("footerMobile", "block");
+            }
+        });
+
+        $(document).ready(function () {
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+
+            activateRegistrationForm("BlogDetails", '@Model.actionUser');
+
+            if (detectMobileDevice() == 0)
+                activeSidebarMenu(window.location.pathname.replace("Details", ""));
+
+            if ('@Model.actionUser' != 'VIEW') {
+                $("#txtId").addClass("disabled");
+                $("#txtId").attr("disabled", "true");
+                $("#txtData").addClass("disabled");
+                $("#txtData").attr("disabled", "true");
+            }
+
+            if ('@Model.actionUser' == 'ADD') {
+                //$("#rowImage").hide();
+                //$("#divIDRow").hide();
+            }
+
+            if ($("#selectedID").val() == "") { $("#selectedID").val("0"); }
+
+            $("#cmbTecnico").find("option[value='@Model.userID']").attr("selected", "true");
+
+        });
+
+    </script>
+}
+

@@ -1,0 +1,67 @@
+﻿@using ArenaFifa20.NET.Models
+@model RankingViewModel
+@{
+    int i = 0;
+    int j = 0;
+}
+<div class="gentelella-x_content">
+    <p><code>A lista apenas apresenta os 60 primeiros colocados no ranking. </code></p>
+    <br>
+    <div class="gentelella-table-responsive">
+        <table class="gentelella-table gentelella-table-striped gentelella-jambo_table bulk_action">
+            <thead style="background-color:#2C3E4F">
+                <tr class="gentelella-headings">
+                    <th class="gentelella-column-title gentelella-a-center" width="5%"># </th>
+                    <th class="gentelella-column-title" width="35%">Técnico </th>
+                    <th class="gentelella-column-title" width="15%">PSN </th>
+                    <th class="gentelella-column-title gentelella-a-center" width="15%">Aproveitamento </th>
+                    <th class="gentelella-column-title gentelella-a-right" width="10%">Total Geral  </th>
+                    <th class="gentelella-column-title gentelella-a-right" width="10%">Temp. Anterior </th>
+                    <th class="gentelella-column-title gentelella-a-right" width="5%">Ligas </th>
+                    <th class="gentelella-column-title gentelella-no-link gentelella-last gentelella-a-right" width="5%">
+                        <span class="gentelella-nobr">Copa</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.listOfRanking)
+                {
+                    j++;
+                    <tr class="gentelella-even gentelella-pointer" userID="@item.userID">
+                        <td class="gentelella-a-center " style="vertical-align:middle">@item.position.ToString("00")º</td>
+                        <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.userName)</td>
+                        <td class=" " style="vertical-align:middle">@Html.DisplayFor(modelItem => item.psnID)</td>
+                        <td class="gentelella-a-center" style="vertical-align:middle">
+                            @for (i = 1; i <= item.totalStars; i++)
+                            {
+                                if ((j % 2) == 0)
+                                {<img src="/Arena20/images/star_cheia.png" userIDFullStar="@item.userID" width="20" /> }
+                                else
+                                { <img src="/Arena20/images/star_cheia_cinza.png" userIDFullStar="@item.userID" width="20" />}
+
+                            }
+                            @for (i = 1; i <= item.totalHalfStars; i++)
+                            {
+                                if ((j % 2) == 0)
+                                {<img src="/Arena20/images/star_meia.png" userIDHalfStar="@item.userID" width="20" /> }
+                                else
+                                { <img src="/Arena20/images/star_meia_cinza.png" userIDHalfStar="@item.userID" width="20" />}
+                            }
+                            @for (i = 1; i <= item.totalEmptyStars; i++)
+                            {
+                                if ((j % 2) == 0)
+                                {<img src="/Arena20/images/star_vazia.png" userIDStarEmpty="@item.userID" width="20" /> }
+                                else
+                                { <img src="/Arena20/images/star_vazia_cinza.png" userIDStarEmpty="@item.userID" width="20" />}
+                            }
+                        </td>
+                        <td class="gentelella-a-right" style="vertical-align:middle">@Html.DisplayFor(modelItem => item.total)</td>
+                        <td class="gentelella-a-right" style="vertical-align:middle">@Html.DisplayFor(modelItem => item.totalSeason)</td>
+                        <td class="gentelella-a-right" style="vertical-align:middle">@Html.DisplayFor(modelItem => item.totalLeague)</td>
+                        <td class="gentelella-a-right" style="vertical-align:middle">@Html.DisplayFor(modelItem => item.totalCup)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

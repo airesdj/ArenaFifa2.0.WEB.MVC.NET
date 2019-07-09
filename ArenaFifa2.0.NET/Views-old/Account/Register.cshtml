@@ -1,0 +1,149 @@
+﻿@using ArenaFifa20.NET.Models
+@model RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+}
+
+<!-- Start Breadcrumbs -->
+<div class="fables-light-background-color">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="fables-breadcrumb breadcrumb px-0 py-3">
+                <li class="breadcrumb-item"><a href="/Arena20/" class="fables-second-text-color">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Cadastrar</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- /End Breadcrumbs -->
+<!-- Start page content -->
+<div class="container">
+    <div class="row my-4 my-lg-5">
+        <div class="col-12 col-md-10 offset-md-1 col-lg-6 offset-lg-3 text-center" style="width:800px">
+            <h2 class="fables-second-text-color mb-5 font-weight-bold"> Criar uma nova conta </h2>
+            @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <div class="input-icon">
+                        <span class="fables-iconuser-register fables-input-icon mt-2 font-13"></span>
+                        @Html.TextBoxFor(m => m.name, new { @class = "form-control rounded-0 py-2 pl-5 font-13 sign-register-input", @placeholder = "Nome Completo" })
+                        @Html.ValidationMessageFor(m => m.name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-icon">
+                        <span class="fables-iconuser-register fables-input-icon mt-2 font-13"></span>
+                        @Html.TextBoxFor(m => m.psnID, new { @class = "form-control rounded-0 py-2 pl-5 font-13 sign-register-input", @placeholder = "PSN ID" })
+                        @Html.ValidationMessageFor(m => m.psnID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-icon">
+                        <span class="fables-iconemail fables-input-icon mt-2 font-13"></span>
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control rounded-0 py-2 pl-5 font-13 sign-register-input", @placeholder = "E-mail" })
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                    </div>
+
+                </div>
+                <div class="form-row form-group">
+                    <div class="col-12 col-md-6 mb-4 mb-md-0">
+                        <span class="fables-iconpassword fables-input-icon font-13 mt-1"></span>
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control rounded-0 py-2 pl-5 font-13 sign-register-input", @placeholder = "Senha" })
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <span class="fables-iconpassword fables-input-icon font-13 mt-1"></span>
+                        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control rounded-0 py-2 pl-5 font-13 sign-register-input", @placeholder = "Confirma Senha" })
+                        @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-row form-group">
+                    <div class="col-12 col-md-6 mb-4 mb-md-0">
+                        <span class="fables-iconpassword fables-input-icon font-13 mt-1"></span>
+                        @Html.TextBoxFor(m => m.birthday, new { @class = "form-control rounded-0 py-2 pl-5 font-13 date", @type = "date", @placeholder = "Data de Nascimento" })
+                        @Html.ValidationMessageFor(m => m.birthday, "", new { @class = "text-danger" })
+
+                    </div>
+                    <div class="col-12 col-md-6 mb-4 mb-md-0">
+                        <div class="form-group mb-0">
+                            @Html.DropDownListFor(m => m.state, Model.listStates, "Selecione um Estado", new { @class = "form-control rounded-0" })
+                            @Html.ValidationMessageFor(m => m.state, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row form-group">
+                    <div class="col-12 col-md-6 mb-4 mb-md-0">
+                        <div class="form-group mb-0">
+                            @Html.DropDownListFor(m => m.howfindus, Model.listWhatHowFindUs, "Como soube?", new { @class = "form-control rounded-0" })
+                            @Html.ValidationMessageFor(m => m.howfindus, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 mb-4 mb-md-0">
+                        <span class="fables-iconpassword fables-input-icon font-13 mt-1"></span>
+                        @Html.TextBoxFor(m => m.whathowfindus, new { @class = "form-control rounded-0 py-2 pl-5 font-13 sign-register-input", @placeholder = "Qual?" })
+                        @Html.ValidationMessageFor(m => m.whathowfindus, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-row form-group">
+                    <div class="col-12 col-md-6 mb-4 mb-md-0">
+                        <div class="form-group mb-0">
+                            @Html.DropDownListFor(m => m.team, Model.listTeams, "Selecione seu Time Preferido", new { @class = "form-control rounded-0" })
+                            @Html.ValidationMessageFor(m => m.team, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 mb-4 mb-md-0">
+                        <div class="form-group mb-0">
+                            @Html.DropDownListFor(m => m.yourmode, Model.listModes, "Selecione uma Modalidade", new { @class = "form-control rounded-0" })
+                            @Html.ValidationMessageFor(m => m.yourmode, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row form-group  text-left">
+                    <div class="col-12 col-md-6 mb-4 mb-md-0">
+                        <div class="form-group mb-0">
+                            @Html.CheckBoxFor(m => m.inEmailWarning) Deseja receber e-mails de alerta de fechamento da rodada?<br /><br />
+                            @Html.CheckBoxFor(m => m.inEmailTeamTable) Deseja receber e-mails de informe da classificação dos participantes da última rodada?<br /><br />
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 mb-4 mb-md-0">
+                        <div class="form-group mb-0">
+                            @Html.CheckBoxFor(m => m.inParticipate) Deseja participar dos campeonatos que serão disponibilizados?
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-block rounded-0 white-color fables-main-hover-background-color fables-second-background-color font-16 semi-font py-3">Cadastrar Agora</button>
+                <br />
+                <p class="fables-forth-text-color">Já tem uma conta?  <a href="/Arena20/Account/Signin" class="font-16 semi-font fables-second-text-color underline fables-main-hover-color ml-2">Login</a></p>
+            }
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#whathowfindus").addClass("disabled").attr("disabled", "true");
+
+            $("#howfindus").on("change", function () {
+                if ($(this).val() == "OUTROS") {
+                    $("#whathowfindus").removeClass("disabled").removeAttr("disabled").focus();
+                    $("#whathowfindus").attr("data-val-required", "O campo Qual? é obrigatório.");
+                }
+                else {
+                    $("#whathowfindus").val("");
+                    $("#whathowfindus").addClass("disabled").attr("disabled", "true");
+                    $("#whathowfindus").removeAttr("data-val-required");
+                    $("[data-valmsg-for='whathowfindus']").html("");
+                }
+            });
+
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+        });
+    </script>
+}

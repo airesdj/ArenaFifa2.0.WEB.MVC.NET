@@ -1,0 +1,107 @@
+﻿@using ArenaFifa20.NET.Models
+@model BenchModesViewModel
+@{
+    ViewBag.Title = "Moderator Menu - Bench";
+}
+
+
+<!-- page content -->
+<div class="gentelella-right_col" role="main" style="padding-left:20px">
+    <div class="gentelella-page-title">
+        <div class="gentelella-title">
+            <h3>CADASTRO DE MANUTENÇÃO DO BANCO DE RESERVAS</h3>
+        </div>
+    </div>
+    <br>
+    @using (Html.BeginForm("Details", "Moderator", FormMethod.Post, new { @class = "form-horizontal", id = "registration-form", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        <input type="hidden" id="actionForm" name="actionForm" />
+        <input type="hidden" id="selectedID" name="selectedID" />
+        <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+            <div class="gentelella-x_panel">
+                <div class="gentelella-x_content">
+
+
+                    <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                        <div class="gentelella-x_panel">
+                            <div class="gentelella-x_content">
+
+                                <button type="button" class="gentelella-btn gentelella-btn-round gentelella-btn-success" onClick="JAVASCRIPT: submeteModerator('BenchDetails', 'ADD');">Incluir Novo Item de Cadastro</button>
+                                <br><br>
+
+                                <table id="datatable-responsive" class="gentelella-table gentelella-table-striped gentelella-table-bordered gentelella-dt-responsive gentelella-nowrap" cellspacing="0" width="100%">
+                                    <thead style="background-color:#2C3E4F;color:white">
+                                        <tr>
+                                            <th width="5%" class="gentelella-a-center">ID</th>
+                                            <th width="35%">Nome do Técnico/Manager</th>
+                                            <th width="20%">Psn ID</th>
+                                            <th width="10%" class="gentelella-a-center">Modalidade</th>
+                                            <th width="18%" class="gentelella-a-center">Time FUT/PRO CLUB</th>
+                                            <th width="12%" class="gentelella-a-center">Ação</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.listOfBench)
+                                        {
+                                            <tr>
+                                                <td class="gentelella-a-right">@item.id.ToString("00")</td>
+                                                <td>@item.name</td>
+                                                <td>@item.psnID</td>
+                                                <td class="gentelella-a-center">@item.typeBench</td>
+                                                <td class="gentelella-a-center">@item.team</td>
+                                                <td class="gentelella-a-center">
+                                                    <a href="JAVASCRIPT: submeteModerator('BenchDetails', 'VIEW', '@item.id');" title="Visualizar dados do item de cadastro." class="gentelella-btn gentelella-btn-primary gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-folder gentelella-fa-1-2x"></i></a>
+                                                    <a onClick="JAVASCRIPT: changeQuestionDescriptionDelete('@item.id');" href="" data-toggle="modal" data-target="#bs-delete-modal-sm" title="Excluir item do cadastro." class="gentelella-btn gentelella-btn-danger gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-trash gentelella-fa-1-2x"></i></a>
+                                                    <a onClick="JAVASCRIPT: changeQuestionDescriptionGeneral('@item.id');" href="" data-toggle="modal" data-target="#bs-message-general-modal-sm" title="Colocar técnico no fim&#13;do banco de reservas." class="gentelella-btn gentelella-btn-warning gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-refresh gentelella-fa-1-2x"></i></a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<!-- /page content -->
+@Html.Partial("_QuestionModal")
+@Html.Partial("_QuestionModalv2")
+
+@section Scripts {
+    <script>
+        $(function () {
+            if (detectMobileDevice() == 1) {
+                //$("#includedContentMenuMobile").load("/arena20/includes/menu-logged-mobile.html");
+                //$("#includedContentMenuRankingMobile").load("menu-my-matches-mobile.html");
+                hidden_show_ObjectMobile("footerMobile", "block");
+            }
+        });
+
+        $(document).ready(function () {
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+
+            if ('@TempData["actionSuccessfully"]' != '')
+                toastr.success('@TempData["actionSuccessfully"].');
+
+            if (detectMobileDevice() == 0)
+                activeSidebarMenu(window.location.pathname);
+
+            includeFileScreenModalDelete('BANCO DE RESERVAS', 'BenchDetails', 'DELETE');
+            includeFileScreenModalGeneral('BANCO DE RESERVAS', 'Mover Técnico na Fila', 'Deseja mover o técnico <selectid> para o fim da fila do Banco de Reservas?', 'BenchDetails', 'MOVE');
+
+            setOrderingDatatableResponsive([3, 'desc'], [0, 'asc'], null)
+
+        });
+
+    </script>
+}
+

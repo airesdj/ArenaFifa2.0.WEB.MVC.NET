@@ -1,0 +1,102 @@
+﻿@using ArenaFifa20.NET.Models
+@model CurrentSeasonSummaryViewModel
+@{
+    ViewBag.Title = "Current Season - List Of Scorers";
+    int countAux = 1;
+    string stripTeamName = String.Empty;
+}
+
+<form action="" class="form-horizontal" id="registration-form" method="post" role="form">
+
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="actionForm" name="actionForm" value="" />
+    <input type="hidden" id="actionType" name="actionType" value="" />
+    <input type="hidden" id="currentModeTypeSeason" name="currentModeTypeSeason" value="" />
+    <input type="hidden" id="championshipID" name="championshipID" value="" />
+</form>
+
+<!-- page content -->
+<div class="gentelella-right_col" role="main" style="padding-left:50px">
+    <div class="gentelella-page-title">
+        <div class="gentelella-col-md-9 gentelella-col-sm-9 gentelella-col-xs-12">
+            <h3>@("LISTA DE ARTILHEIROS - " + Model.menuCurrentSeason.currentChampionshipName)</h3>
+        </div>
+        <div class="gentelella-col-md-3 gentelella-col-sm-3 gentelella-a-right gentelella-col-xs-12">
+            <img title="@Model.menuCurrentSeason.currentChampionshipName" src="@("/images/championship-logo/" + Model.menuCurrentSeason.currentChampionshipName.Replace(" ", "_") + ".jpg")" width="50" />
+            &nbsp;&nbsp;
+            <img title="COMPETIÇÕES DA MODALIDADE @Model.menuCurrentSeason.modeType" src="/Arena20/images/@("logo-" + Model.menuCurrentSeason.modeType + "-beige.jpg")" width="60" />
+        </div>
+    </div>
+    <br><br>
+
+    <div class="gentelella-x_content">
+
+        <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+            <div class="gentelella-x_panel">
+                <div class="gentelella-x_content">
+
+                    <table id="datatable-responsive-list" class="display gentelella-table gentelella-table-striped gentelella-table-bordered gentelella-dt-responsive gentelella-nowrap" cellspacing="0" width="100%">
+                        <thead style="background-color:#2C3E4F;color:white">
+                            <tr>
+                                <th width="15%" class="gentelella-a-center">#</th>
+                                <th width="40%" class="">Nome do Goleador</th>
+                                <th width="40%" class="gentelella-a-center">Time</th>
+                                <th width="5%" class="gentelella-a-center"><span class="gentelella-fa gentelella-fa-soccer-ball-o gentelella-fa-1-2x"></span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var scorer in Model.listOfScorers)
+                            {
+                                stripTeamName = scorer.teamName.Split(Convert.ToChar("-"))[0];
+                                <tr>
+                                    <td class="gentelella-a-center" style="vertical-align:middle">
+                                        @(countAux.ToString("00") + "º")&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <img src="/Arena20/images/scorers-logo/@(scorer.playerID.ToString() + ".jpg")" onerror="this.src='/Arena20/images/user.png';" width="50" height="50" />
+                                    </td>
+                                    <td style="vertical-align:middle">@scorer.playerName</td>
+                                    <td class="gentelella-a-center" style="vertical-align:middle">
+                                        <img src="/Arena20/images/team-logo/@(stripTeamName).jpg" onerror="this.src='/Arena20/images/notfound.png';" width="40" /><br>
+                                        @scorer.teamName
+                                    </td>
+                                    <td class="gentelella-a-center" style="vertical-align:middle">@scorer.totalGoals.ToString("00")</td>
+                                </tr>
+                                countAux = countAux + 1;
+                            }
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+
+
+@section Scripts {
+    <script>
+        $(function () {
+            if (detectMobileDevice() == 1) {
+                //$("#includedContentMenuMobile").load("/arena20/includes/menu-logged-mobile.html");
+                //$("#includedContentMenuRankingMobile").load("menu-my-matches-mobile.html");
+                hidden_show_ObjectMobile("footerMobile", "block");
+            }
+        });
+
+        $(document).ready(function () {
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+
+            if (detectMobileDevice() == 0) {
+                activeSidebarMenu(window.location.pathname);
+            }
+            table = $('#datatable-responsive-list').DataTable({
+                "lengthMenu": [8],
+                "processing": true
+            });
+        });
+
+    </script>
+}
+

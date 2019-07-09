@@ -1,0 +1,287 @@
+﻿@using ArenaFifa20.NET.Models
+@model MyNextMatchesViewModel
+@{
+    int i = 0;
+    string fullName = Model.userName + " (" + Model.psnID + ")";
+    string fullMobileNumber = "(" + Model.codeMobileNumber + ") " + Model.mobileNumber;
+    string sourceForm = Model.sourceForm;
+    string actionForm = String.Empty;
+    string ACTION_CONTROLLER = "CurrentSeason";
+    if (!String.IsNullOrEmpty(sourceForm))
+    {
+        ViewBag.Title = "Current Season - Upload Logo My Team PRO";
+    }
+    else
+    {
+        ACTION_CONTROLLER = "MyMatches";
+        ViewBag.Title = "My Matches - Upload Logo My Team PRO";
+    }
+    actionForm = "/" + ACTION_CONTROLLER + "/UploadLogo";
+}
+
+<form action="" class="form-horizontal" id="registration-form" method="post" role="form">
+
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="actionType" name="actionType" value="" />
+    <input type="hidden" id="currentModeTypeSeason" name="currentModeTypeSeason" value="" />
+    <input type="hidden" id="championshipID" name="championshipID" value="" />
+</form>
+
+<!-- page content -->
+<div class="gentelella-right_col" role="main" style="padding-left:50px">
+    <div class="gentelella-page-title">
+        <div class="gentelella-title">
+            <h3>MANUTENÇÃO DO ELENCO & UPLOAD DO ESCUDO DO CLUBE - PRO CLUB</h3>
+        </div>
+    </div>
+    <br><br>
+
+    <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+        <div class="gentelella-x_panel">
+            <div class="gentelella-x_title">
+                <center>
+                    <img src="/Arena20/images/@("logo-" + Model.typeMode + "-white.jpg")" width="150" />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <img src="/Arena20/images/@(HttpContext.Current.Application["fifa.codImgCurrent"].ToString() + ".jpg")" width="180" />
+                    <br><br>
+                    <h3>@fullName</h3>
+                </center>
+                <br><br>
+                <h2>Esdudo Atual do Meu Clube&nbsp;&nbsp;&nbsp; <span class="fables-iconarrow-light"></span>&nbsp;&nbsp;<img src="/Arena20/images/team-logo/@(Model.totalsMyMatches.teamNamePRO + ".jpg?time="+DateTime.Now)" onerror="this.src='/Arena20/images/notfound.png';" width="30">&nbsp;@Model.totalsMyMatches.teamNamePRO</h2>
+                <ul class="gentelella-nav navbar-right gentelella-panel_toolbox">
+                    <li>
+                        <a class="gentelella-collapse-link"><i class="gentelella-fa gentelella-fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="gentelella-clearfix"></div>
+            </div>
+            @{ TempData["FullModel"] = Model; }
+            <div class="gentelella-x_content">
+                @Html.Partial("_MessageValidate")
+                <div id="includedContentMsgValidate"></div>
+                <div class="gentelella-row">
+                    <div class="gentelella-col-md-6 gentelella-col-sm-12 gentelella-col-xs-12">
+                        <div class="gentelella-x_panel">
+                            <div class="gentelella-x_content">
+                                <form action="@actionForm" enctype="multipart/form-data" class="form-horizontal" id="registration-form-logo" method="post" role="form" data-parsley-validate>
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" id="actionForm" name="actionForm" value="UPLOAD-LOGO-PRO" />
+                                    <input type="hidden" id="selectedID" name="selectedID" value="@Model.userID" />
+                                    <input type="hidden" id="clubLogoName" name="clubLogoName" value="@Model.totalsMyMatches.teamNamePRO" />
+                                    <input type="hidden" id="userID" name="userID" value="@Model.userID" />
+                                    <div class="gentelella-row">
+                                        <p style="padding-left:18px;color:steelblue;text-align:justify">
+                                            Você pode enviar arquivo JPG, JPEG ou PNG (tamanho máximo de 60K). Não envie imagens de personagens de desenho animado, pessoas famosas, nudez, trabalho artístico ou material protegido por direitos autorais. O tamanho mínimo de imagem é de 60x60.
+                                        </p>
+                                        <br />
+                                        <div class="gentelella-form-group">
+                                            <div class="gentelella-row">
+                                                <div class="gentelella-col-md-4 gentelella-col-sm-4 gentelella-col-xs-12">
+                                                    <input type="file" id="fileLogoTeam" name="fileLogoTeam" required accept=".png, .jpeg, .jpg" />
+                                                </div>
+                                                <div class="gentelella-col-md-8 gentelella-col-sm-8 gentelella-col-xs-12 gentelella-a-right">
+                                                    <img class="gentelella-btn" title="Insere o novo escudo do seu time" id="pictureBtn" width="80" height="80" src="/Arena20/images/team-logo/@(Model.totalsMyMatches.teamNamePRO + ".jpg?time="+DateTime.Now)" onerror="this.src='/Arena20/images/notfound.png';" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="gentelella-row">
+                                        <div class="gentelella-ln_solid"></div>
+                                        <div class="gentelella-form-group" style="line-height:35px">
+                                            <div class="gentelella-col-md-9 gentelella-col-sm-9 gentelella-col-xs-12 gentelella-col-md-offset-3 gentelella-a-right">
+                                                <button type="button" class="gentelella-btn gentelella-btn-success update-logo">Enviar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="gentelella-col-md-6 gentelella-col-sm-12 gentelella-col-xs-12">
+                        <div class="gentelella-x_panel">
+                            <div class="gentelella-x_content">
+                                <form action="@("/" + ACTION_CONTROLLER + "/UploadLogoTeamPRO")" class="form-horizontal" id="registration-form-mobile" method="post" role="form" data-parsley-validate>
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" id="actionForm" name="actionForm" value="UPDATE-MOBILE-MANAGER" />
+                                    <input type="hidden" id="selectedID" name="selectedID" value="@Model.userID" />
+                                    <div class="gentelella-row">
+                                        <p style="padding-left:18px;color:steelblue;text-align:justify">
+                                            Favor manter sempre atualizado seus dados, se houver troca do número do celular fazer fazer a devida alteração aqui no site e nos avisar no grupo do whatsapp.
+                                        </p>
+                                        <br /><br /><br />
+                                        <div class="gentelella-form-group" style="padding-left:15px;vertical-align:middle">
+                                            <div class="gentelella-col-md-5 gentelella-col-sm-5 gentelella-col-xs-9" style="vertical-align:middle">
+                                                <input type="text" id="mobileNumber" name="mobileNumber" class="gentelella-form-control" data-inputmask="'mask' : '(99) 9999-99999'" placeholder="(DDD) Celular" value="@fullMobileNumber" required>
+                                                <span class="gentelella-fa gentelella-fa-whatsapp gentelella-form-control-feedback gentelella-right" aria-hidden="true"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br /><br /><br />
+                                    <div class="gentelella-row">
+                                        <div class="gentelella-ln_solid"></div>
+                                        <div class="gentelella-form-group">
+                                            <div class="gentelella-col-md-9 gentelella-col-sm-9 gentelella-col-xs-12 gentelella-col-md-offset-3 gentelella-a-right">
+                                                <button type="submit" class="gentelella-btn gentelella-btn-success">Enviar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="gentelella-row">
+                    <div class="gentelella-x_panel">
+                        <div class="gentelella-x_content">
+                            <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                                <div class="gentelella-row">
+                                    <div class="gentelella-col-md-3 gentelella-col-sm-3 gentelella-col-xs-12"></div>
+                                    <div class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-12">
+                                        <p style="padding-left:18px;color:steelblue;text-align:justify">
+                                            Favor manter sempre atualizado seus dados, se houver troca do número do celular fazer fazer a devida alteração aqui no site e nos avisar no grupo do whatsapp.
+                                        </p>
+                                        <br /><br />
+                                        <form action="@("/" + ACTION_CONTROLLER + "/UploadLogoTeamPRO")" class="form-horizontal" id="registration-form-squad" method="post" role="form" data-parsley-validate>
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" id="actionForm" name="actionForm" value="ADD_PLAYER" />
+                                            <input type="hidden" id="selectedID" name="selectedID" value="@Model.userID" />
+                                            <input type="hidden" id="clubID" name="clubID" value="@Model.totalsMyMatches.teamIDPRO" />
+                                            <input type="hidden" id="playerID" name="playerID" value="" />
+                                            <div class="gentelella-form-group" style="padding-left:15px;vertical-align:middle">
+                                                <div class="gentelella-col-md-8 gentelella-col-sm-8 gentelella-col-xs-9" style="vertical-align:middle">
+                                                    <input type="text" id="txtPsn" class="gentelella-form-control" name="txtPsn" data-parsley-maxlength="30" required value="@Model.psnIDForm" placeholder="PSN Jogador" />
+                                                    <span class="gentelella-fa gentelella-fa-soccer-ball-o gentelella-form-control-feedback gentelella-right" aria-hidden="true"></span>
+                                                </div>
+                                            </div>
+                                            <br /><br />
+                                            <div class="gentelella-row">
+                                                <div class="gentelella-form-group">
+                                                    <div class="gentelella-col-md-9 gentelella-col-sm-9 gentelella-col-xs-12 gentelella-col-md-offset-3 gentelella-a-right">
+                                                        <button type="button" class="gentelella-btn gentelella-btn-success add-player">Enviar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="gentelella-ln_solid"></div>
+                                <div class="gentelella-row">
+                                    <table id="datatable-responsive" class="gentelella-table gentelella-table-striped gentelella-table-bordered gentelella-dt-responsive gentelella-nowrap" cellspacing="0" width="100%">
+                                        <thead style="background-color:#2C3E4F;color:white">
+                                            <tr>
+                                                <th width="5%" class="gentelella-a-center">#</th>
+                                                <th width="40%">Nome Completo</th>
+                                                <th width="25%">PSN</th>
+                                                <th width="20%" class="gentelella-a-center">Data/Hora</th>
+                                                <th width="10%" class="gentelella-a-center">Excluir</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.listOfSquad)
+                                            {
+                                                i++;
+                                                <tr class="gentelella-even gentelella-pointer">
+                                                    <td class="gentelella-a-center ">@i.ToString("00")º</td>
+                                                    <td class=" ">
+                                                        @Html.DisplayFor(modelItem => item.userName)
+                                                        &nbsp;&nbsp;
+                                                        @if (item.isCapitain)
+                                                        {<img src="/Arena20/images/capitao.png" width="10" />}
+                                                    </td>
+                                                    <td class=" ">@Html.DisplayFor(modelItem => item.psnID)</td>
+                                                    <td class="gentelella-a-center" style="vertical-align:right">@Html.DisplayFor(modelItem => item.recordDate)</td>
+                                                    <td class="gentelella-a-center">
+                                                        @if (!item.isCapitain)
+                                                        {
+                                                            <a onClick="JAVASCRIPT: changeQuestionDescriptionDelete('@item.playerID', '@item.psnID');" href="" data-toggle="modal" data-target="#bs-delete-modal-sm" title="Excluir item do cadastro." class="gentelella-btn gentelella-btn-danger gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-trash gentelella-fa-1-2x"></i></a>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /page content -->
+@Html.Partial("_QuestionModal")
+@Html.Partial("_ResultModal")
+@section Scripts {
+    <script>
+        $(function () {
+            if (detectMobileDevice() == 1) {
+                //$("#includedContentMenuMobile").load("/arena20/includes/menu-logged-mobile.html");
+                //$("#includedContentMenuRankingMobile").load("menu-my-matches-mobile.html");
+                hidden_show_ObjectMobile("footerMobile", "block");
+            }
+        });
+        function changeQuestionDescriptionDelete(pID, pName) {
+            $("#modalScreeenDeleteTitle").html("MANUTENÇÃO ELENCO PRO CLUB");
+            $('#registration-form-squad').find('#playerID').val(pID);
+            $('#registration-form-squad').find('#actionForm').val("DELETE-PLAYER");
+            $("#modalScreeenDeleteSubTitle").html("Exclusão de Jogador");
+            $("#modalScreeenDeleteQuestion").html("Deseja realmente excluir do elenco o jogador selecionado: <b>" + pName + "</b>?");
+            $("#modalScreeenDeleteButton").on("click", function () { submeteUpdateSquadPRO(); });
+        }
+        function changeQuestionDescriptionAdd() {
+            $("#modalScreeenDeleteTitle").html("MANUTENÇÃO ELENCO PRO CLUB");
+            $('#registration-form-squad').find('#actionForm').val("ADD-PLAYER");
+            $("#modalScreeenDeleteSubTitle").html("Inclusão de Jogador");
+            $("#modalScreeenDeleteQuestion").html("Deseja realmente adicionar ao elenco um  novo jogador com a PSN informada: <b>" + $("#txtPsn").val() + "</b>?");
+            $("#modalScreeenDeleteButton").on("click", function () { submeteUpdateSquadPRO(); });
+        }
+
+        function submeteUpdateSquadPRO() {
+            if ($('#registration-form-squad').find('#actionForm').val() == "DELETE-PLAYER")
+                $("#txtPsn").val(".");
+            $('#registration-form-squad').submit();
+        }
+
+        if ($.fn.dataTable.isDataTable('#datatable-responsive')) {
+            table = $('#datatable-responsive').DataTable();
+        }
+        else {
+            table = $('#datatable-responsive').DataTable({
+                "ordering": false
+            });
+        }
+
+        $(document).ready(function () {
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+
+            if ('@TempData["actionSuccessfully"]' != '')
+                toastr.success('@TempData["actionSuccessfully"].');
+
+            activateRegistrationForm("UploadLogoTeamFUT", '@Model.actionUser');
+
+            if (detectMobileDevice() == 0) {
+                activeSidebarMenu("/Arena20/@ACTION_CONTROLLER/UploadLogoTeamPRO");
+            }
+
+            onUploadLogoTeamClub("fileLogoTeam", "pictureBtn");
+
+            $("button.add-player").on("click", function () {
+                if ($("#txtPsn").val() == "")
+                    $('#registration-form-squad').submit();
+                else {
+                    $(this).attr("data-toggle", "modal");
+                    $(this).attr("data-target", "#bs-delete-modal-sm");
+                    changeQuestionDescriptionAdd();
+                    $('#bs-delete-modal-sm').modal('show');
+                    $(this).attr("data-toggle", "");
+                    $(this).attr("data-target", "");
+                }
+            });
+        });
+    </script>
+}
+

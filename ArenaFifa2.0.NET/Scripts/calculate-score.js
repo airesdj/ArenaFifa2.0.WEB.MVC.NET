@@ -131,7 +131,7 @@ this.validateScorerInformed = function(){
 	var setInfoPlayer = false;
 	var indentifyOwnGoal = "";
 	
-	if (vars.sPlayerNameScorer.indexOf("Gol Contra")>0) {indentifyOwnGoal = "own-goal";}
+	if (vars.sPlayerNameScorer.indexOf("Gol Contra")>-1) {indentifyOwnGoal = "own-goal";}
 	
 	if (vars.iPlayerHome==1) {
         $objectScorers = $(vars.sObjectListScorersHome).children("p.time-jogador");

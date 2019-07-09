@@ -99,7 +99,7 @@ namespace ArenaFifa20.NET
             { realPathChampionshipLogo = logoPath; }
             else { realPathChampionshipLogo = String.Empty; }
 
-            logoPath = "/images/logo-" + getChampionshipModeType(modeType) + "-white.jpg";
+            logoPath = "/Arena20/images/logo-" + getChampionshipModeType(modeType) + "-white.jpg";
             if (System.IO.File.Exists(HttpContext.Current.Server.MapPath(logoPath)))
             { realPathModeLogo = logoPath; }
             else { realPathModeLogo = String.Empty; }

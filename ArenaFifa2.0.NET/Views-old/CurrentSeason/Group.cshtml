@@ -1,0 +1,183 @@
+﻿@using ArenaFifa20.NET.Models
+@model CurrentSeasonSummaryViewModel
+@{
+    ViewBag.Title = "Current Season - Group";
+    int countAux = 1;
+    int countGroup = 1;
+    int totalGroup = Model.listOfGroup.Count;
+    int totalPerGroup = (Model.listOfTeamTable.Count / Model.listOfGroup.Count);
+    string stripTeamName = String.Empty;
+    int totalRightColumn = (totalPerGroup / 2);
+}
+
+<form action="" class="form-horizontal" id="registration-form" method="post" role="form">
+
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="actionForm" name="actionForm" value="" />
+    <input type="hidden" id="actionType" name="actionType" value="" />
+    <input type="hidden" id="currentModeTypeSeason" name="currentModeTypeSeason" value="" />
+    <input type="hidden" id="championshipID" name="championshipID" value="" />
+</form>
+
+<!-- page content -->
+<div class="gentelella-right_col" role="main" style="padding-left:50px">
+    <div class="gentelella-page-title">
+        <div class="gentelella-col-md-9 gentelella-col-sm-9 gentelella-col-xs-12">
+            <h3>@("DIVISÃO DOS GRUPOS - " + Model.menuCurrentSeason.currentChampionshipName)</h3>
+        </div>
+        <div class="gentelella-col-md-3 gentelella-col-sm-3 gentelella-a-right gentelella-col-xs-12">
+            <img title="@Model.menuCurrentSeason.currentChampionshipName" src="@("/images/championship-logo/" + Model.menuCurrentSeason.currentChampionshipName.Replace(" ", "_") + ".jpg")" width="50" />
+            &nbsp;&nbsp;
+            <img title="COMPETIÇÕES DA MODALIDADE @Model.menuCurrentSeason.modeType" src="/Arena20/images/@("logo-" + Model.menuCurrentSeason.modeType + "-beige.jpg")" width="60" />
+        </div>
+    </div>
+    <br><br>
+
+        <div class="gentelella-x_content">
+            @for (countGroup = 1; countGroup <= totalGroup; countGroup++)
+            {
+                <div class="gentelella-row">
+                    <div class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-12">
+                        <div class="gentelella-x_panel">
+                            <div class="gentelella-x_content">
+
+                                <div class="gentelella-row">
+                                    <div class="gentelella-col-md-10 gentelella-col-sm-10 gentelella-col-xs-12">
+                                        <span style="color:steelblue;text-align:justify;font-size:16px;font-weight:bold" class="gentelella-title_left">
+                                            GRUPO @countGroup
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="gentelella-ln_solid"></div>
+                                <div class="gentelella-row" style="font-weight:bold">
+                                    <div class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-12">
+                                        @{countAux = 1; }
+                                        @foreach (var item in Model.listOfTeamTable.Where(s => s.groupID == countGroup))
+                                        {
+                                            if (countAux <= totalRightColumn)
+                                            {
+                                                <img src="/Arena20/images/team-logo/@(item.teamName).jpg" class="psn-@item.psnID" onerror="this.src='/Arena20/images/notfound.png';" width="30" />
+                                                @Html.Raw("&nbsp; &nbsp;")
+                                                @item.teamName
+                                                @Html.Raw("<br />")
+                                                @Html.Raw("&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;")
+                                                @("(" + item.psnID + ")")
+                                                @Html.Raw("<br /><br />")
+                                            }
+                                            countAux = countAux + 1;
+                                        }
+                                    </div>
+                                    <div class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-12">
+                                        @{countAux = 1; }
+                                        @foreach (var item in Model.listOfTeamTable.Where(s => s.groupID == countGroup))
+                                        {
+                                            if (countAux > totalRightColumn)
+                                            {
+                                                <img src="/Arena20/images/team-logo/@(item.teamName).jpg" class="psn-@item.psnID" onerror="this.src='/Arena20/images/notfound.png';" width="30" />
+                                                @Html.Raw("&nbsp; &nbsp;")
+                                                @item.teamName
+                                                @Html.Raw("<br />")
+                                                @Html.Raw("&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;")
+                                                @("(" + item.psnID + ")")
+                                                @Html.Raw("<br /><br />")
+                                            }
+                                            countAux = countAux + 1;
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @{countGroup = countGroup + 1; }
+                    <div class="gentelella-col-md-6 gentelella-col-sm-12 gentelella-col-xs-12">
+                        <div class="gentelella-x_panel">
+                            <div class="gentelella-x_content">
+
+                                <div class="gentelella-row">
+                                    <div class="gentelella-col-md-10 gentelella-col-sm-10 gentelella-col-xs-12">
+                                        <span style="color:steelblue;text-align:justify;font-size:16px;font-weight:bold" class="gentelella-title_left">
+                                            GRUPO @countGroup
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="gentelella-ln_solid"></div>
+                                <div class="gentelella-row" style="font-weight:bold">
+                                    <div class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-12">
+                                        @{countAux = 1; }
+                                        @foreach (var item in Model.listOfTeamTable.Where(s => s.groupID == countGroup))
+                                        {
+                                            if (countAux <= totalRightColumn)
+                                            {
+                                                <img src="/Arena20/images/team-logo/@(item.teamName).jpg" class="psn-@item.psnID" onerror="this.src='/Arena20/images/notfound.png';" width="30" />
+                                                @Html.Raw("&nbsp; &nbsp;")
+                                                @item.teamName
+                                                @Html.Raw("<br />")
+                                                @Html.Raw("&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;")
+                                                @("(" + item.psnID + ")")
+                                                @Html.Raw("<br /><br />")
+                                            }
+                                            countAux = countAux + 1;
+                                        }
+                                    </div>
+                                    <div class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-12">
+                                        @{countAux = 1; }
+                                        @foreach (var item in Model.listOfTeamTable.Where(s => s.groupID == countGroup))
+                                        {
+                                            if (countAux > totalRightColumn)
+                                            {
+                                                <img src="/Arena20/images/team-logo/@(item.teamName).jpg" class="psn-@item.psnID" onerror="this.src='/Arena20/images/notfound.png';" width="30" />
+                                                @Html.Raw("&nbsp; &nbsp;")
+                                                @item.teamName
+                                                @Html.Raw("<br />")
+                                                @Html.Raw("&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;")
+                                                @("(" + item.psnID + ")")
+                                                @Html.Raw("<br /><br />")
+                                            }
+                                            countAux = countAux + 1;
+                                        }
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            }
+
+        </div>
+</div>
+<!-- /page content -->
+
+
+@section Scripts {
+    <script>
+        $(function () {
+            if (detectMobileDevice() == 1) {
+                //$("#includedContentMenuMobile").load("/arena20/includes/menu-logged-mobile.html");
+                //$("#includedContentMenuRankingMobile").load("menu-my-matches-mobile.html");
+                hidden_show_ObjectMobile("footerMobile", "block");
+            }
+        });
+
+        $(document).ready(function () {
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+
+            if (detectMobileDevice() == 0) {
+                activeSidebarMenu(window.location.pathname);
+            }
+            table = $('#datatable-responsive-list').DataTable({
+                "lengthMenu": [8],
+                "processing": true
+            });
+
+
+            var closestDIV = $("img.psn-@ViewBag.psnIDLogged").closest("div.gentelella-x_content");
+            closestDIV.addClass("gentelella-teamgrupo-highlight");
+
+        });
+
+    </script>
+}
+

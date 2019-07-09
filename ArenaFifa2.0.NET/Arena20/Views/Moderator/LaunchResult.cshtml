@@ -1,0 +1,108 @@
+﻿@using ArenaFifa20.NET.Models
+@model ChampionshipListViewModel
+@{
+    ViewBag.Title = "Moderator Menu - Launch Result";
+}
+
+
+<!-- page content -->
+<div class="gentelella-right_col" role="main" style="padding-left:20px">
+    <div class="gentelella-page-title">
+        <div class="gentelella-title">
+            <h3>LANÇAR RESULTADOS DOS CAMPEONATOS ATIVOS DA TEMPORADA</h3>
+        </div>
+    </div>
+    <br>
+    @using (Html.BeginForm("Details", "Moderator", FormMethod.Post, new { @class = "form-horizontal", id = "registration-form", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        TempData["FullModel"] = Model;
+        <input type="hidden" id="actionForm" name="actionForm" />
+        <input type="hidden" id="selectedID" name="selectedID" />
+        <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+            <div class="gentelella-x_panel">
+                <div class="gentelella-x_content">
+
+
+                    <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                        <div class="gentelella-x_panel">
+                            <div class="gentelella-x_content">
+
+                                <div class="gentelella-col-md-10 gentelella-col-sm-10 gentelella-col-xs-12">
+                                </div>
+                                <div id="waiting" class="gentelella-col-md-2 gentelella-col-sm-2 gentelella-col-xs-12 gentelella-a-center">
+                                    Aguarde o processamento...<br />
+                                    <img width="70" heigh="70" src="/Arena20/images/aguarde.gif" />
+                                </div>
+                                <br><br>
+
+                                <table id="datatable-responsive-no-paginate" class="gentelella-table gentelella-table-striped gentelella-table-bordered gentelella-dt-responsive gentelella-nowrap" cellspacing="0" width="100%">
+                                    <thead style="background-color:#2C3E4F;color:white">
+                                        <tr>
+                                            <th width="45%">Campeonato</th>
+                                            <th width="10%" class="gentelella-a-center">Temporada</th>
+                                            <th width="5%" class="gentelella-a-center">Tipo</th>
+                                            <th width="10%" class="gentelella-a-center">Qt. Times?</th>
+                                            <th width="10%" class="gentelella-a-center">Dt. Início</th>
+                                            <th width="10%" class="gentelella-a-center">Dt. Sorteio</th>
+                                            <th width="10%" class="gentelella-a-center">Ação</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.listOfChampionship)
+                                        {
+                                            <tr>
+                                                <td>@item.name</td>
+                                                <td class="gentelella-a-center">@item.seasonName.Substring(0, 3)</td>
+                                                <td class="gentelella-a-center">@item.type</td>
+                                                <td class="gentelella-a-center">@item.totalTeam.ToString("00")</td>
+                                                <td class="gentelella-a-center">@item.startDate.ToString("dd/MM/yyyy")</td>
+                                                <td class="gentelella-a-center">@item.drawDate.ToString("dd/MM/yyyy")</td>
+                                                <td class="gentelella-a-center">
+                                                    <a href="JAVASCRIPT: submeteModerator('LaunchResultDetails', 'SHOW_CHAMPIONSHIP_DETAILS', '@item.id');" title="Alterar dados do item de cadastro." class="gentelella-btn gentelella-btn-info gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-edit gentelella-fa-1-2x"></i></a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<!-- /page content -->
+
+
+@section Scripts {
+    <script>
+        $(function () {
+            if (detectMobileDevice() == 1) {
+                //$("#includedContentMenuMobile").load("/arena20/includes/menu-logged-mobile.html");
+                //$("#includedContentMenuRankingMobile").load("menu-my-matches-mobile.html");
+                hidden_show_ObjectMobile("footerMobile", "block");
+            }
+        });
+
+        $(document).ready(function () {
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+
+            if ('@TempData["actionSuccessfully"]' != '')
+                toastr.success('@TempData["actionSuccessfully"].');
+
+            if (detectMobileDevice() == 0)
+                activeSidebarMenu(window.location.pathname.replace("Details", ""));
+
+            $("#waiting").hide();
+        });
+
+    </script>
+}
+

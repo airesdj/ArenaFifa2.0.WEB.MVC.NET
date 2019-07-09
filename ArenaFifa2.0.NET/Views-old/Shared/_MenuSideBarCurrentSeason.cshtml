@@ -1,0 +1,91 @@
+﻿<div class="gentelella-col-md-3 gentelella-left_col">
+    <div class="gentelella-left_col gentelella-scroll-view" style="width:250px">
+        <br />
+
+        <!-- sidebar menu -->
+        <div id="sidebar-menu" class="gentelella-main_menu_side gentelella-hidden-print gentelella-main_menu">
+            <div class="gentelella-menu_section">
+                <a href="JAVASCRIPT: setSubmitMenuSummaryCurrentSeason('@ViewBag.inCurrentSeasonType', 0, 'Summary')" title="Retornar para o Sumário"><h3>@ViewBag.inCurrentSeasonName</h3></a>
+                <ul class="gentelella-nav gentelella-side-menu">
+                    <li>
+                        <a><i class="gentelella-fa gentelella-fa-table"></i> @ViewBag.inCurrentChampionshipNameName <span class="gentelella-fa gentelella-fa-chevron-down"></span></a>
+                        <ul class="gentelella-nav gentelella-child_menu current-championship">
+                            <li><a href="/Arena20/CurrentSeason/Regulation">Regulamento</a></li>
+                            @if (ViewBag.inCurrentSeasonType == "PRO")
+                            {
+                                <li><a href="/Arena20/CurrentSeason/TeamCoach">Clubes e Managers</a></li>
+                            }
+                            else
+                            {
+                                <li><a href="/Arena20/CurrentSeason/TeamCoach">Times e Técnicos</a></li>
+                            }
+                            @if (ViewBag.inCurrentChampionshipForGroup == "1")
+                            {
+                                <li><a href="/Arena20/CurrentSeason/Group">Grupos</a></li>
+                                <li><a href="/Arena20/CurrentSeason/ForecastPlayoffGame">Prévia de Classificação para os Playoffs</a></li>
+                            }
+                            <li><a href="/Arena20/CurrentSeason/ClashTable">Tabelas e Resultados</a></li>
+                            @if (ViewBag.inCurrentSeasonType != "FUT")
+                            {
+                                <li><a href="/Arena20/CurrentSeason/Scorer">Artilharia</a></li>
+                            }
+                            <li><a href="/Arena20/CurrentSeason/LineUpOfPlayoffGames">Disposição dos Confrontos nos Playoffs</a></li>
+                            <li><a href="/Arena20/CurrentSeason/Moderator">Moderadores</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a><i class="gentelella-fa gentelella-fa-list-ul"></i> Demais Campeonatos <span class="gentelella-fa gentelella-fa-chevron-down"></span></a>
+                        <ul class="gentelella-nav gentelella-child_menu">
+                            @foreach (var item in ViewBag.listOfActiveChampionship)
+                            {
+                                <li><a href="JAVASCRIPT: setSubmitMenuSwapChampionshipCurrentSeason('@item.modeType', '@item.id')">@item.name</a></li>
+                            }
+                        </ul>
+                    </li>
+                    <li>
+                        <a><i class="gentelella-fa gentelella-fa-calendar"></i> Menu Administrativo <span class="gentelella-fa gentelella-fa-chevron-down"></span></a>
+                        <ul class="gentelella-nav gentelella-child_menu">
+                            <li><a href="/Arena20/CurrentSeason/Calendar">Calendário</a></li>
+                            @if (ViewBag.inCurrentSeasonType == "FUT")
+                            {
+                                if (ViewBag.inUserHasTeamFUT == "1")
+                                {
+                                    <li><a href="/Arena20/CurrentSeason/UploadLogoTeamFUT">Escudo para Time</a></li>
+                                }
+                            }
+                            else if (ViewBag.inCurrentSeasonType == "PRO")
+                            {
+                                if (ViewBag.inUserHasTeamPRO == "1")
+                                {
+                                    <li><a href="/Arena20/CurrentSeason/UploadLogoTeamPRO">Escudo para Clube e Manutenção do Elenco</a></li>
+                                }
+                            }
+                            <li><a href="/Arena20/MyMatches/Summary">Meus Jogos</a></li>
+                            @if (ViewBag.inCurrentSeasonType != "PRO")
+                            {
+                                <li><a href="/Arena20/CurrentSeason/ClashesHistory">Histórico de Confrontos</a></li>
+                            }
+                        </ul>
+                    </li>
+                    <hr class="hr-separate-menu"></hr>
+                    <li>
+                        <a><i class="gentelella-fa gentelella-fa-list-ul"></i>  Demais Modalidades <span class="gentelella-fa gentelella-fa-chevron-down"></span></a>
+                        <ul class="gentelella-nav gentelella-child_menu other-modes">
+                            @foreach (var item in ViewBag.listOfActiveOtherModeType)
+                            {
+                                <li><a href="JAVASCRIPT: setSubmitMenuSummaryCurrentSeason('@item.modeType', 0, 'Summary')">@item.name</a></li>
+                            }
+                        </ul>
+                    </li>
+                    <li>
+                        <a><i class="gentelella-fa gentelella-fa-sitemap"></i> Temporadas do @ViewBag.inCurrentSeasonType <span class="gentelella-fa gentelella-fa-chevron-down"></span></a>
+                        <ul class="gentelella-nav gentelella-child_menu">
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- /sidebar menu -->
+
+    </div>
+</div>

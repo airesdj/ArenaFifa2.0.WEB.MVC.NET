@@ -1,0 +1,120 @@
+﻿@using ArenaFifa20.NET.Models
+@model ChangePassWDViewModel
+@{
+    ViewBag.Title = "Change Password";
+}
+
+<!-- Start Breadcrumbs -->
+<div class="fables-light-background-color">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="fables-breadcrumb breadcrumb px-0 py-3">
+                <li class="breadcrumb-item"><a href="/Arena20/" class="fables-second-text-color">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Alterar Meu Avatar</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- /End Breadcrumbs -->
+<!-- Start page content -->
+<div class="container">
+    <div class="row my-4 my-lg-5">
+        <div class="col-12 col-md-10 offset-md-2 col-lg-6 offset-lg-3 text-center">
+            <section id="loginForm">
+                @{ TempData["FullModel"] = Model; }
+                <h2 class="fables-second-text-color mb-5 font-weight-bold"> Alterar seu Avatar </h2>
+                <form action="/Arena20/Account/ChangeAvatar" enctype="multipart/form-data" class="form-horizontal" id="registration-form-logo" method="post" role="form" data-parsley-validate>
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="actionForm" name="actionForm" value="UPLOAD-LOGO-AVATAR" />
+                    <div class="row">
+                        <p style="padding-left:18px;color:steelblue;text-align:justify">
+                            Você pode enviar arquivo JPG, JPEG ou PNG (tamanho máximo de 60K). Não envie imagens de personagens de desenho animado, pessoas famosas, nudez, trabalho artístico ou material protegido por direitos autorais. O tamanho mínimo de imagem é de 60x60.
+                        </p>
+                        <br />
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <input data-val="true" data-val-required="É obrigatório informar o novo avatar." placeholder="Novo Avatar" type="file" id="fileLogoTeam" name="fileLogoTeam" required accept=".png, .jpeg, .jpg" />
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <p>
+                            <img class="btn" title="Insere o novo escudo do seu time" id="pictureBtn" width="80" height="80" src="@(HttpContext.Current.Session["user.pathAvatar"].ToString() + "?time=" + DateTime.Now)" onerror="this.src='/Arena20/images/notfound.png';" />
+                        </p>
+                        <br />
+                    </div>
+                    <center>
+                        <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3 a-right">
+                            <button type="button" class="btn btn-block rounded-0 white-color fables-main-hover-background-color fables-second-background-color font-16 semi-font py-3 update-avatar">Enviar</button>
+                        </div>
+                    </center>
+                </form>
+            </section>
+        </div>
+    </div>
+</div>
+
+<!-- /End page content -->
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+
+        function onUploadLogoAvatar(pNameInputFile, pNameInputImg) {
+            changeQuestionDescriptionUpdateAvatar(pNameInputFile);
+            $("#" + pNameInputFile).on('change', function () {
+                var returnMessage = "";
+                var fileExtension = $(this).val().substring($(this).val().lastIndexOf(".") + 1, $(this).val().length);
+
+                if (fileExtension.toLowerCase() != "jpg" && fileExtension.toLowerCase() != "jpeg" && fileExtension.toLowerCase() != "png")
+                    returnMessage = "Somento arquivos JPG, JPEG e PNG sao permitidos!";
+
+                if ($(this)[0].files[0].size / 1024 > 70)
+                    returnMessage = "O tamanho maximo permitido para o novo arquivo eh de 70Kb!";
+
+                if (returnMessage != "") {
+                    alert(returnMessage);
+                    $(this).val(null);
+                }
+                else {
+                    readURL($(this)[0], pNameInputImg);
+                }
+            });
+        }
+
+        function readURL(input, pNameInputImg) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $("#" + pNameInputImg).attr("src", e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function changeQuestionDescriptionUpdateAvatar(pNameInputFile) {
+            $("button.update-avatar").on("click", function () {
+                if ($("#fileLogoTeam").val() == "")
+                    alert("É obrigatório informar o novo avatar.");
+                else {
+                    var pathFileSplit = $("#" + pNameInputFile).val().split("\\");
+                    var fileName = pathFileSplit[pathFileSplit.length - 1];
+
+                    if (confirm("Deseja realmente alterar a logo do seu clube?\n\nNova Logo: " + fileName)) {
+                        $('#registration-form-logo').submit();
+                    }
+                }
+            });
+        }
+        $(document).ready(function () {
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+
+            if ('@TempData["actionSuccessfully"]' != '')
+                toastr.success('@TempData["actionSuccessfully"].');
+
+            onUploadLogoAvatar("fileLogoTeam", "pictureBtn");
+        });
+
+    </script>
+}

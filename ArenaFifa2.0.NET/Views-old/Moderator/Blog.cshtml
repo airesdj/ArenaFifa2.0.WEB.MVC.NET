@@ -1,0 +1,117 @@
+﻿@using ArenaFifa20.NET.Models
+@model BlogListViewModel
+@{
+    ViewBag.Title = "Moderator Menu - Blog";
+}
+
+
+<!-- page content -->
+<div class="gentelella-right_col" role="main" style="padding-left:20px">
+    <div class="gentelella-page-title">
+        <div class="gentelella-title">
+            <h3>CADASTRO DE MATÉRIAS DOS BLOGS DOS MODERADORES</h3>
+        </div>
+    </div>
+    <br>
+    @using (Html.BeginForm("Details", "Moderator", FormMethod.Post, new { @class = "form-horizontal", id = "registration-form", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        <input type="hidden" id="actionForm" name="actionForm" />
+        <input type="hidden" id="selectedID" name="selectedID" />
+        <input type="hidden" id="selectedUserID" name="selectedUserID" value="" />
+        <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+            <div class="gentelella-x_panel">
+                <div class="gentelella-x_content">
+
+
+                    <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                        <div class="gentelella-x_panel">
+                            <div class="gentelella-x_content">
+
+                                <div class="gentelella-col-md-10 gentelella-col-sm-10 gentelella-col-xs-12">
+                                    <button type="button" class="gentelella-btn gentelella-btn-round gentelella-btn-success" onClick="JAVASCRIPT: submeteModerator('BlogDetails', 'ADD');">Incluir Novo Item de Cadastro</button>
+                                </div>
+                                <div id="waiting" class="gentelella-col-md-2 gentelella-col-sm-2 gentelella-col-xs-12 gentelella-a-center">
+                                    Aguarde o processamento...<br />
+                                    <img width="70" heigh="70" src="/Arena20/images/aguarde.gif" />
+                                </div>
+                                <br><br>
+
+                                <table id="datatable-responsive" class="gentelella-table gentelella-table-striped gentelella-table-bordered gentelella-dt-responsive gentelella-nowrap" cellspacing="0" width="100%">
+                                    <thead style="background-color:#2C3E4F;color:white">
+                                        <tr>
+                                            <th width="0%" style="display:none"></th>
+                                            <th width="5%" class="gentelella-a-center">#</th>
+                                            <th width="15%" class="gentelella-a-center">Data/Hora</th>
+                                            <th width="50%">Título da Matéria</th>
+                                            <th width="15%">Moderador</th>
+                                            <th width="15%" class="gentelella-a-center">Ação</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.listOfBlog)
+                                        {
+                                            <tr>
+                                                <td style="display:none">@item.registerDateTimeFormatted</td>
+                                                <td class="gentelella-a-center">@item.id</td>
+                                                <td class="gentelella-a-center">@(item.registerDateFormatted + " " + item.registerTime)</td>
+                                                <td>@item.title</td>
+                                                <td>@item.psnID</td>
+                                                <td class=" " style="padding-left:20px">
+                                                    <a href="JAVASCRIPT: $('#selectedUserID').val('@item.userID');submeteModerator('BlogDetails', 'VIEW', '@item.id');" title="Visualizar dados do item de cadastro." class="gentelella-btn gentelella-btn-primary gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-folder gentelella-fa-1-2x"></i></a>
+                                                    <a href="JAVASCRIPT: $('#selectedUserID').val('@item.userID');submeteModerator('BlogDetails', 'EDIT', '@item.id');" title="Alterar dados do item de cadastro." class="gentelella-btn gentelella-btn-info gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-edit gentelella-fa-1-2x"></i></a>
+                                                    <a onClick="JAVASCRIPT: $('#selectedUserID').val('@item.userID');changeQuestionDescriptionDelete('@item.id');" href="" data-toggle="modal" data-target="#bs-delete-modal-sm" title="Excluir item do cadastro." class="gentelella-btn gentelella-btn-danger gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-trash gentelella-fa-1-2x"></i></a>
+                                                    <a onClick="JAVASCRIPT: $('#selectedUserID').val('@item.userID');changeQuestionDescriptionGeneral('@item.id');" href="" data-toggle="modal" data-target="#bs-message-general-modal-sm" title="Gerar spooler de e-mail&#13; de aviso para notícia cadastrada." class="gentelella-btn gentelella-btn-default gentelella-btn-xs"><i class="gentelella-fa gentelella-fa-envelope-o gentelella-fa-1-2x"></i></a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<!-- /page content -->
+@Html.Partial("_QuestionModal")
+@Html.Partial("_QuestionModalv2")
+
+
+@section Scripts {
+    <script>
+        $(function () {
+            if (detectMobileDevice() == 1) {
+                //$("#includedContentMenuMobile").load("/arena20/includes/menu-logged-mobile.html");
+                //$("#includedContentMenuRankingMobile").load("menu-my-matches-mobile.html");
+                hidden_show_ObjectMobile("footerMobile", "block");
+            }
+        });
+
+        $(document).ready(function () {
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+
+            if ('@TempData["actionSuccessfully"]' != '')
+                toastr.success('@TempData["actionSuccessfully"].');
+
+            if (detectMobileDevice() == 0)
+                activeSidebarMenu(window.location.pathname);
+
+            includeFileScreenModalDelete('BLOGS', 'BlogDetails', 'DELETE');
+            includeFileScreenModalGeneral('BLOGS', 'Gerar Spooler da Notícia Selecionada', 'Deseja gerar o spooler de e-mail da notícia selecionada: <selectid>?', 'BlogDetails', 'sendWarningEmail');
+            $("#waiting").hide();
+            if ('@Model.listOfBlog.Count' != 0) {
+                setOrderingDatatableResponsive([0, 'desc'], [3, 'asc'], null)
+            }
+        });
+
+    </script>
+}
+

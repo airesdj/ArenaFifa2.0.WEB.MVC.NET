@@ -1,0 +1,104 @@
+﻿@using ArenaFifa20.NET.Models
+@model RankingSupportersModel
+@{
+    ViewBag.Title = "Ranking Supporters";
+    int i = 0;
+    string dtUpdate = Model.dtUpdateFormated;
+    double percTotal = 0;
+    int totalUser = Model.totalUser;
+    int totMax = 0;
+    string nameTeam = String.Empty;
+}
+
+
+<!-- Start Breadcrumbs -->
+<div class="fables-light-background-color">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="fables-breadcrumb breadcrumb px-0 py-3">
+                <li class="breadcrumb-item"><a href="/Arena20/" class="fables-second-text-color">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Ranking das Torcidas</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- /End Breadcrumbs -->
+
+    <div class="container" style="background-color:#ffffff">
+
+        <div class="row mt-3 mt-lg-5 mb-2">
+            <div class="col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2">
+                <div class="text-center">
+                    <h2 class="fables-second-text-color mb-5 font-weight-bold"> Ranking das Torcidas do Arena </h2>
+                    <p class="fables-forth-text-color my-4">
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="gallery-filter">
+            <div class="portfolioContainer row filter-masonry">
+                <div class="firstItemSelected circle-effect">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="panel">
+                                <center>
+                                    <div class="fables-main-background-color white-color" style="width:50%;line-height:40px;padding-left:10px">
+                                        Ranking atualizado em @dtUpdate
+                                    </div>
+                                    <!-- /.panel-heading -->
+                                    <div class="panel-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover" style="width:50%">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="5%">#</th>
+                                                        <th width="70%" colspan="2">Clubes</th>
+                                                        <th class="text-right" width="25%">Percentual</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in Model.listSupportesTeam)
+                                                    {
+                                                        i++;
+                                                        totMax = 100 * item.total;
+                                                        percTotal = ((double) (100 * item.total) / totalUser);
+                                                        //nameTeam = item.teamName.Split(Convert.ToChar("-"))[0];
+                                                    <tr>
+                                                        <td>@i.ToString("00")</td>
+                                                        <td><img width="30px" height="30px" src="/Arena20/images/team-logo/@(item.teamName).jpg"></td>
+                                                        <td>@Html.DisplayFor(modelItem => item.teamName)</td>
+                                                        <td class="text-right">@percTotal.ToString("0.#")%</td>
+                                                    </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                </center>
+                                <!-- /.table-responsive -->
+                                </div>
+                                <!-- /.panel-body -->
+                            </div>
+                            <!-- /.panel -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+<br /><br />
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+
+        });
+
+    </script>
+}
+

@@ -1,0 +1,97 @@
+﻿@using ArenaFifa20.NET.Models
+@model SeasonListModesViewModel
+@{
+    ViewBag.Title = "Moderator Menu - Season";
+}
+
+
+<!-- page content -->
+<div class="gentelella-right_col" role="main" style="padding-left:20px">
+    <div class="gentelella-page-title">
+        <div class="gentelella-title_left">
+            <h3>CADASTRO DE TEMPORADAS</h3>
+        </div>
+    </div>
+    <br>
+
+    <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+        <div class="gentelella-x_panel">
+            <div class="gentelella-x_content">
+
+
+                <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                    <div class="gentelella-x_panel">
+                        <div class="gentelella-x_content">
+
+                            <table id="datatable-responsive" class="gentelella-table gentelella-table-striped gentelella-table-bordered gentelella-dt-responsive gentelella-nowrap" cellspacing="0" width="100%">
+                                @if (Model.listOfSeasons.Count > 0)
+                                {
+                                    <thead style="background-color:#2C3E4F;color:white">
+                                        <tr>
+                                            <th width="10%" class="gentelella-a-center">ID</th>
+                                            <th width="50%">Descrição</th>
+                                            <th width="10%" class="gentelella-a-center">Ativo?</th>
+                                            <th width="15%" class="gentelella-a-center">Dt. Início</th>
+                                            <th width="15%" class="gentelella-a-center">Dt. Término</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.listOfSeasons)
+                                        {
+                                            <tr>
+                                                <td class="gentelella-a-right">@item.id.ToString("00")</td>
+                                                <td>@item.name</td>
+                                                <td class="gentelella-a-center">
+                                                    @if (item.active == 1) { @Html.Raw("Sim"); }
+                                                    else { @Html.Raw("Não"); }
+                                                </td>
+                                                <td class="gentelella-a-center">@item.dtStartSeason.ToString("dd/MMM/yyyy")</td>
+                                                <td class="gentelella-a-center">
+                                                    @if (!String.IsNullOrEmpty(item.dtEndSeason.ToString()) && item.active == 0) { @item.dtEndSeason.ToString("dd/MMM/yyyy"); }
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                }
+                                else
+                                {
+                                    <thead style="background-color:#F7F7F7;color:#337ab7;font-size:11px">
+                                        <tr class="gentelella-headings">
+                                            <th class="gentelella-column-title" colspan="5" width="100%">Nenhum registro encontrado.</th>
+                                        </tr>
+                                    </thead>
+                                }
+                            </table>
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+@section Scripts {
+    <script>
+        $(function () {
+            if (detectMobileDevice() == 1) {
+                //$("#includedContentMenuMobile").load("/arena20/includes/menu-logged-mobile.html");
+                //$("#includedContentMenuRankingMobile").load("menu-my-matches-mobile.html");
+                hidden_show_ObjectMobile("footerMobile", "block");
+            }
+        });
+
+        $(document).ready(function () {
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+
+            if (detectMobileDevice() == 0)
+                activeSidebarMenu(window.location.pathname);
+        });
+
+    </script>
+}
+

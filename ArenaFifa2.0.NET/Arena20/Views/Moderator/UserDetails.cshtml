@@ -1,0 +1,212 @@
+﻿@using ArenaFifa20.NET.Models
+@model UserDetailsModel
+@{
+    ViewBag.Title = "Moderator Menu - User Details";
+    string actionBack = "User";
+}
+
+
+<!-- page content -->
+<div class="gentelella-right_col" role="main" style="padding-left:20px">
+    <div class="gentelella-page-title">
+        <div class="gentelella-title">
+            <h3>CADASTRO DE TÉCNICOS - @Model.actionUser</h3>
+        </div>
+    </div>
+    <br>
+
+    <div class="gentelella-col-md-14 gentelella-col-sm-14 gentelella-col-xs-14" style="background-color:#F7F7F7">
+        <div class="gentelella-x_panel">
+            <div class="gentelella-x_content">
+
+                @Html.Partial("_MessageValidate")
+
+                <form id="comeback-form" action=""></form>
+
+                <form action="/Arena20/Moderator/UserDetails" class="form-horizontal" id="registration-form" method="post" role="form" data-parsley-validate>
+
+
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="actionForm" name="actionForm" value="SAVE" />
+                    <input type="hidden" id="selectedID" name="selectedID" value="@Model.id" />
+                    <p>
+                        <code style="background-color:#fff">Todos os campos com (*) são de preenchimento obrigatório.</code>
+                    </p>
+                    <br />
+                    <div class="gentelella-row ">
+                        <div class="gentelella-col-md-1 gentelella-col-sm-12 gentelella-col-xs-12">
+                            <label for="idSofifa">ID :</label>
+                            <input type="text" id="txtId" name="txtId" size="1000" class="gentelella-form-control" data-parsley-type="integer" value="@Model.id" />
+                        </div>
+                    </div>
+                    <br>
+                    <div class="gentelella-row">
+                        <div class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-12">
+                            <label for="deacricao">Nome Completo <i style="color:red">*</i> :</label>
+                            <input type="text" id="txtNome" class="gentelella-form-control" name="txtNome" data-parsley-maxlength="50" required value="@Model.name" />
+                        </div>
+                        <div class="gentelella-col-md-2 gentelella-col-sm-2 gentelella-col-xs-12">
+                            <label class="gentelella-control-label" for="dtInicio">Data Nascimento<i style="color:red">*</i> :</label>
+                            <input class="gentelella-form-control" data-val="true" data-val-date="The field Data Nascimento must be a date." data-val-required="O campo Data Nascimento é obrigatório." id="txtDtNascimento" name="txtDtNascimento" type="date" required value="@Model.birthday.ToString("yyyy-MM-dd")" />
+
+                        </div>
+                        <div class="gentelella-col-md-4 gentelella-col-sm-4 gentelella-col-xs-12">
+                            <label class="gentelella-control-label" for="tipo">Estado<i style="color:red">*</i> :</label>
+                            <select id="cmbState" name="cmbState" class="gentelella-form-control" required>
+                                <option value="">Selecione..</option>
+                                @foreach (var item in Model.listStates)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="gentelella-row">
+                        <div class="gentelella-col-md-4 gentelella-col-sm-4 gentelella-col-xs-12">
+                            <label for="deacricao">E-mail <i style="color:red">*</i> :</label>
+                            <input type="email" id="txtEmail" class="gentelella-form-control" name="txtEmail" data-parsley-maxlength="80" required value="@Model.Email" />
+                        </div>
+                        <div id="divPassWD" class="gentelella-col-md-4 gentelella-col-sm-4 gentelella-col-xs-12">
+                            <label for="deacricao">Senha <i style="color:red">*</i> :</label>
+                            <input class="gentelella-form-control" data-val="true" data-val-length="A Senha deve ter de 4 a no máximo 10 caracteres." data-val-length-max="10" data-val-length-min="4" data-val-required="O campo Senha é obrigatório." id="txtPassword" name="txtPassword" type="password" required />
+                        </div>
+                    </div>
+                    <br>
+                    <div class="gentelella-row">
+                        <div class="gentelella-col-md-3 gentelella-col-sm-3 gentelella-col-xs-12">
+                            <label for="deacricao">Psn ID <i style="color:red">*</i> :</label>
+                            <input type="text" id="txtPsn" class="gentelella-form-control" name="txtPsn" data-parsley-maxlength="30" required value="@Model.psnID" />
+                        </div>
+                        <div class="gentelella-col-md-3 gentelella-col-sm-3 gentelella-col-xs-12">
+                            <label for="deacricao">Como ficou sabendo do Arena Fifa <i style="color:red">*</i> :</label>
+                            <select id="cmbHeardUs" name="cmbHeardUs" class="gentelella-form-control" required>
+                                <option value="">Selecione..</option>
+                                @foreach (var item in Model.listWhatHowFindUs)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="gentelella-col-md-3 gentelella-col-sm-3 gentelella-col-xs-12">
+                            <label for="deacricao">Qual? </label>
+                            <input type="text" id="whatkindofmedia" class="gentelella-form-control" name="whatkindofmedia" data-parsley-maxlength="80" value="@Model.whatkindofmedia" required />
+                        </div>
+                        <div class="gentelella-col-md-3 gentelella-col-sm-3 gentelella-col-xs-12">
+                            <label for="deacricao">Escolha Seu Time <i style="color:red">*</i> :</label>
+                            <select id="cmbTeam" name="cmbTeam" class="gentelella-form-control" required>
+                                <option value="">Selecione..</option>
+                                @foreach (var item in Model.listTeams)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="gentelella-row">
+                        <div class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-12">
+                            <span class="gentelella-checkbox gentelella-checkbox-danger">
+                                <input type="checkbox" id="chkActive" name="chkActive" class="styled" />
+                                <label class="gentelella-control-label" for="active" style="color:rgba(115,167,217);font-weight:700">Técnico está ativo?</label>
+                            </span>
+                            <span class="gentelella-checkbox gentelella-checkbox-danger">
+                                <input type="checkbox" id="chkModerator" name="chkModerator" class="styled" />
+                                <label class="gentelella-control-label" for="modera" style="color:rgba(115,167,217);font-weight:700">O Participante é Moderador?</label>
+                            </span>
+                            <div class="gentelella-checkbox gentelella-checkbox-success">
+                                <input type="checkbox" id="chkReceiveWarningEachRound" name="chkReceiveWarningEachRound" class="styled" />
+                                <label class="gentelella-control-label" for="receber" style="color:rgba(115,167,217);font-weight:700">Deseja receber e-mails de alerta de fechamento da rodada?</label>
+                            </div>
+                            <div class="gentelella-checkbox gentelella-checkbox-success">
+                                <input type="checkbox" id="chkReceiveTeamTable" name="chkReceiveTeamTable" class="styled" />
+                                <label class="gentelella-control-label" for="receberinfo" style="color:rgba(115,167,217);font-weight:700">Deseja receber e-mails de informe da classificação dos participantes da última rodada?</label>
+                            </div>
+                            <div class="gentelella-checkbox gentelella-checkbox-success">
+                                <input type="checkbox" id="chkWishParticipate" name="chkWishParticipate" class="styled" />
+                                <label class="gentelella-control-label" for="participar" style="color:rgba(115,167,217);font-weight:700">Deseja participar dos campeonatos que serão disponibilizados?</label>
+                            </div>
+                        </div>
+                        <div id="registerDetails" class="gentelella-col-md-6 gentelella-col-sm-6 gentelella-col-xs-12">
+                            <br>
+                            <label class="gentelella-text-danger" for="participar" style="color:rgba(115,167,217);font-weight:700;font-size:12px">Data de Cadastro no Arena:  @Model.dateRegister</label>
+                            <br><br>
+                            <label class="gentelella-text-danger" for="participar" style="color:rgba(115,167,217);font-weight:700;font-size:12px">Data da Última Alteração do Cadastro: @Model.dateLastUpdate  (Por: @Model.psnIDOperator)</label>
+                        </div>
+                    </div>
+                    <br>
+
+                    <div id="rowImage" class="gentelella-row">
+                        <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                            <label for="idSofifa">Avatar:</label><br>
+                            <img width="60" height="60" src="@Model.avatarPath">
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="gentelella-form-group gentelella-a-right">
+                        <div class="gentelella-col-md-12 gentelella-col-sm-12 gentelella-col-xs-12">
+                            <br>
+                            <div class="gentelella-ln_solid"></div>
+                            <input type="button" class="gentelella-btn gentelella-btn-primary" onClick="JAVASCRIPT: submeteModerator('@actionBack', 'VOLTAR', '');" value="Voltar" />
+                            <input type="submit" class="gentelella-btn gentelella-btn-success" value="Salvar Dados" />
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+@section Scripts {
+<script>
+        $(function () {
+            if (detectMobileDevice() == 1) {
+                //$("#includedContentMenuMobile").load("/arena20/includes/menu-logged-mobile.html");
+                //$("#includedContentMenuRankingMobile").load("menu-my-matches-mobile.html");
+                hidden_show_ObjectMobile("footerMobile", "block");
+            }
+        });
+
+        $(document).ready(function () {
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+
+            $("#cmbState").find("option[value='@Model.state']").attr("selected", "true");
+            $("#cmbTeam").find("option[value='@Model.team']").attr("selected", "true");
+            $("#cmbHeardUs").find("option[value='@Model.howfindus']").attr("selected", "true");
+
+            activateRegistrationForm("UserDetails", '@Model.actionUser');
+
+            if (detectMobileDevice() == 0)
+                activeSidebarMenu(window.location.pathname.replace("Details", ""));
+
+            if ('@Model.actionUser' != 'VIEW') {
+                $("#txtId").addClass("disabled");
+                $("#txtId").attr("disabled", "true");
+            }
+
+            if ('@Model.actionUser' == 'ADD') {
+                $("#rowImage").hide();
+                $("#registerDetails").hide();
+            }
+            else {
+                $("#divPassWD").hide();
+                $("#txtPassword").prop('required', false).val('');
+            }
+
+            if ('@Model.userActive' == 'True') { $("#chkActive").attr("checked", "true"); }
+            if ('@Model.userModerator' == 'True') { $("#chkModerator").attr("checked", "true"); }
+            if ('@Model.receiveWarningEachRound' == '1') { $("#chkReceiveWarningEachRound").attr("checked", "true"); }
+            if ('@Model.receiveTeamTable' == '1') { $("#chkReceiveTeamTable").attr("checked", "true"); }
+            if ('@Model.wishParticipate' == '1') { $("#chkWishParticipate").attr("checked", "true"); }
+
+            if ($("#selectedID").val() == "") { $("#selectedID").val("0"); }
+
+            if ('@Model.Password' != '' && '@Model.actionUser' == 'ADD') { $("#txtPassword").val('@Model.Password'); }
+
+        });
+</script>
+}
+

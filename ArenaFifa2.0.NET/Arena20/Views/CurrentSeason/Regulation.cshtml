@@ -1,0 +1,318 @@
+﻿@using ArenaFifa20.NET.Models
+@model CurrentSeasonSummaryViewModel
+@{
+    ViewBag.Title = "Current Season - Regulation";
+
+    ChampionshipDetailsModel mainModel = Model.menuCurrentSeason.currentChampionshipDetails;
+
+    int totalTeamsGeral = mainModel.totalTeam;
+    int totalTeamsPerGroup = 0;
+    int totalGroup = mainModel.totalGroup;
+    if (totalGroup > 0) { totalTeamsPerGroup = totalTeamsGeral / totalGroup;  }
+}
+
+<form action="" class="form-horizontal" id="registration-form" method="post" role="form">
+
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="actionForm" name="actionForm" value="" />
+    <input type="hidden" id="actionType" name="actionType" value="" />
+    <input type="hidden" id="currentModeTypeSeason" name="currentModeTypeSeason" value="" />
+    <input type="hidden" id="championshipID" name="championshipID" value="" />
+</form>
+
+<!-- page content -->
+<div class="gentelella-right_col" role="main" style="padding-left:50px">
+    <div class="gentelella-page-title">
+        <div class="gentelella-col-md-9 gentelella-col-sm-9 gentelella-col-xs-12">
+            <h3>@("REGULAMENTO - " + Model.menuCurrentSeason.currentChampionshipName)</h3>
+        </div>
+        <div class="gentelella-col-md-3 gentelella-col-sm-3 gentelella-a-right gentelella-col-xs-12">
+            <img title="@Model.menuCurrentSeason.currentChampionshipName" src="@("/images/championship-logo/" + Model.menuCurrentSeason.currentChampionshipName.Replace(" ", "_") + ".jpg")" width="50" />
+            &nbsp;&nbsp;
+            <img title="COMPETIÇÕES DA MODALIDADE @Model.menuCurrentSeason.modeType" src="/Arena20/images/@("logo-" + Model.menuCurrentSeason.modeType + "-beige.jpg")" width="60" />
+        </div>
+    </div>
+    <br><br>
+
+        <div class="gentelella-x_content">
+
+            <div class="gentelella-row">
+                <div class="gentelella-col-md-6 gentelella-col-sm-12 gentelella-col-xs-12">
+                    <div class="gentelella-x_panel">
+                        <div class="gentelella-x_content" id="div1">
+
+                            <span style="color:steelblue;text-align:justify;font-size:16px;font-weight:bold" class="gentelella-title_left">
+                                1. CARACTERÍSTICAS
+                            </span>
+                            <div class="gentelella-ln_solid"></div>
+                            <p style="text-align:justify">
+                                Composto por @totalTeamsGeral times dividido em @mainModel.listOfStage.Count fase(s).<br><br>
+                                Data do Sorteio: @mainModel.drawDate.ToString("dd/MM/yyyy")  <br>
+                                Data de Início : @mainModel.startDate.ToString("dd/MM/yyyy") <br><br>
+                                @if (totalGroup > 0)
+                                {
+                                    if (mainModel.twoTurns)
+                                    {
+                                        @("Na primeira fase os " + totalTeamsGeral + " times são divididos em " + totalGroup + " grupos com " + totalTeamsPerGroup + " times por grupo e se enfrentam em turno e returno, formando " + ((totalTeamsPerGroup - 1) * 2) + " rodadas.")
+                                        @("Os " + mainModel.totalQualify + " melhores classificados de cada grupo ao fim da " + ((totalTeamsPerGroup - 1) * 2) + "ª rodada se classificam para a próxima fase.")
+                                    }
+                                    else
+                                    {
+                                        @("Na primeira fase os " + totalTeamsGeral + " times são divididos em " + totalGroup + " grupos com " + totalTeamsPerGroup + " times por grupo e se enfrentam em turno único, formando " + (totalTeamsPerGroup - 1) + " rodadas.")
+                                        @("Os " + mainModel.totalQualify + " melhores classificados de cada grupo ao fim da " + (totalTeamsPerGroup - 1) + "ª rodada se classificam para a próxima fase.")
+                                    }
+                                }
+                                else
+                                {
+                                    @("Na primeira fase os " + totalTeamsGeral + " times se enfrentam em turno único, formando " + (totalTeamsGeral - 1) + " rodadas.  ")
+                                    @("Os " + mainModel.totalQualify + " melhores classificados ao fim da " + (totalTeamsGeral - 1) + "ª rodada se classificam para a próxima fase.  ")
+                                    if (mainModel.totalRelegation > 0)
+                                    {
+                                        @("Neste Campeonato os 4 últimos colocados serão rebaixados automaticamente para a série inferior.")
+                                    }
+                                }
+                            </p>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+                <div class="gentelella-col-md-6 gentelella-col-sm-12 gentelella-col-xs-12">
+                    <div class="gentelella-x_panel">
+                        <div class="gentelella-x_content" id="div2">
+
+                            <span style="color:steelblue;text-align:justify;font-size:16px;font-weight:bold" class="gentelella-title_left">
+                                2. REGRAS DE DESEMPATE NA FASE DE CLASSIFICAÇÃO
+                            </span>
+                            <div class="gentelella-ln_solid"></div>
+                            <p style="text-align:justify">
+                                <b>O Critério de desempate na primeira fase segue a seguinte ordem:</b><br><br>
+                                - Pontos Ganhos
+                                <br>
+                                - Número de Vitórias
+                                <br>
+                                - Saldo de Gols
+                                <br>
+                                - Gols Pró
+                                <br>
+                                - Gols Contra
+                                <br>
+                                - Confronto Direto
+                                <br>
+                                - Jogo Extra
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="gentelella-row">
+                <div class="gentelella-col-md-6 gentelella-col-sm-12 gentelella-col-xs-12">
+                    <div class="gentelella-x_panel">
+                        <div class="gentelella-x_content" id="div3">
+
+                            <span style="color:steelblue;text-align:justify;font-size:16px;font-weight:bold" class="gentelella-title_left">
+                                3. CONFRONTOS NA FASE PLAYOFF SEGUINTE
+                            </span>
+                            <div class="gentelella-ln_solid"></div>
+                            <p class="text-align:justify;font-size:12px">
+                                @if (mainModel.twoLegs && mainModel.totalQualify > 0 && mainModel.playoff)
+                                {
+                                    @("Nas fases seguintes os times se enfrentam em sistema de mata-mata, em jogos de ida e volta, sem qualquer tipo de vantagem para um dos times. Entende-se como mandante do primeiro jogo o time de pior campanha na primeira fase.")
+                                }
+                                else if (totalGroup == 0 && !mainModel.twoLegs && mainModel.totalQualify > 0 && mainModel.playoff)
+                                {
+                                    @("Nas fases seguintes os times se enfrentam em sistema de mata-mata, em jogos apenas de ida, com vantagem de empate no jogo extra para o time de melhor campanha na primeira fase, mandante do jogo, conforme a regra abaixo.")
+                                }
+                                else if (totalGroup > 0 && !mainModel.twoLegs && mainModel.totalQualify > 0 && mainModel.playoff)
+                                {
+                                    @("Nas fases seguintes os times se enfrentam em sistema de mata-mata, em jogos apenas de ida, sem qualquer tipo de vantagem para um dos times, conforme a regra abaixo.")
+                                }
+                                else if (mainModel.type == "MDCL")
+                                {
+                                    @("Na ÚNICA fase os times se enfrentam em sistema de mata-mata, em jogos apenas de ida, sem qualquer tipo de vantagem para um dos times.")
+                                }
+                                <br><br>
+                                @if (mainModel.totalQualify > 0 && mainModel.playoff && mainModel.type != "MDCL")
+                                {
+                                    <b>Os confrontos destas fases serão estabelecidos de acordo com a classificação da primeira fase, seguindo a seguinte ordem:</b>
+                                    <br><br>
+                                    <center>
+                                        @if (totalGroup == 0 && mainModel.firstStageID == 0 && mainModel.totalQualify == 4)
+                                        {
+                                            @("1º X 4º")<br />
+                                            @("2º X 3º")<br />
+                                        }
+                                        else if (totalGroup == 0 && mainModel.firstStageID == 0 && mainModel.totalQualify == 8)
+                                        {
+                                            @("1º X 8º")<br />
+                                            @("2º X 7º")<br />
+                                            @("3º X 6º")<br />
+                                            @("4º X 5º")<br />
+                                        }
+                                        else if (totalGroup == 0 && mainModel.firstStageID == 0 && mainModel.totalQualify == 16)
+                                        {
+                                            @("1º X 16º")<br />
+                                            @("2º X 15º")<br />
+                                            @("3º X 14º")<br />
+                                            @("4º X 13º")<br />
+                                            @("5º X 12º")<br />
+                                            @("6º X 11º")<br />
+                                            @("7º X 10º")<br />
+                                            @("8º X 9º")<br />
+                                        }
+                                        else if (totalGroup == 8 && mainModel.totalQualify == 2 && mainModel.ChampionshipIDSource == 0 && mainModel.type != "CPDM")
+                                        {
+                                            @("1º X 16º")<br />
+                                            @("2º X 15º")<br />
+                                            @("3º X 14º")<br />
+                                            @("4º X 13º")<br />
+                                            @("5º X 12º")<br />
+                                            @("6º X 11º")<br />
+                                            @("7º X 10º")<br />
+                                            @("8º X 9º")<br />
+                                        }
+                                        else if (totalGroup == 8 && mainModel.totalQualify == 2 && mainModel.type == "CPDM")
+                                        {
+                                            @("1º do Grupo 1 X 2º do Grupo 2")<br />
+                                            @("1º do Grupo 3 X 2º do Grupo 4")<br />
+                                            @("1º do Grupo 2 X 2º do Grupo 1")<br />
+                                            @("1º do Grupo 4 X 2º do Grupo 3")<br />
+                                            @("1º do Grupo 5 X 2º do Grupo 6")<br />
+                                            @("1º do Grupo 7 X 2º do Grupo 8")<br />
+                                            @("1º do Grupo 6 X 2º do Grupo 5")<br />
+                                            @("1º do Grupo 8 X 2º do Grupo 7")<br />
+                                        }
+                                        else if (totalGroup == 4 && mainModel.totalQualify == 2 && mainModel.ChampionshipIDSource > 0)
+                                        {
+                                            @("1º X 8º Melhor 3o da Liga dos Campeões da Europa")<br />
+                                            @("2º X 7º Melhor 3o da Liga dos Campeões da Europa")<br />
+                                            @("3º X 6º Melhor 3o da Liga dos Campeões da Europa")<br />
+                                            @("4º X 5º Melhor 3o da Liga dos Campeões da Europa")<br />
+                                            @("5º X 4º Melhor 3o da Liga dos Campeões da Europa")<br />
+                                            @("6º X 3º Melhor 3o da Liga dos Campeões da Europa")<br />
+                                            @("7º X 2º Melhor 3o da Liga dos Campeões da Europa")<br />
+                                            @("8º X 1º Melhor 3o da Liga dos Campeões da Europa")<br />
+                                        }
+                                        else if (totalGroup == 2 && mainModel.totalQualify == 4 && mainModel.ChampionshipIDSource == 0)
+                                        {
+                                            @("1º X 8º")<br />
+                                            @("2º X 7º")<br />
+                                            @("3º X 6º")<br />
+                                            @("4º X 5º")<br />
+                                        }
+                                        else if (totalGroup == 4 && mainModel.totalQualify == 4 && mainModel.ChampionshipIDSource == 0)
+                                        {
+                                            @("1º X 16º")<br />
+                                            @("2º X 15º")<br />
+                                            @("3º X 14º")<br />
+                                            @("4º X 13º")<br />
+                                            @("5º X 12º")<br />
+                                            @("6º X 11º")<br />
+                                            @("7º X 10º")<br />
+                                            @("8º X 9º")<br />
+                                        }
+                                    </center>
+                                }
+                                else
+                                {
+                                    <b>O confronto desta única fase será estabelecida de acordo com os campeonatos: Liga dos Campeões da Europa e Liga Europa, da seguinte forma:</b>
+                                    <br><br>
+                                    <center>
+                                        @("Campeão da Liga dos Campeões da Europa X Campeão da Liga Europa")<br />
+                                    </center>
+                                }
+                            </p>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+                <!-- /upload  -->
+                <div class="gentelella-col-md-6 gentelella-col-sm-12 gentelella-col-xs-12">
+                    <div class="gentelella-x_panel">
+                        <div class="gentelella-x_content" id="div4">
+
+                            <span style="color:steelblue;text-align:justify;font-size:16px;font-weight:bold" class="gentelella-title_left">
+                                4. REGRAS EM TODAS AS FASES DE PLAYOFFS
+                            </span>
+                            <div class="gentelella-ln_solid"></div>
+                            <p class="text-align:justify;font-size:12px">
+                                Em todas as Fases de playoff os jogos serão apenas de ida, devem ser realizados da mesma forma que foram realizados na Fase de Classificação.<br><br>
+                                Se houver empate deverá ser realizado um jogo extra da mesma forma que o primeiro jogo foi realizado.<br><br>
+                                Persistindo empate na 2ª partida, time de melhor campanha na Fase de Classificação estará classificado.<br><br>
+                                <u>O resultado final da partida a ser lançado será o agregado dos placares das partidas que forem realizadas.</u>
+                            </p>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+                <!-- /mobile  -->
+            </div>
+
+            @if (Model.menuCurrentSeason.modeType == "FUT")
+            {
+                <div class="gentelella-row">
+                    <div class="gentelella-col-md-6 gentelella-col-sm-12 gentelella-col-xs-12">
+                        <div class="gentelella-x_panel">
+                            <div class="gentelella-x_content" id="div2">
+
+                                <span style="color:steelblue;text-align:justify;font-size:16px;font-weight:bold" class="gentelella-title_left">
+                                    5. ALGUMAS REGRAS PARA JOGAR O ULTIMATE TEAM (FUT)
+                                </span>
+                                <div class="gentelella-ln_solid"></div>
+                                <p style="text-align:justify">
+                                    <b>Regra de utilização de Cartas de Treino:</b><br><br>
+                                    <h4><code>É PROÍBIDO a utilização de cartas de treino que visam aumentar atributos básicos de um jogador durante a partida.</code></h4>
+                                    <br>
+                                    <br>
+                                    <b>Regra de utilização de jogadores por empréstimo:</b><br><br>
+                                    <h4><code>É PROÍBIDO a utilização de qualquer tipo de jorgador por empréstimo seja começando a partida ou entrando no decorrer da mesma.</code></h4>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+
+        </div>
+</div>
+<!-- /page content -->
+
+
+@section Scripts {
+    <script>
+        $(function () {
+            if (detectMobileDevice() == 1) {
+                //$("#includedContentMenuMobile").load("/arena20/includes/menu-logged-mobile.html");
+                //$("#includedContentMenuRankingMobile").load("menu-my-matches-mobile.html");
+                hidden_show_ObjectMobile("footerMobile", "block");
+            }
+        });
+
+        $(document).ready(function () {
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+
+            if (detectMobileDevice() == 0) {
+                activeSidebarMenu(window.location.pathname);
+            }
+
+            $("code").attr("style", "height:0px;background-color:#fff");
+
+            if ($("#div1").height() != $("#div2").height()) {
+                if ($("#div1").height() > $("#div2").height())
+                    $("#div2").height($("#div1").height());
+                else
+                    $("#div1").height($("#div2").height());
+            }
+
+            if ($("#div3").height() != $("#div4").height()) {
+                if ($("#div3").height() > $("#div4").height())
+                    $("#div4").height($("#div3").height());
+                else
+                    $("#div3").height($("#div4").height());
+            }
+        });
+
+    </script>
+}
+
