@@ -174,9 +174,9 @@ namespace ArenaFifa20.NET.Models
         public string codeMobileNumber { get; set; }
         public string actionUser { get; set; }
         public string returnMessage { get; set; }
-}
+    }
 
-public class squadListModel
+    public class squadListModel
     {
         public int playerID { get; set; }
         public int userID { get; set; }

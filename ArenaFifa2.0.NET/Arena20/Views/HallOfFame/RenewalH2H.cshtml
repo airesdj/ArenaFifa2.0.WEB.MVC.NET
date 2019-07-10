@@ -37,6 +37,7 @@
                             <a href="#" data-filter=".firstItemSelected" class="current fables-forth-text-color fables-second-hover-color">SÉRIE A</a>
                             <a href="#" data-filter=".serieB" class="fables-forth-text-color fables-second-hover-color">SÉRIE B</a>
                             <a href="#" data-filter=".serieC" class="fables-forth-text-color fables-second-hover-color">SÉRIE C</a>
+                            <a href="#" data-filter=".serieD" class="fables-forth-text-color fables-second-hover-color">SÉRIE D</a>
                             <a href="#" data-filter=".bco" class="fables-forth-text-color fables-second-hover-color">BANCO DE RESERVAS</a>
                             <a href="#" data-filter=".cdm" class="fables-forth-text-color fables-second-hover-color">COPA DO MUNDO</a>
                             <a href="#" data-filter=".euro" class="fables-forth-text-color fables-second-hover-color">EUROCOPA</a>
@@ -76,45 +77,45 @@
                                                     {
                                                         i++;
                                                         totalRecords += 1;
-                                                <tr class="gentelella-even gentelella-pointer">
-                                                    <td class="gentelella-a-center ">@i.ToString("00")º</td>
-                                                    <td class=" ">@Html.DisplayFor(modelItem => item.userName)</td>
-                                                    <td class=" ">@Html.DisplayFor(modelItem => item.psnID)</td>
+                                                        <tr class="gentelella-even gentelella-pointer">
+                                                            <td class="gentelella-a-center ">@i.ToString("00")º</td>
+                                                            <td class=" ">@Html.DisplayFor(modelItem => item.userName)</td>
+                                                            <td class=" ">@Html.DisplayFor(modelItem => item.psnID)</td>
 
-                                                    @if (item.status == "APROVADO")
-                                                    {
-                                                        totalAccepted += 1;
-                                                        <td class="gentelella-a-center" style="color:green;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
-                                                    }
-                                                    else if (item.status == "RECUSADO" || item.status == "DESISTIU" || item.status == "NÃO ACEITO")
-                                                    {
-                                                        <td class="gentelella-a-center" style="color:red;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
-                                                    }
-                                                    else if (item.status == "EM ANÁLISE")
-                                                    {
-                                                        <td class="gentelella-a-center" style="color:blue;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
-                                                    }
-                                                    else
-                                                    {
-                                                        <td class="gentelella-a-center" style="color:black;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
-                                                    }
+                                                            @if (item.status == "APROVADO")
+                                                            {
+                                                                totalAccepted += 1;
+                                                                <td class="gentelella-a-center" style="color:green;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
+                                                            }
+                                                            else if (item.status == "RECUSADO" || item.status == "DESISTIU" || item.status == "NÃO ACEITO")
+                                                            {
+                                                                <td class="gentelella-a-center" style="color:red;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
+                                                            }
+                                                            else if (item.status == "EM ANÁLISE")
+                                                            {
+                                                                <td class="gentelella-a-center" style="color:blue;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td class="gentelella-a-center" style="color:black;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
+                                                            }
 
-                                                    <td class="gentelella-a-center" style="vertical-align:right">@Html.DisplayFor(modelItem => item.grandTotal)</td>
-                                                    <td class="gentelella-a-right">@Html.DisplayFor(modelItem => item.blackListtotal)</td>
+                                                            <td class="gentelella-a-center" style="vertical-align:right">@Html.DisplayFor(modelItem => item.grandTotal)</td>
+                                                            <td class="gentelella-a-right">@Html.DisplayFor(modelItem => item.blackListtotal)</td>
 
-                                                    @if (item.acceptedRenewal == "1")
-                                                    {
-                                                        <td style="color:steelblue">@Html.DisplayFor(modelItem => item.actionRenewal)</td>
-                                                    }
-                                                    else if (item.acceptedRenewal == "0" || item.acceptedRenewal == "9")
-                                                    {
-                                                        <td style="color:red;padding-right:20px">@Html.DisplayFor(modelItem => item.actionRenewal)</td>
-                                                    }
-                                                    else
-                                                    {
-                                                        <td>@Html.DisplayFor(modelItem => item.actionRenewal)</td>
-                                                    }
-                                                </tr>
+                                                            @if (item.acceptedRenewal == "1")
+                                                            {
+                                                                <td style="color:steelblue">@Html.DisplayFor(modelItem => item.actionRenewal)</td>
+                                                            }
+                                                            else if (item.acceptedRenewal == "0" || item.acceptedRenewal == "9")
+                                                            {
+                                                                <td style="color:red;padding-right:20px">@Html.DisplayFor(modelItem => item.actionRenewal)</td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td>@Html.DisplayFor(modelItem => item.actionRenewal)</td>
+                                                            }
+                                                        </tr>
                                                     }
                                                 }
                                             </tbody>
@@ -177,45 +178,45 @@
                                                     {
                                                         i++;
                                                         totalRecords += 1;
-                                                <tr class="gentelella-even gentelella-pointer">
-                                                    <td class="gentelella-a-center ">@i.ToString("00")º</td>
-                                                    <td class=" ">@Html.DisplayFor(modelItem => item.userName)</td>
-                                                    <td class=" ">@Html.DisplayFor(modelItem => item.psnID)</td>
+                                                        <tr class="gentelella-even gentelella-pointer">
+                                                            <td class="gentelella-a-center ">@i.ToString("00")º</td>
+                                                            <td class=" ">@Html.DisplayFor(modelItem => item.userName)</td>
+                                                            <td class=" ">@Html.DisplayFor(modelItem => item.psnID)</td>
 
-                                                    @if (item.status == "APROVADO")
-                                                    {
-                                                        totalAccepted += 1;
-                                                        <td class="gentelella-a-center" style="color:green;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
-                                                    }
-                                                    else if (item.status == "RECUSADO" || item.status == "DESISTIU" || item.status == "NÃO ACEITO")
-                                                    {
-                                                        <td class="gentelella-a-center" style="color:red;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
-                                                    }
-                                                    else if (item.status == "EM ANÁLISE")
-                                                    {
-                                                        <td class="gentelella-a-center" style="color:blue;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
-                                                    }
-                                                    else
-                                                    {
-                                                        <td class="gentelella-a-center" style="color:black;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
-                                                    }
+                                                            @if (item.status == "APROVADO")
+                                                            {
+                                                                totalAccepted += 1;
+                                                                <td class="gentelella-a-center" style="color:green;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
+                                                            }
+                                                            else if (item.status == "RECUSADO" || item.status == "DESISTIU" || item.status == "NÃO ACEITO")
+                                                            {
+                                                                <td class="gentelella-a-center" style="color:red;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
+                                                            }
+                                                            else if (item.status == "EM ANÁLISE")
+                                                            {
+                                                                <td class="gentelella-a-center" style="color:blue;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td class="gentelella-a-center" style="color:black;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
+                                                            }
 
-                                                    <td class="gentelella-a-center" style="vertical-align:right">@Html.DisplayFor(modelItem => item.grandTotal)</td>
-                                                    <td class="gentelella-a-right">@Html.DisplayFor(modelItem => item.blackListtotal)</td>
+                                                            <td class="gentelella-a-center" style="vertical-align:right">@Html.DisplayFor(modelItem => item.grandTotal)</td>
+                                                            <td class="gentelella-a-right">@Html.DisplayFor(modelItem => item.blackListtotal)</td>
 
-                                                    @if (item.acceptedRenewal == "1")
-                                                    {
-                                                        <td style="color:steelblue">@Html.DisplayFor(modelItem => item.actionRenewal)</td>
-                                                    }
-                                                    else if (item.acceptedRenewal == "0" || item.acceptedRenewal == "9")
-                                                    {
-                                                        <td style="color:red;padding-right:20px">@Html.DisplayFor(modelItem => item.actionRenewal)</td>
-                                                    }
-                                                    else
-                                                    {
-                                                        <td>@Html.DisplayFor(modelItem => item.actionRenewal)</td>
-                                                    }
-                                                </tr>
+                                                            @if (item.acceptedRenewal == "1")
+                                                            {
+                                                                <td style="color:steelblue">@Html.DisplayFor(modelItem => item.actionRenewal)</td>
+                                                            }
+                                                            else if (item.acceptedRenewal == "0" || item.acceptedRenewal == "9")
+                                                            {
+                                                                <td style="color:red;padding-right:20px">@Html.DisplayFor(modelItem => item.actionRenewal)</td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td>@Html.DisplayFor(modelItem => item.actionRenewal)</td>
+                                                            }
+                                                        </tr>
                                                     }
                                                 }
                                             </tbody>
@@ -263,7 +264,6 @@
                                                     <th class="gentelella-column-title gentelella-a-center" width="5%">Pts.</th>
                                                     <th class="gentelella-column-title gentelella-a-center" width="5%">Negra</th>
                                                     <th class="gentelella-column-title" width="20%">Ação</th>
-                                                    </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -275,6 +275,105 @@
                                                 @foreach (var item in Model.listOfRenewal)
                                                 {
                                                     if (item.championshipID == 3)
+                                                    {
+                                                        i++;
+                                                        totalRecords += 1;
+                                                        <tr class="gentelella-even gentelella-pointer">
+                                                            <td class="gentelella-a-center ">@i.ToString("00")º</td>
+                                                            <td class=" ">@Html.DisplayFor(modelItem => item.userName)</td>
+                                                            <td class=" ">@Html.DisplayFor(modelItem => item.psnID)</td>
+
+                                                            @if (item.status == "APROVADO")
+                                                            {
+                                                                totalAccepted += 1;
+                                                                <td class="gentelella-a-center" style="color:green;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
+                                                            }
+                                                            else if (item.status == "RECUSADO" || item.status == "DESISTIU" || item.status == "NÃO ACEITO")
+                                                            {
+                                                                <td class="gentelella-a-center" style="color:red;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
+                                                            }
+                                                            else if (item.status == "EM ANÁLISE")
+                                                            {
+                                                                <td class="gentelella-a-center" style="color:blue;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td class="gentelella-a-center" style="color:black;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
+                                                            }
+
+                                                            <td class="gentelella-a-center" style="vertical-align:right">@Html.DisplayFor(modelItem => item.grandTotal)</td>
+                                                            <td class="gentelella-a-right">@Html.DisplayFor(modelItem => item.blackListtotal)</td>
+
+                                                            @if (item.acceptedRenewal == "1")
+                                                            {
+                                                                <td style="color:steelblue">@Html.DisplayFor(modelItem => item.actionRenewal)</td>
+                                                            }
+                                                            else if (item.acceptedRenewal == "0" || item.acceptedRenewal == "9")
+                                                            {
+                                                                <td style="color:red;padding-right:20px">@Html.DisplayFor(modelItem => item.actionRenewal)</td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td>@Html.DisplayFor(modelItem => item.actionRenewal)</td>
+                                                            }
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+
+                                        <br>
+
+                                        <center>
+                                            <span style="color:#2C3E4F;font-weight:bold">
+                                                Total de Inscrições: @totalRecords<br>
+                                                Total de Total de Confirmações: @totalAccepted
+                                            </span>
+                                        </center>
+
+
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                            <div class="serieD circle-effect">
+                                <div class="gentelella-row">
+
+                                    <br>
+                                    <center><img src="/Arena20/images/championship-logo/H2H-SERIE_D.jpg" width="120" /></center>
+                                    <br>
+
+                                    <p><code>A lista da Série D está ordenada por status de confirmação e de maior pontuação do Ranking.  </code></p>
+
+                                    <p>
+                                        Obs.: Os técnicos que possuírem Pontos na Lista Negra, durante a @Model.previousSeasonName, deverão ter sua conduta reavaliada pelos moderadores para saber se sua inscrição será aprovada.
+                                    </p>
+                                    <br>
+                                    <div class="gentelella-table-responsive">
+                                        <table class="gentelella-table gentelella-table-striped gentelella-jambo_table bulk_action">
+                                            <thead style="background-color:#2C3E4F">
+                                                <tr class="gentelella-headings">
+                                                    <th class="gentelella-column-title gentelella-a-center" width="5%"># </th>
+                                                    <th class="gentelella-column-title" width="35%">Técnico </th>
+                                                    <th class="gentelella-column-title" width="20%">PSN </th>
+                                                    <th class="gentelella-column-title gentelella-a-center" width="10%">Status </th>
+                                                    <th class="gentelella-column-title gentelella-a-center" width="5%">Pts.</th>
+                                                    <th class="gentelella-column-title gentelella-a-center" width="5%">Negra</th>
+                                                    <th class="gentelella-column-title" width="20%">Ação</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @{
+                                                    totalRecords = 0;
+                                                    totalAccepted = 0;
+                                                    i = 0;
+                                                }
+                                                @foreach (var item in Model.listOfRenewal)
+                                                {
+                                                    if (item.championshipID == 4)
                                                     {
                                                         i++;
                                                         totalRecords += 1;
@@ -360,7 +459,6 @@
                                                     <th class="gentelella-column-title gentelella-a-center" width="5%">Pts.</th>
                                                     <th class="gentelella-column-title gentelella-a-center" width="5%">Negra</th>
                                                     <th class="gentelella-column-title" width="20%">Ação</th>
-                                                    </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -375,45 +473,45 @@
                                                     {
                                                         i++;
                                                         totalRecords += 1;
-                                                <tr class="gentelella-even gentelella-pointer">
-                                                    <td class="gentelella-a-center ">@i.ToString("00")º</td>
-                                                    <td class=" ">@Html.DisplayFor(modelItem => item.userName)</td>
-                                                    <td class=" ">@Html.DisplayFor(modelItem => item.psnID)</td>
+                                                        <tr class="gentelella-even gentelella-pointer">
+                                                            <td class="gentelella-a-center ">@i.ToString("00")º</td>
+                                                            <td class=" ">@Html.DisplayFor(modelItem => item.userName)</td>
+                                                            <td class=" ">@Html.DisplayFor(modelItem => item.psnID)</td>
 
-                                                    @if (item.status == "APROVADO")
-                                                    {
-                                                        totalAccepted += 1;
-                                                        <td class="gentelella-a-center" style="color:green;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
-                                                    }
-                                                    else if (item.status == "RECUSADO" || item.status == "DESISTIU" || item.status == "NÃO ACEITO")
-                                                    {
-                                                        <td class="gentelella-a-center" style="color:red;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
-                                                    }
-                                                    else if (item.status == "EM ANÁLISE")
-                                                    {
-                                                        <td class="gentelella-a-center" style="color:blue;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
-                                                    }
-                                                    else
-                                                    {
-                                                        <td class="gentelella-a-center" style="color:black;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
-                                                    }
+                                                            @if (item.status == "APROVADO")
+                                                            {
+                                                                totalAccepted += 1;
+                                                                <td class="gentelella-a-center" style="color:green;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
+                                                            }
+                                                            else if (item.status == "RECUSADO" || item.status == "DESISTIU" || item.status == "NÃO ACEITO")
+                                                            {
+                                                                <td class="gentelella-a-center" style="color:red;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
+                                                            }
+                                                            else if (item.status == "EM ANÁLISE")
+                                                            {
+                                                                <td class="gentelella-a-center" style="color:blue;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td class="gentelella-a-center" style="color:black;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
+                                                            }
 
-                                                    <td class="gentelella-a-center" style="vertical-align:right">@Html.DisplayFor(modelItem => item.grandTotal)</td>
-                                                    <td class="gentelella-a-right">@Html.DisplayFor(modelItem => item.blackListtotal)</td>
+                                                            <td class="gentelella-a-center" style="vertical-align:right">@Html.DisplayFor(modelItem => item.grandTotal)</td>
+                                                            <td class="gentelella-a-right">@Html.DisplayFor(modelItem => item.blackListtotal)</td>
 
-                                                    @if (item.acceptedRenewal == "1")
-                                                    {
-                                                        <td style="color:steelblue">@Html.DisplayFor(modelItem => item.actionRenewal)</td>
-                                                    }
-                                                    else if (item.acceptedRenewal == "0" || item.acceptedRenewal == "9")
-                                                    {
-                                                        <td style="color:red;padding-right:20px">@Html.DisplayFor(modelItem => item.actionRenewal)</td>
-                                                    }
-                                                    else
-                                                    {
-                                                        <td>@Html.DisplayFor(modelItem => item.actionRenewal)</td>
-                                                    }
-                                                </tr>
+                                                            @if (item.acceptedRenewal == "1")
+                                                            {
+                                                                <td style="color:steelblue">@Html.DisplayFor(modelItem => item.actionRenewal)</td>
+                                                            }
+                                                            else if (item.acceptedRenewal == "0" || item.acceptedRenewal == "9")
+                                                            {
+                                                                <td style="color:red;padding-right:20px">@Html.DisplayFor(modelItem => item.actionRenewal)</td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td>@Html.DisplayFor(modelItem => item.actionRenewal)</td>
+                                                            }
+                                                        </tr>
                                                     }
                                                 }
                                             </tbody>
@@ -442,20 +540,115 @@
 
                                 @if (ViewBag.inRenewalWorldCup == "0")
                                 {
-                                <div class="gentelella-row">
+                                    <div class="gentelella-row">
 
-                                    <br>
-                                    <center><img src="/Arena20/images/championship-logo/COPA DO MUNDO.jpg" width="120" /></center>
-                                    <br>
+                                        <br>
+                                        <center><img src="/Arena20/images/championship-logo/COPA DO MUNDO.jpg" width="120" /></center>
+                                        <br>
 
-                                    <p>
-                                        ATENÇÃO: Não há previsão de <b>Copa do Mundo</b> para esta temporada.
-                                    </p>
+                                        <p>
+                                            ATENÇÃO: Não há previsão de <b>Copa do Mundo</b> para esta temporada.
+                                        </p>
 
 
-                                </div>
+                                    </div>
 
                                 }
+                                else
+                                {
+                                    <div class="gentelella-row">
+
+                                        <br>
+                                        <center><img src="/Arena20/images/championship-logo/COPA DO MUNDO.jpg" width="120" /></center>
+                                        <br>
+
+                                        <p><code>A lista da Copa do Mundo está ordenada por status da inscrição e ordem da maior pontuação do Ranking. <b>Apenas os 32 aprovados, ao fim da @Model.previousSeasonName, estarão com a partciparão da Copa do Mundo confirmada.</b></code></p>
+                                        <br>
+                                        <div class="gentelella-table-responsive">
+                                            <table class="gentelella-table gentelella-table-striped gentelella-jambo_table bulk_action">
+                                                <thead style="background-color:#2C3E4F">
+                                                    <tr class="gentelella-headings">
+                                                        <th class="gentelella-column-title gentelella-a-center" width="5%"># </th>
+                                                        <th class="gentelella-column-title" width="35%">Técnico </th>
+                                                        <th class="gentelella-column-title" width="20%">PSN </th>
+                                                        <th class="gentelella-column-title gentelella-a-center" width="10%">Status </th>
+                                                        <th class="gentelella-column-title gentelella-a-center" width="5%">Pts.</th>
+                                                        <th class="gentelella-column-title gentelella-a-center" width="5%">Negra</th>
+                                                        <th class="gentelella-column-title" width="20%">Ação</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @{
+                                                        totalRecords = 0;
+                                                        totalAccepted = 0;
+                                                        i = 0;
+                                                    }
+                                                    @foreach (var item in Model.listOfRenewal)
+                                                    {
+                                                        if (item.championshipID == 5)
+                                                        {
+                                                            i++;
+                                                            totalRecords += 1;
+                                                            <tr class="gentelella-even gentelella-pointer">
+                                                                <td class="gentelella-a-center ">@i.ToString("00")º</td>
+                                                                <td class=" ">@Html.DisplayFor(modelItem => item.userName)</td>
+                                                                <td class=" ">@Html.DisplayFor(modelItem => item.psnID)</td>
+
+                                                                @if (item.status == "APROVADO")
+                                                                {
+                                                                    totalAccepted += 1;
+                                                                    <td class="gentelella-a-center" style="color:green;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
+                                                                }
+                                                                else if (item.status == "RECUSADO" || item.status == "DESISTIU" || item.status == "NÃO ACEITO")
+                                                                {
+                                                                    <td class="gentelella-a-center" style="color:red;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
+                                                                }
+                                                                else if (item.status == "EM ANÁLISE")
+                                                                {
+                                                                    <td class="gentelella-a-center" style="color:blue;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="gentelella-a-center" style="color:black;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
+                                                                }
+
+                                                                <td class="gentelella-a-center" style="vertical-align:right">@Html.DisplayFor(modelItem => item.grandTotal)</td>
+                                                                <td class="gentelella-a-right">@Html.DisplayFor(modelItem => item.blackListtotal)</td>
+
+                                                                @if (item.acceptedRenewal == "1")
+                                                                {
+                                                                    <td style="color:steelblue">@Html.DisplayFor(modelItem => item.actionRenewal)</td>
+                                                                }
+                                                                else if (item.acceptedRenewal == "0" || item.acceptedRenewal == "9")
+                                                                {
+                                                                    <td style="color:red;padding-right:20px">@Html.DisplayFor(modelItem => item.actionRenewal)</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td>@Html.DisplayFor(modelItem => item.actionRenewal)</td>
+                                                                }
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+
+                                            <br>
+
+                                            <center>
+                                                <span style="color:#2C3E4F;font-weight:bold">
+                                                    Total de Inscrições: @totalRecords<br>
+                                                    Total de Total de Confirmações: @totalAccepted
+                                                </span>
+                                            </center>
+
+
+                                        </div>
+
+
+                                    </div>
+                                }
+
 
                             </div>
 
@@ -476,6 +669,100 @@
 
                                     </div>
 
+                                }
+                                else
+                                {
+                                    <div class="gentelella-row">
+
+                                        <br>
+                                        <center><img src="/Arena20/images/championship-logo/Eurocopa_Do_Arena.jpg" width="120" /></center>
+                                        <br>
+
+                                        <p><code>A lista da Eurocopa está ordenada por status da inscrição e ordem da maior pontuação do Ranking. <b>Apenas os 16 aprovados, ao fim da @Model.previousSeasonName, estarão com a partciparão da Eurocopa confirmada.</b></code></p>
+                                        <br>
+                                        <div class="gentelella-table-responsive">
+                                            <table class="gentelella-table gentelella-table-striped gentelella-jambo_table bulk_action">
+                                                <thead style="background-color:#2C3E4F">
+                                                    <tr class="gentelella-headings">
+                                                        <th class="gentelella-column-title gentelella-a-center" width="5%"># </th>
+                                                        <th class="gentelella-column-title" width="35%">Técnico </th>
+                                                        <th class="gentelella-column-title" width="20%">PSN </th>
+                                                        <th class="gentelella-column-title gentelella-a-center" width="10%">Status </th>
+                                                        <th class="gentelella-column-title gentelella-a-center" width="5%">Pts.</th>
+                                                        <th class="gentelella-column-title gentelella-a-center" width="5%">Negra</th>
+                                                        <th class="gentelella-column-title" width="20%">Ação</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @{
+                                                        totalRecords = 0;
+                                                        totalAccepted = 0;
+                                                        i = 0;
+                                                    }
+                                                    @foreach (var item in Model.listOfRenewal)
+                                                    {
+                                                        if (item.championshipID == 5)
+                                                        {
+                                                            i++;
+                                                            totalRecords += 1;
+                                                            <tr class="gentelella-even gentelella-pointer">
+                                                                <td class="gentelella-a-center ">@i.ToString("00")º</td>
+                                                                <td class=" ">@Html.DisplayFor(modelItem => item.userName)</td>
+                                                                <td class=" ">@Html.DisplayFor(modelItem => item.psnID)</td>
+
+                                                                @if (item.status == "APROVADO")
+                                                                {
+                                                                    totalAccepted += 1;
+                                                                    <td class="gentelella-a-center" style="color:green;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
+                                                                }
+                                                                else if (item.status == "RECUSADO" || item.status == "DESISTIU" || item.status == "NÃO ACEITO")
+                                                                {
+                                                                    <td class="gentelella-a-center" style="color:red;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
+                                                                }
+                                                                else if (item.status == "EM ANÁLISE")
+                                                                {
+                                                                    <td class="gentelella-a-center" style="color:blue;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="gentelella-a-center" style="color:black;font-weight:bold">@Html.DisplayFor(modelItem => item.status)</td>
+                                                                }
+
+                                                                <td class="gentelella-a-center" style="vertical-align:right">@Html.DisplayFor(modelItem => item.grandTotal)</td>
+                                                                <td class="gentelella-a-right">@Html.DisplayFor(modelItem => item.blackListtotal)</td>
+
+                                                                @if (item.acceptedRenewal == "1")
+                                                                {
+                                                                    <td style="color:steelblue">@Html.DisplayFor(modelItem => item.actionRenewal)</td>
+                                                                }
+                                                                else if (item.acceptedRenewal == "0" || item.acceptedRenewal == "9")
+                                                                {
+                                                                    <td style="color:red;padding-right:20px">@Html.DisplayFor(modelItem => item.actionRenewal)</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td>@Html.DisplayFor(modelItem => item.actionRenewal)</td>
+                                                                }
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+
+                                            <br>
+
+                                            <center>
+                                                <span style="color:#2C3E4F;font-weight:bold">
+                                                    Total de Inscrições: @totalRecords<br>
+                                                    Total de Total de Confirmações: @totalAccepted
+                                                </span>
+                                            </center>
+
+
+                                        </div>
+
+
+                                    </div>
                                 }
 
                             </div>
@@ -527,8 +814,11 @@
                 activeSidebarMenu(window.location.pathname);
 
             $(".gentelella-right_col").height($("div").find(".bco").height());
+            $("h4").attr("style", "height:3px")
+            $("code").attr("style", "height:0px;background-color:#fff")
         });
 
     </script>
 }
+
 

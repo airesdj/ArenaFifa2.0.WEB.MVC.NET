@@ -26,12 +26,8 @@ Hi Guys, voltando o assunto do Arena 2.0, a integração já foi iniciada e est�
 
 
 *_Funcionalidade que está EM ANDAMENTO:_*
-- Todos Processos Liberação da Renovação (*_0/6_*) ==> *EM ANDAMENTO: Elaboração da Estrutura*
-      . Restam: = Geração das Listas de Renovação
-				= Validar da tela de Lista Renovações
-				= Validar da tela de alteração dos dados de renovação no modulo Moderador
-				= Validar a Renovação feita pelo Usuário na tela principal do site
-				= Gerar o Spooler de Email para aviso da Renovação.
+- Todos Processos Liberação da Renovação (*_4/6_*) ==> *EM ANDAMENTO: Validar da tela de alteração dos dados de renovação no modulo Moderador*
+      . Restam: = Validar a Renovação feita pelo Usuário na tela principal do site
 				
 
 	*Observação: Temporadas anteriores não disponibilizada na 1a versão.*
