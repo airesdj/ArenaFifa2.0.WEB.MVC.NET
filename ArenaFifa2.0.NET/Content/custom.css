@@ -2900,6 +2900,9 @@ a:hover , .btn-link:hover{
 .fables-fifth-text-color{
     color: #99A2AA;
 }
+.fables-sixth-text-color {
+    color: rgb(243,161,0);
+}
 .fables-fifth-border-color{
     border-color:#99A2AA;
 }

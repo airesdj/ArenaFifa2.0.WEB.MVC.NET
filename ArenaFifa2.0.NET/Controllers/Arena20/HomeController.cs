@@ -199,10 +199,7 @@ namespace ArenaFifa20.NET.Controllers
                     response = null;
                     modelReturnJSON = null;
                 }
-
-
             }
-
         }
 
         // POST: /Home/SubscribeBenchPROCLUB
@@ -280,6 +277,7 @@ namespace ArenaFifa20.NET.Controllers
         //
         // GET: /Home/SubscribeBenchConfirmation
         [AllowAnonymous]
+        [SessionTimeout]
         public ActionResult SubscribeBenchConfirmation(SubscribeBench model)
         {
             return View(model);
@@ -486,6 +484,189 @@ namespace ArenaFifa20.NET.Controllers
             }
 
         }
+
+
+        // GET: /Home/RenewalNewSeason
+        [AllowAnonymous]
+        [SessionTimeout]
+        public ActionResult RenewalNewSeason()
+        {
+            HttpResponseMessage response = null;
+            GenerateRenewalViewModel modelReturnJSON = new GenerateRenewalViewModel();
+            renewalDetailsModel model = new renewalDetailsModel();
+
+            try
+            {
+                model.userID = Convert.ToInt16(Session["user.id"]);
+                model.userName = Session["user.name"].ToString();
+                model.psnID = Session["user.psnID"].ToString();
+                model.actionUser = "getDetailsRenewalHome";
+
+                modelReturnJSON.renewalModel = model;
+                modelReturnJSON.actionUser = model.actionUser;
+                response = GlobalVariables.WebApiClient.PostAsJsonAsync("GenerateRenewal", modelReturnJSON).Result;
+                modelReturnJSON = response.Content.ReadAsAsync<GenerateRenewalViewModel>().Result;
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "GenerateRenewalSuccessfully")
+                        {
+                            return View(modelReturnJSON.renewalModel);
+                        }
+                        else
+                        {
+                            //ModelState.AddModelError("", "Senha Atual inválida! Favor tentar novamente.");
+                            TempData["returnMessage"] = "Ocorreu algum erro na exibição da tela de renovação para a próxima temporda - todas as modalidades. (" + modelReturnJSON.returnMessage + ")";
+                            return View(model);
+                        }
+                    default:
+                        TempData["returnMessage"] = "Ocorreu algum erro na exibição da tela de renovação para a próxima temporda - todas as modalidades. (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View(model);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                TempData["returnMessage"] = "Erro interno - renovação próxima temporada - todas as modalidades: (" + ex.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View(model);
+
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+                model = null;
+            }
+        }
+
+        // POST: /Home/ValidateRenewalNewSeason
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        [SessionTimeout]
+        public ActionResult ValidateRenewalNewSeason(renewalDetailsModel model, FormCollection formHTML)
+        {
+
+            HttpResponseMessage response = new HttpResponseMessage(); ;
+            GenerateRenewalViewModel modelReturnJSON = new GenerateRenewalViewModel();
+            Boolean executeProcSaveRenewal = false;
+            string messageReturnERROR = String.Empty;
+            string nameFieldViewERROR = string.Empty;
+
+            try
+            {
+                model.userID = Convert.ToInt16(Session["user.id"]);
+                model.userName = Session["user.name"].ToString();
+                model.psnID = Session["user.psnID"].ToString();
+                modelReturnJSON.returnMessage = "GenerateRenewalSuccessfully";
+                response.StatusCode = HttpStatusCode.Created;
+
+                if (!String.IsNullOrEmpty(formHTML["rdoModeH2H"]))
+                {
+                    if (formHTML["rdoModeH2H"]=="1") { model.checkYESH2H = true; model.checkNOH2H = false; }
+                    else { model.checkYESH2H = false; model.checkNOH2H = true; }
+                }
+                if (!String.IsNullOrEmpty(formHTML["rdoModeWC"]))
+                {
+                    if (formHTML["rdoModeWC"] == "1") { model.checkYESWDC = true; model.checkNOWDC = false; }
+                    else { model.checkYESWDC = false; model.checkNOWDC = true; }
+                }
+                if (!String.IsNullOrEmpty(formHTML["rdoModeFUT"]))
+                {
+                    if (formHTML["rdoModeFUT"] == "1") { model.checkYESFUT = true; model.checkNOFUT = false; }
+                    else { model.checkYESFUT = false; model.checkNOFUT = true; }
+                }
+                if (!String.IsNullOrEmpty(formHTML["rdoModePRO"]))
+                {
+                    if (formHTML["rdoModePRO"] == "1") { model.checkYESPRO = true; model.checkNOPRO = false; }
+                    else { model.checkYESPRO = false; model.checkNOPRO = true; }
+                }
+
+
+                if (formHTML["rdoModeFUT"] == "1" && formHTML["teamNameFUT"] == String.Empty)
+                {
+                    messageReturnERROR = "O  campo 'Nome do Time FUT' é obrigatório porque a modalidade FUT foi selecionada";
+                    nameFieldViewERROR = "teamNameFUT";
+                }
+                else if (formHTML["rdoModePRO"] == "1" && formHTML["teamNamePRO"] == String.Empty)
+                {
+                    messageReturnERROR = "O  campo 'Nome do Clube' é obrigatório porque a modalidade PRO CLUB foi selecionada";
+                    nameFieldViewERROR = "teamNamePRO";
+                }
+                else if ((formHTML["ddd"] == String.Empty && formHTML["mobile"] != String.Empty) || (formHTML["ddd"] != String.Empty && formHTML["mobile"] == String.Empty))
+                {
+                    messageReturnERROR = "O  campo 'Celular (DDD & Numero)' está inválido, ambos os números devem ser informados";
+                    nameFieldViewERROR = "mobile";
+                }
+                else if (formHTML["rdoModeH2H"] == null && formHTML["rdoModeWC"] == null &&
+                         formHTML["rdoModeFUT"] == null && formHTML["rdoModePRO"] == null)
+                {
+                    messageReturnERROR = "Não foi possível executar o processo de renovação pois NENHUMA modalidade foi selecionada";
+                }
+                else
+                {
+                    executeProcSaveRenewal = true;
+                    model.actionUser = "saveRenewalNewSeasonHome";
+                    modelReturnJSON.renewalModel = model;
+                    modelReturnJSON.actionUser = model.actionUser;
+                    response = GlobalVariables.WebApiClient.PostAsJsonAsync("GenerateRenewal", modelReturnJSON).Result;
+                    modelReturnJSON = response.Content.ReadAsAsync<GenerateRenewalViewModel>().Result;
+                }
+
+                if (!String.IsNullOrEmpty(messageReturnERROR))
+                {
+                    TempData["returnMessage"] = messageReturnERROR;
+                    if (!String.IsNullOrEmpty(nameFieldViewERROR)) { ModelState.AddModelError(nameFieldViewERROR, messageReturnERROR); }
+                }
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        if (modelReturnJSON.returnMessage == "GenerateRenewalSuccessfully")
+                        {
+                            if (executeProcSaveRenewal)
+                                return RedirectToAction("RenewalNewSeasonConfirmation", "Home", modelReturnJSON.renewalModel);
+                            else
+                                return View("RenewalNewSeason", model);
+                        }
+                        else
+                        {
+                            //ModelState.AddModelError("", "Senha Atual inválida! Favor tentar novamente.");
+                            TempData["returnMessage"] = "Ocorreu algum erro na inscrição do banco de Reservas H2H e/ou FUT. (" + modelReturnJSON.returnMessage + ")";
+                            return View("RenewalNewSeason", model);
+                        }
+                    default:
+                        TempData["returnMessage"] = "Ocorreu algum erro na inscrição do banco de Reservas H2H e/ou FUT. (" + response.StatusCode + ")";
+                        ModelState.AddModelError("", "application error.");
+                        return View("RenewalNewSeason", model);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                TempData["returnMessage"] = "Erro interno - inscrevendo-se no banco - H2H e/ou FUT: (" + ex.Message + ")";
+                ModelState.AddModelError("", "application error.");
+                return View("RenewalNewSeason", model);
+
+            }
+            finally
+            {
+                response = null;
+                modelReturnJSON = null;
+            }
+        }
+
+        // GET: /Home/RenewalNewSeasonConfirmation
+        [AllowAnonymous]
+        [SessionTimeout]
+        public ActionResult RenewalNewSeasonConfirmation(renewalDetailsModel model)
+        {
+            return View(model);
+        }
+
 
 
         private string getBodyHtml(ContactUsViewModel model)

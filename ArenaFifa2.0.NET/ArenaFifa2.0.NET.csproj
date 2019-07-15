@@ -2813,6 +2813,8 @@
     <Content Include="Arena20\Views\Shared\_ResultModal.cshtml" />
     <Content Include="Arena20\Views\Web.config" />
     <Content Include="Arena20\Views\_ViewStart.cshtml" />
+    <Content Include="Arena20\Views\Home\RenewalNewSeason.cshtml" />
+    <Content Include="Arena20\Views\Home\RenewalNewSeasonConfirmation.cshtml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

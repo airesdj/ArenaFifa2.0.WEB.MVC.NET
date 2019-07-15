@@ -22,18 +22,30 @@ Hi Guys, voltando o assunto do Arena 2.0, a integração já foi iniciada e est�
 - TODO Dashboard do Ranking do Arena
 - TODO Dashboard do Menu Moderador
 - TODO Dashboard do Meus Jogos
-- Todo Dashboard das Tela de Campeonatos (*_NOVO_*)
+- Todo Dashboard das Tela de Campeonatos
+- Todos Processos Liberação da Renovação (*_NOVO_*)
 
 
 *_Funcionalidade que está EM ANDAMENTO:_*
-- Todos Processos Liberação da Renovação (*_4/6_*) ==> *EM ANDAMENTO: Validar da tela de alteração dos dados de renovação no modulo Moderador*
-      . Restam: = Validar a Renovação feita pelo Usuário na tela principal do site
+- Todos Todos Processos Geração da Nova Temporada (*_0/14_*) ==> *EM ANDAMENTO: Montagem da Estrutura do Processo de Geração da Nova Temporada*
+      . Restam: = Montar a Estrutura da Base de Dados
+	            = Montar a Tela de Parametrização de Variaveis e Lista para a Geração da Nova Temporada
+				= Montar o sistema de Geração Automatica da Temporada
+				= Montagem Dinamica de Simples Campeonato de Liga
+				= Montagem Dinamica Campeonato Por Grupo USANDO o criterio de separação por Potes
+				= Montagem Dinamica Campeonato Por Grupo SEM separação por Potes
+				= Montagem Dinamica Campeonato tipo Copas (Só playoff)
+				= Montagem da Tela para mostrar os Campeonatos Gerados Por Modalidade
+				= Montagem da Tela para mostrar os DETALHES dos Campeonatos Gerados
+				= Montagem da Tela para mostrar um sumario dos Campeonatos Gerados Por Modalidade
+				= Montagem da Tela para mostrar um sumario do calendário Por Modalidade
+				= Montagem da Tela para testar o Sorteio
+				= Elaborar a transferencia dos dados da base de teste para a base online
 				
 
 	*Observação: Temporadas anteriores não disponibilizada na 1a versão.*
 
 *_Funcionalidades que AINDA NÃO começaram o processo de integração:_*
-- Todos Processos Geração da Nova Temporada
 - Todos Processos Batch:
 	. Aviso de liberação Novas Rodadas
 	. Aviso de fim de Rodadas

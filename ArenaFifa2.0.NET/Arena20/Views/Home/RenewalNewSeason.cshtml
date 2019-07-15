@@ -1,0 +1,259 @@
+﻿@using System.Configuration
+@using ArenaFifa20.NET.Models
+@model renewalDetailsModel
+@{
+    ViewBag.Title = "Renewal New Season";
+    string nameImgCurrentFifa = HttpContext.Current.Application["fifa.codImgCurrent"].ToString() + ".jpg";
+    string hasWC_OR_Euro = ConfigurationManager.AppSettings["renewal.h2h.worldcup"].ToString();
+    //if (hasWC_OR_Euro=="0") { hasWC_OR_Euro = ConfigurationManager.AppSettings["renewal.h2h.uefaeuro"].ToString(); }
+}
+
+
+<!-- Start Breadcrumbs -->
+<div class="fables-light-background-color">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="fables-breadcrumb breadcrumb px-0 py-3">
+                <li class="breadcrumb-item"><a href="/Arena20/" class="fables-second-text-color">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Renovação Próxima Temporada (Todas Modalidades)</li>
+                <center>
+                    <code target="title">
+                        Oi <b>@(Model.userName + "(" + Model.psnID + ")"), TODOS os TÉCNICOS E/OU MANAGERS</b> precisam renovar para a próxima temporada.
+                        <br />
+                        Por favor escolha abaixo os modos que deseja participar na nova temporada, você pode escolher UM ou MAIS modos disponibilizados pelo Arena Fifa.
+                        <br /><br />
+                        Se você é manager de algum time de PRO CLUB também deverá realizar este procedimento para que confirme o desejo de participar dos campeonatos.
+                    </code>
+                </center>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- /End Breadcrumbs -->
+
+@using (Html.BeginForm("ValidateRenewalNewSeason", "Home", FormMethod.Post, new { @class = "form-horizontal", id = "RenewalNewSeason", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <!-- Start page content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-12 col-xs-12">
+                <h3 class="font-25 font-weight-bold fables-second-text-color text-center mb-3">ESCOLHA OS MODOS DISPONÍVEIS QUE DESEJA PARTICIPAR</h3>
+
+                <br /><br />
+
+                <div class="container">
+
+                    <div class="row" style="margin-right: -10px;margin-left: -10px">
+
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+
+                            <div class="x_panel text-center">
+                                <h3 class="font-25 font-weight-bold text-center mb-3 fables-main-text-color">MODO H2H (X1)</h3>
+                            </div>
+                            <br />
+                            <p align="justify" class="font-12 font-weight-bold fables-main-text-color">Obs.:  Modo este que você receberá um time no sorteio ao vivo se começar no início da temporada ou receberá um e-mail com o time disponível e poderá optar em aceitar ou não. Após isso disputará nossos campeonatos disponíveis com este time neste modo.</p>
+
+                            <br />
+
+                            <div class="col-md-10 font-weight-bold text-center">
+                                <input type="radio" name="rdoModeH2H" id="rdoModeH2H_YES" value="1" />
+                                Confirma
+                                &nbsp;&nbsp;&nbsp;
+                                <input type="radio" name="rdoModeH2H" id="rdoModeH2H_NO" value="0" />
+                                NÃO Confirma
+                            </div>
+                            <br />
+
+                            <center>
+                                <img src="/Arena20/images/logo-H2H-white.jpg" style="width:80px">
+                                &nbsp;&nbsp;&nbsp;
+                                <img src="/Arena20/images/@nameImgCurrentFifa" style="width:80px">
+                            </center>
+
+                            @if (hasWC_OR_Euro == "1")
+                            {
+                                <br /><br />
+                                <h3 class="font-16 font-weight-bold text-justify mb-3 fables-second-text-color">Obs.: A Copa do Mundo é realizada a cada 3 temporadas. E nesta próxima teremos este grande evento, você deve confirmar a participação mas apenas os melhores rankeados ao fim da renovação irão participar.</h3>
+                                <br />
+
+                                <div class="col-md-10 font-weight-bold text-center">
+                                    <input type="radio" name="rdoModeWC" id="rdoModeWC_YES" value="1" />
+                                    Confirma
+                                    &nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="rdoModeWC" id="rdoModeWC_NO" value="0" />
+                                    NÃO Confirma
+                                </div>
+                                <br />
+
+                                <center>
+                                    <img src="/Arena20/images/Taca_CopaDoMundo.jpg" style="width:80px">
+                                    &nbsp;&nbsp;&nbsp;
+                                    <img src="/Arena20/images/@nameImgCurrentFifa" style="width:80px">
+                                </center>
+                            }
+
+                        </div>
+
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+
+                            <div class="x_panel text-center">
+                                <h3 class="font-25 font-weight-bold mb-3 fables-main-text-color">MODO FUT (UT)</h3>
+                            </div>
+                            <br />
+                            <p align="justify" class="font-12 font-weight-bold fables-main-text-color">Obs.:  O modo FUT (ou mais conhecido como: Ultimate Team) você monta seu próprio time, nos passa o nome e o escudo e conhecerá seus adversários no mesmo sorteio ao vivo se começar no início da temporada ou receberá um e-mail com a vaga disponível e poderá optar em aceitar ou não. Após isso disputará nossos campeonatos disponíveis neste modo.</p>
+                            <br />
+                            <div class="form-group">
+                                <div class="input-icon">
+                                    <span class="fables-iconnews fables-input-icon mt-1 font-13"></span>
+                                    @Html.TextBoxFor(m => m.teamNameFUT, new { @class = "form-control rounded-0 py-2 pl-5 font-13 sign-register-input", @placeholder = "Nome do Time" })
+                                    @Html.ValidationMessageFor(m => m.teamNameFUT, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <br />
+
+                            <div class="col-md-10 font-weight-bold text-center">
+                                <input type="radio" name="rdoModeFUT" id="rdoModeFUT_YES" value="1" />
+                                Confirma
+                                &nbsp;&nbsp;&nbsp;
+                                <input type="radio" name="rdoModeFUT" id="rdoModeFUT_NO" value="0" />
+                                NÃO Confirma
+                            </div>
+                            <br />
+
+                            <center>
+                                <img src="/Arena20/images/logo-FUT-white.jpg" style="width:80px">
+                                &nbsp;&nbsp;&nbsp;
+                                <img src="/Arena20/images/@nameImgCurrentFifa" style="width:80px">
+                            </center>
+
+                        </div>
+
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+
+                            <div class="x_panel text-center">
+                                <h3 class="font-25 font-weight-bold mb-3 fables-main-text-color">MODO PRO CLUB</h3>
+                            </div>
+                            <br />
+                            <p align="justify" class="font-12 font-weight-bold fables-main-text-color">
+                                Obs.:  O modo PRO CLUB, é o mais novo modo disponibilizado pelo Arena, você tem o seu próprio elenco, nos passa o nome do time, o escudo e cadastre seu elenco, assim conhecerá seus adversários no mesmo sorteio ao vivo a começar no início da temporada. Ou você pode receber um e-mail com a vaga disponível durante a temporada e poderá optar em aceitar ou não. Após isso disputará nossos campeonatos disponíveis neste modo.
+                                <br /><br />
+                                Atenção: Nesta modalidade você DEVERÁ cadastrar seu elenco durante o prazo de renovações na própria página principal do site. Assim que fizer a renovação a imagem da renovação irá mudar para inclusão do seu elenco, não esquecendo que os jogadores devem já ter cadastro no Arena e também fazer o upload do escudo do seu time.
+                            </p>
+                            <br />
+                            <div class="form-group">
+                                <div class="input-icon">
+                                    <span class="fables-iconnews fables-input-icon mt-1 font-13"></span>
+                                    @Html.TextBoxFor(m => m.teamNamePRO, new { @class = "form-control rounded-0 py-2 pl-5 font-13 sign-register-input", @placeholder = "Nome do Clube" })
+                                    @Html.ValidationMessageFor(m => m.teamNamePRO, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <br />
+                            <h3 class="font-16 font-weight-bold text-justify mb-3 fables-second-text-color">Atenção: É necessário informar seu número de celular para que possamos incluir você em nosso grupo do whatsapp do ARENA de PRO CLUB.</h3>
+                            <br />
+
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="row">
+                                        <div class="col-md-4 col-sm-6 col-xs-12">
+                                            <div class="input-icon">
+                                                <span class="fables-iconwhatapp-icon fables-input-icon mt-1 font-13"></span>
+                                                @Html.TextBoxFor(m => m.ddd, new { @class = "form-control rounded-0 py-2 pl-5 font-13 sign-register-input", @placeholder = "DDD" })
+                                                @Html.ValidationMessageFor(m => m.ddd, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8 col-sm-6 col-xs-12">
+                                            <div class="input-icon">
+                                                <span class="fables-iconwhatapp-icon fables-input-icon mt-1 font-13"></span>
+                                                @Html.TextBoxFor(m => m.mobile, new { @class = "form-control rounded-0 py-2 pl-5 font-13 sign-register-input", @placeholder = "Celular" })
+                                                @Html.ValidationMessageFor(m => m.mobile, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br />
+
+                            <div class="col-md-10 font-weight-bold text-center">
+                                <input type="radio" name="rdoModePRO" id="rdoModePRO_YES" value="1" />
+                                Confirma
+                                &nbsp;&nbsp;&nbsp;
+                                <input type="radio" name="rdoModePRO" id="rdoModePRO_NO" value="0" />
+                                NÃO Confirma
+                            </div>
+                            <br />
+
+                            <center>
+                                <img src="/Arena20/images/logo-FUT-white.jpg" style="width:80px">
+                                &nbsp;&nbsp;&nbsp;
+                                <img src="/Arena20/images/@nameImgCurrentFifa" style="width:80px">
+                            </center>
+
+                        </div>
+
+                        </div>
+
+                        <br /><br />
+
+                        <div class="row">
+
+                            <div class="col-md-4 col-sm-6 col-xs-12">&nbsp;</div>
+
+                            <div class="col-md-4 col-sm-6 col-xs-12">
+
+                                <button type="submit" class="btn btn-block rounded-0 white-color fables-main-hover-background-color fables-second-background-color font-16 semi-font py-3">Renovar</button>
+
+                            </div>
+
+                            <div class="col-md-4 col-sm-6 col-xs-12">&nbsp;</div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        }
+        <br /><br />
+
+        @section Scripts {
+            @Scripts.Render("~/bundles/jqueryval")
+
+            <script type="text/javascript">
+        $(document).ready(function () {
+
+            if ('@TempData["returnMessage"]' != '')
+                toastr.error('Aviso: @TempData["returnMessage"].');
+
+            $("code[target='title']").attr("style", "height:0px;background-color:#F6F6F6")
+            $("code[target='WC']").attr("style", "height:0px;background-color:#FFF")
+
+            if ('@Model.checkYESH2H' == 'True')
+                $("#rdoModeH2H_YES").attr("checked", "true");
+            else if ('@Model.checkNOH2H' == 'True')
+                $("#rdoModeH2H_NO").attr("checked", "true");
+
+
+            if ('@Model.checkYESWDC' == 'True')
+                $("#rdoModeWC_YES").attr("checked", "true");
+            else if ('@Model.checkNOWDC' == 'True')
+                $("#rdoModeWC_NO").attr("checked", "true");
+
+            if ('@Model.checkYESFUT' == 'True')
+                $("#rdoModeFUT_YES").attr("checked", "true");
+            else if ('@Model.checkNOFUT' == 'True')
+                $("#rdoModeFUT_NO").attr("checked", "true");
+
+            if ('@Model.checkYESPRO' == 'True')
+                $("#rdoModePRO_YES").attr("checked", "true");
+            else if ('@Model.checkNOPRO' == 'True')
+                $("#rdoModePRO_NO").attr("checked", "true");
+        });
+            </script>
+        }
+        }
+

@@ -1,0 +1,36 @@
+﻿@using ArenaFifa20.NET.Models
+@model renewalDetailsModel
+@{
+    ViewBag.Title = "Renewal New Season - Confirmation";
+    string typyOfRenwal = String.Empty;
+
+    if (Model.checkYESH2H) { typyOfRenwal += "H2H"; }
+    if (Model.checkYESWDC) { if (typyOfRenwal != "") { typyOfRenwal += ", "; } typyOfRenwal += "Copa do Mundo"; }
+    if (Model.checkYESFUT) { if (typyOfRenwal != "") { typyOfRenwal += ", "; } typyOfRenwal += "FUT (Ultimate Team)"; }
+    if (Model.checkYESPRO) { if (typyOfRenwal != "") { typyOfRenwal += " e "; } typyOfRenwal += "PRO CLUB"; }
+
+}
+
+<!-- Start Breadcrumbs -->
+<div class="fables-light-background-color">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="fables-breadcrumb breadcrumb px-0 py-3">
+                <li class="breadcrumb-item"><a href="/Arena20/" class="fables-second-text-color">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Renovação - Confirmação</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- /End Breadcrumbs -->
+<div class="container">
+    <div class="row my-4 my-lg-5">
+        <p>
+            <font color="red">Sua RENOVAÇÃO na(s) modalidade(s): @typyOfRenwal foi(ram) efetuada(s) com sucesso. Muito obrigado e BOA SORTE.</font> <br /><br />
+            Para acompanhar basta clicar no link: @Html.ActionLink("'Renovações'", "RenewalH2H", "HallOfFame", routeValues: null, htmlAttributes: new { id = "loginLink" }) ou no link 'Viasualize as Renovações' em nossa página principal
+            <br /><br />
+            BOA SORTE!
+        </p>
+    </div>
+    <br /><br /><br />
+</div>
